@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -c -Wall -g -Os -Iinclude -DENAGLO -DENAQZS -DENACMP -DNFREQ=3
+CFLAGS = -c -Wall -g -Os -DENAGLO -DENAQZS -DENACMP -DNFREQ=3
 LD = $(CC)
 
 LDFLAGS = -lm -lpthread 
