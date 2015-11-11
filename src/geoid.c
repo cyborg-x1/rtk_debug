@@ -24,12 +24,12 @@ static int model_geoid=GEOID_EMBEDDED; /* geoid model */
 
 /* bilinear interpolation ----------------------------------------------------*/
 static double interpb(const double *y, double a, double b)
-{
+{FNC
     return y[0]*(1.0-a)*(1.0-b)+y[1]*a*(1.0-b)+y[2]*(1.0-a)*b+y[3]*a*b;
 }
 /* embedded geoid model ------------------------------------------------------*/
 static double geoidh_emb(const double *pos)
-{
+{FNC
     const double dlon=1.0,dlat=1.0;
     double a,b,y[4];
     int i1,i2,j1,j2;
@@ -50,7 +50,7 @@ static double geoidh_emb(const double *pos)
 }
 /* get 2 byte signed integer from file ---------------------------------------*/
 static short fget2b(FILE *fp, long off)
-{
+{FNC
     unsigned char v[2];
     if (fseek(fp,off,SEEK_SET)==EOF||fread(v,2,1,fp)<1) {
         trace(2,"geoid data file range error: off=%ld\n",off);
@@ -59,7 +59,7 @@ static short fget2b(FILE *fp, long off)
 }
 /* egm96 15x15" model --------------------------------------------------------*/
 static double geoidh_egm96(const double *pos)
-{
+{FNC
     const double lon0=0.0,lat0=90.0,dlon=15.0/60.0,dlat=-15.0/60.0;
     const int nlon=1440,nlat=721;
     double a,b,y[4];
@@ -79,7 +79,7 @@ static double geoidh_egm96(const double *pos)
 }
 /* get 4byte float from file -------------------------------------------------*/
 static float fget4f(FILE *fp, long off)
-{
+{FNC
     float v=0.0;
     if (fseek(fp,off,SEEK_SET)==EOF||fread(&v,4,1,fp)<1) {
         trace(2,"geoid data file range error: off=%ld\n",off);
@@ -88,7 +88,7 @@ static float fget4f(FILE *fp, long off)
 }
 /* egm2008 model -------------------------------------------------------------*/
 static double geoidh_egm08(const double *pos, int model)
-{
+{FNC
     const double lon0=0.0,lat0=90.0;
     double dlon,dlat;
     double a,b,y[4];
@@ -136,7 +136,7 @@ static double geoidh_egm08(const double *pos, int model)
 }
 /* get gsi geoid data --------------------------------------------------------*/
 static double fgetgsi(FILE *fp, int nlon, int nlat, int i, int j)
-{
+{FNC
     const int nf=28,wf=9,nl=nf*wf+2,nr=(nlon-1)/nf+1;
     double v;
     long off=nl+j*nr*nl+i/nf*nl+i%nf*wf;
@@ -154,7 +154,7 @@ static double fgetgsi(FILE *fp, int nlon, int nlat, int i, int j)
 }
 /* gsi geoid 2000 1.0x1.5" model ---------------------------------------------*/
 static double geoidh_gsi(const double *pos)
-{
+{FNC
     const double lon0=120.0,lon1=150.0,lat0=20.0,lat1=50.0;
     const double dlon=1.5/60.0,dlat=1.0/60.0;
     const int nlon=1201,nlat=1801;
@@ -197,7 +197,7 @@ static double geoidh_gsi(const double *pos)
 *          (byte-order of binary files must be compatible to cpu)
 *-----------------------------------------------------------------------------*/
 extern int opengeoid(int model, const char *file)
-{
+{FNC
     trace(3,"opengeoid: model=%d file=%s\n",model,file);
     
     closegeoid();
@@ -222,7 +222,7 @@ extern int opengeoid(int model, const char *file)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void closegeoid(void)
-{
+{FNC
     trace(3,"closegoid:\n");
     
     if (fp_geoid) fclose(fp_geoid);
@@ -238,7 +238,7 @@ extern void closegeoid(void)
 *          is not open, the function uses embedded geoid model.
 *-----------------------------------------------------------------------------*/
 extern double geoidh(const double *pos)
-{
+{FNC
     double posd[2],h;
     
     posd[1]=pos[1]*R2D; posd[0]=pos[0]*R2D; if (posd[1]<0.0) posd[1]+=360.0;

@@ -40,7 +40,7 @@
 #define S           1.01222928          /* = AE*(1.0+SO/XKMPER) */
 
 static void SGP4_STR3(double tsince, const tled_t *data, double *rs)
-{
+{FNC
     double xnodeo,omegao,xmo,eo,xincl,xno,xndt2o,xndd6o,bstar;
     double a1,cosio,theta2,x3thm1,eosq,betao2,betao,del1,ao,delo,xnodp,aodp,s4;
     double qoms24,perige,pinvsq,tsi,eta,etasq,eeta,psisq,coef,coef1,c1,c2,c3,c4;
@@ -270,7 +270,7 @@ static void SGP4_STR3(double tsince, const tled_t *data, double *rs)
 }
 /* drop spaces at string tail ------------------------------------------------*/
 static void chop(char *buff)
-{
+{FNC
     int i;
     for (i=strlen(buff)-1;i>=0;i--) {
         if (buff[i]==' '||buff[i]=='\r'||buff[i]=='\n') buff[i]='\0';
@@ -279,7 +279,7 @@ static void chop(char *buff)
 }
 /* test TLE line checksum ----------------------------------------------------*/
 static int checksum(const char *buff)
-{
+{FNC
     int i,cs=0;
     
     if (strlen(buff)<69) return 0;
@@ -292,7 +292,7 @@ static int checksum(const char *buff)
 }
 /* decode TLE line 1 ---------------------------------------------------------*/
 static int decode_line1(const char *buff, tled_t *data)
-{
+{FNC
     double year,doy,nddot,exp1,bstar,exp2,ep[6]={2000,1,1};
     
     strncpy(data->satno,buff+2,5);       /* satellite number */
@@ -325,7 +325,7 @@ static int decode_line1(const char *buff, tled_t *data)
 }
 /* decode TLE line 2 ---------------------------------------------------------*/
 static int decode_line2(const char *buff, tled_t *data)
-{
+{FNC
     char satno[16];
     
     strncpy(satno,buff+2,5);             /* satellite number */
@@ -352,7 +352,7 @@ static int decode_line2(const char *buff, tled_t *data)
 }
 /* add TLE data --------------------------------------------------------------*/
 static int add_data(tle_t *tle, const tled_t *data)
-{
+{FNC
     tled_t *tle_data;
     
     if (tle->n>=tle->nmax) {
@@ -370,7 +370,7 @@ static int add_data(tle_t *tle, const tled_t *data)
 }
 /* compare TLE data by satellite name ----------------------------------------*/
 static int cmp_tle_data(const void *p1, const void *p2)
-{
+{FNC
     const tled_t *q1=(const tled_t *)p1,*q2=(const tled_t *)p2;
     return strcmp(q1->name,q2->name);
 }
@@ -385,7 +385,7 @@ static int cmp_tle_data(const void *p1, const void *p2)
 *          the characters after # in a line are treated as comments.
 *-----------------------------------------------------------------------------*/
 extern int tle_read(const char *file, tle_t *tle)
-{
+{FNC
     FILE *fp;
     tled_t data={{0}};
     char *p,buff[256];
@@ -452,7 +452,7 @@ extern int tle_read(const char *file, tle_t *tle)
 *            desig: international designator (optional)
 *-----------------------------------------------------------------------------*/
 extern int tle_name_read(const char *file, tle_t *tle)
-{
+{FNC
     FILE *fp;
     char *p,buff[256],name[256],satno[256],desig[256];
     int i;
@@ -503,7 +503,7 @@ extern int tle_name_read(const char *file, tle_t *tle)
 extern int tle_pos(gtime_t time, const char *name, const char *satno,
                    const char *desig, const tle_t *tle, const erp_t *erp,
                    double *rs)
-{
+{FNC
     gtime_t tutc;
     double tsince,rs_tle[6],rs_pef[6],gmst;
     double R1[9]={0},R2[9]={0},R3[9]={0},W[9],erpv[5]={0};

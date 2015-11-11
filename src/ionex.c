@@ -27,7 +27,7 @@ static const char rcsid[]="$Id:$";
 
 /* get index -----------------------------------------------------------------*/
 static int getindex(double value, const double *range)
-{
+{FNC
     if (range[2]==0.0) return 0;
     if (range[1]>0.0&&(value<range[0]||range[1]<value)) return -1;
     if (range[1]<0.0&&(value<range[1]||range[0]<value)) return -1;
@@ -35,19 +35,19 @@ static int getindex(double value, const double *range)
 }
 /* get number of items -------------------------------------------------------*/
 static int nitem(const double *range)
-{
+{FNC
     return getindex(range[1],range)+1;
 }
 /* data index (i:lat,j:lon,k:hgt) --------------------------------------------*/
 static int dataindex(int i, int j, int k, const int *ndata)
-{
+{FNC
     if (i<0||ndata[0]<=i||j<0||ndata[1]<=j||k<0||ndata[2]<=k) return -1;
     return i+ndata[0]*(j+ndata[1]*k);
 }
 /* add tec data to navigation data -------------------------------------------*/
 static tec_t *addtec(const double *lats, const double *lons, const double *hgts,
                      double rb, nav_t *nav)
-{
+{FNC
     tec_t *p,*nav_tec;
     gtime_t time0={0};
     int i,n,ndata[3];
@@ -92,7 +92,7 @@ static tec_t *addtec(const double *lats, const double *lons, const double *hgts,
 }
 /* read ionex dcb aux data ----------------------------------------------------*/
 static void readionexdcb(FILE *fp, double *dcb, double *rms)
-{
+{FNC
     int i,sat;
     char buff[1024],id[32],*label;
     
@@ -121,7 +121,7 @@ static void readionexdcb(FILE *fp, double *dcb, double *rms)
 /* read ionex header ---------------------------------------------------------*/
 static double readionexh(FILE *fp, double *lats, double *lons, double *hgts,
                          double *rb, double *nexp, double *dcb, double *rms)
-{
+{FNC
     double ver=0.0;
     char buff[1024],*label;
     
@@ -169,7 +169,7 @@ static double readionexh(FILE *fp, double *lats, double *lons, double *hgts,
 /* read ionex body -----------------------------------------------------------*/
 static int readionexb(FILE *fp, const double *lats, const double *lons,
                       const double *hgts, double rb, double nexp, nav_t *nav)
-{
+{FNC
     tec_t *p=NULL;
     gtime_t time={0};
     double lat,lon[3],hgt,x;
@@ -239,7 +239,7 @@ static int readionexb(FILE *fp, const double *lats, const double *lons,
 }
 /* combine tec grid data -----------------------------------------------------*/
 static void combtec(nav_t *nav)
-{
+{FNC
     tec_t tmp;
     int i,j,n=0;
     
@@ -278,7 +278,7 @@ static void combtec(nav_t *nav)
 * notes  : see ref [1]
 *-----------------------------------------------------------------------------*/
 extern void readtec(const char *file, nav_t *nav, int opt)
-{
+{FNC
     FILE *fp;
     double lats[3]={0},lons[3]={0},hgts[3]={0},rb=0.0,nexp=-1.0;
     double dcb[MAXSAT]={0},rms[MAXSAT]={0};
@@ -328,7 +328,7 @@ extern void readtec(const char *file, nav_t *nav, int opt)
 /* interpolate tec grid data -------------------------------------------------*/
 static int interptec(const tec_t *tec, int k, const double *posp, double *value,
                      double *rms)
-{
+{FNC
     double dlat,dlon,a,b,d[4]={0},r[4]={0};
     int i,j,n,index;
     
@@ -375,7 +375,7 @@ static int interptec(const tec_t *tec, int k, const double *posp, double *value,
 /* ionosphere delay by tec grid data -----------------------------------------*/
 static int iondelay(gtime_t time, const tec_t *tec, const double *pos,
                     const double *azel, int opt, double *delay, double *var)
-{
+{FNC
     const double fact=40.30E16/FREQ1/FREQ1; /* tecu->L1 iono (m) */
     double fs,posp[3]={0},vtec,rms,hion,rp;
     int i;
@@ -428,7 +428,7 @@ static int iondelay(gtime_t time, const tec_t *tec, const double *pos,
 *-----------------------------------------------------------------------------*/
 extern int iontec(gtime_t time, const nav_t *nav, const double *pos,
                   const double *azel, int opt, double *delay, double *var)
-{
+{FNC
     double dels[2],vars[2],a,tt;
     int i,stat[2];
     

@@ -16,7 +16,7 @@ static const char rcsid[]="$Id:$";
 
 /* adjust hourly rollover of rtcm 2 time -------------------------------------*/
 static void adjhour(rtcm_t *rtcm, double zcnt)
-{
+{FNC
     double tow,hour,sec;
     int week;
     
@@ -31,7 +31,7 @@ static void adjhour(rtcm_t *rtcm, double zcnt)
 }
 /* get observation data index ------------------------------------------------*/
 static int obsindex(obs_t *obs, gtime_t time, int sat)
-{
+{FNC
     int i,j;
     
     for (i=0;i<obs->n;i++) {
@@ -52,7 +52,7 @@ static int obsindex(obs_t *obs, gtime_t time, int sat)
 }
 /* decode type 1/9: differential gps correction/partial correction set -------*/
 static int decode_type1(rtcm_t *rtcm)
-{
+{FNC
     int i=48,fact,udre,prn,sat,iod;
     double prc,rrc;
     
@@ -83,7 +83,7 @@ static int decode_type1(rtcm_t *rtcm)
 }
 /* decode type 3: reference station parameter --------------------------------*/
 static int decode_type3(rtcm_t *rtcm)
-{
+{FNC
     int i=48;
     
     trace(4,"decode_type3: len=%d\n",rtcm->len);
@@ -101,7 +101,7 @@ static int decode_type3(rtcm_t *rtcm)
 }
 /* decode type 14: gps time of week ------------------------------------------*/
 static int decode_type14(rtcm_t *rtcm)
-{
+{FNC
     double zcnt;
     int i=48,week,hour,leaps;
     
@@ -124,7 +124,7 @@ static int decode_type14(rtcm_t *rtcm)
 }
 /* decode type 16: gps special message ---------------------------------------*/
 static int decode_type16(rtcm_t *rtcm)
-{
+{FNC
     int i=48,n=0;
     
     trace(4,"decode_type16: len=%d\n",rtcm->len);
@@ -139,7 +139,7 @@ static int decode_type16(rtcm_t *rtcm)
 }
 /* decode type 17: gps ephemerides -------------------------------------------*/
 static int decode_type17(rtcm_t *rtcm)
-{
+{FNC
     eph_t eph={0};
     double toc,sqrtA;
     int i=48,week,prn,sat;
@@ -195,7 +195,7 @@ static int decode_type17(rtcm_t *rtcm)
 }
 /* decode type 18: rtk uncorrected carrier-phase -----------------------------*/
 static int decode_type18(rtcm_t *rtcm)
-{
+{FNC
     gtime_t time;
     double usec,cp,tt;
     int i=48,index,freq,sync=1,code,sys,prn,sat,loss;
@@ -248,7 +248,7 @@ static int decode_type18(rtcm_t *rtcm)
 }
 /* decode type 19: rtk uncorrected pseudorange -------------------------------*/
 static int decode_type19(rtcm_t *rtcm)
-{
+{FNC
     gtime_t time;
     double usec,pr,tt;
     int i=48,index,freq,sync=1,code,sys,prn,sat;
@@ -298,7 +298,7 @@ static int decode_type19(rtcm_t *rtcm)
 }
 /* decode type 22: extended reference station parameter ----------------------*/
 static int decode_type22(rtcm_t *rtcm)
-{
+{FNC
     double del[2][3]={{0}},hgt=0.0;
     int i=48,j,noh;
     
@@ -330,47 +330,47 @@ static int decode_type22(rtcm_t *rtcm)
 }
 /* decode type 23: antenna type definition record ----------------------------*/
 static int decode_type23(rtcm_t *rtcm)
-{
+{FNC
     return 0;
 }
 /* decode type 24: antenna reference point (arp) -----------------------------*/
 static int decode_type24(rtcm_t *rtcm)
-{
+{FNC
     return 0;
 }
 /* decode type 31: differential glonass correction ---------------------------*/
 static int decode_type31(rtcm_t *rtcm)
-{
+{FNC
     return 0;
 }
 /* decode type 32: differential glonass reference station parameters ---------*/
 static int decode_type32(rtcm_t *rtcm)
-{
+{FNC
     return 0;
 }
 /* decode type 34: glonass partial differential correction set ---------------*/
 static int decode_type34(rtcm_t *rtcm)
-{
+{FNC
     return 0;
 }
 /* decode type 36: glonass special message -----------------------------------*/
 static int decode_type36(rtcm_t *rtcm)
-{
+{FNC
     return 0;
 }
 /* decode type 37: gnss system time offset -----------------------------------*/
 static int decode_type37(rtcm_t *rtcm)
-{
+{FNC
     return 0;
 }
 /* decode type 59: proprietary message ---------------------------------------*/
 static int decode_type59(rtcm_t *rtcm)
-{
+{FNC
     return 0;
 }
 /* decode rtcm ver.2 message -------------------------------------------------*/
 extern int decode_rtcm2(rtcm_t *rtcm)
-{
+{FNC
     double zcnt;
     int staid,seqno,stah,ret=0,type=getbitu(rtcm->buff,8,6);
     

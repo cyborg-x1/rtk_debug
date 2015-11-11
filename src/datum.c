@@ -22,13 +22,13 @@ static int n=0;                     /* datum trans parameter table size */
 
 /* compare datum trans parameters --------------------------------------------*/
 static int cmpprm(const void *p1, const void *p2)
-{
+{FNC
     tprm_t *q1=(tprm_t *)p1,*q2=(tprm_t *)p2;
     return q1->code-q2->code;
 }
 /* search datum trans parameter ----------------------------------------------*/
 static int searchprm(double lat, double lon)
-{
+{FNC
     int i,j,k,n1,m1,n2,m2,code;
     
     lon-=6000.0;
@@ -47,7 +47,7 @@ static int searchprm(double lat, double lon)
 }
 /* tokyo datum to jgd2000 lat/lon corrections --------------------------------*/
 static int dlatdlon(const double *post, double *dpos)
-{
+{FNC
     double lat=post[0]*R2D*60.0,lon=post[1]*R2D*60.0; /* arcmin */
     double dlat=0.5,dlon=0.75,db[2][2],dl[2][2],a,b,c,d;
     int i,j,k;
@@ -70,7 +70,7 @@ static int dlatdlon(const double *post, double *dpos)
 * notes  : parameters file shall comply with GSI TKY2JGD.par
 *-----------------------------------------------------------------------------*/
 extern int loaddatump(const char *file)
-{
+{FNC
     FILE *fp;
     char buff[256];
     
@@ -99,7 +99,7 @@ extern int loaddatump(const char *file)
 * notes  : before calling, call loaddatump() to set parameter table
 *-----------------------------------------------------------------------------*/
 extern int tokyo2jgd(double *pos)
-{
+{FNC
     double post[2],dpos[2];
     
     post[0]=pos[0];
@@ -117,7 +117,7 @@ extern int tokyo2jgd(double *pos)
 * notes  : before calling, call loaddatump() to set parameter table
 *-----------------------------------------------------------------------------*/
 extern int jgd2tokyo(double *pos)
-{
+{FNC
     double posj[2],dpos[2];
     int i;
     

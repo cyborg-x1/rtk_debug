@@ -68,14 +68,14 @@ static const int solq_nmea[]={  /* nmea quality flags to rtklib sol quality */
 };
 /* solution option to field separator ----------------------------------------*/
 static const char *opt2sep(const solopt_t *opt)
-{
+{FNC
     if (!*opt->sep) return " ";
     else if (!strcmp(opt->sep,"\\t")) return "\t";
     return opt->sep;
 }
 /* separate fields -----------------------------------------------------------*/
 static int tonum(char *buff, const char *sep, double *v)
-{
+{FNC
     int n,len=(int)strlen(sep);
     char *p,*q;
     
@@ -88,17 +88,17 @@ static int tonum(char *buff, const char *sep, double *v)
 }
 /* sqrt of covariance --------------------------------------------------------*/
 static double sqvar(double covar)
-{
+{FNC
     return covar<0.0?-sqrt(-covar):sqrt(covar);
 }
 /* convert ddmm.mm in nmea format to deg -------------------------------------*/
 static double dmm2deg(double dmm)
-{
+{FNC
     return floor(dmm/100.0)+fmod(dmm,100.0)/60.0;
 }
 /* convert time in nmea format to time ---------------------------------------*/
 static void septime(double t, double *t1, double *t2, double *t3)
-{
+{FNC
     *t1=floor(t/10000.0);
     t-=*t1*10000.0;
     *t2=floor(t/100.0);
@@ -106,7 +106,7 @@ static void septime(double t, double *t1, double *t2, double *t3)
 }
 /* solution to covariance ----------------------------------------------------*/
 static void soltocov(const sol_t *sol, double *P)
-{
+{FNC
     P[0]     =sol->qr[0]; /* xx or ee */
     P[4]     =sol->qr[1]; /* yy or nn */
     P[8]     =sol->qr[2]; /* zz or uu */
@@ -116,7 +116,7 @@ static void soltocov(const sol_t *sol, double *P)
 }
 /* covariance to solution ----------------------------------------------------*/
 static void covtosol(const double *P, sol_t *sol)
-{
+{FNC
     sol->qr[0]=(float)P[0]; /* xx or ee */
     sol->qr[1]=(float)P[4]; /* yy or nn */
     sol->qr[2]=(float)P[8]; /* zz or uu */
@@ -126,7 +126,7 @@ static void covtosol(const double *P, sol_t *sol)
 }
 /* decode nmea gprmc: recommended minumum data for gps -----------------------*/
 static int decode_nmearmc(char **val, int n, sol_t *sol)
-{
+{FNC
     double tod=0.0,lat=0.0,lon=0.0,vel=0.0,dir=0.0,date=0.0,ang=0.0,ep[6]={0,0,0,0,0,0};
     double pos[3]={0,0,0};
     char act=' ',ns='N',ew='E',mew='E',mode='A';
@@ -176,7 +176,7 @@ static int decode_nmearmc(char **val, int n, sol_t *sol)
 }
 /* decode nmea gpgga: fix information ----------------------------------------*/
 static int decode_nmeagga(char **val, int n, sol_t *sol)
-{
+{FNC
     gtime_t time;
     double tod=0.0,lat=0.0,lon=0.0,hdop=0.0,alt=0.0,msl=0.0,ep[6],tt;
     double pos[3]={0,0,0};
@@ -234,7 +234,7 @@ static int decode_nmeagga(char **val, int n, sol_t *sol)
 }
 /* decode nmea ---------------------------------------------------------------*/
 static int decode_nmea(char *buff, sol_t *sol)
-{
+{FNC
     char *p,*q,*val[MAXFIELD];
     int n=0;
     INIT_ZERO(val);
@@ -259,7 +259,7 @@ static int decode_nmea(char *buff, sol_t *sol)
 }
 /* decode solution time ------------------------------------------------------*/
 static char *decode_soltime(char *buff, const solopt_t *opt, gtime_t *time)
-{
+{FNC
     double v[MAXFIELD];
     char *p,*q,s[64]=" ";
     int n,len;
@@ -309,7 +309,7 @@ static char *decode_soltime(char *buff, const solopt_t *opt, gtime_t *time)
 }
 /* decode x/y/z-ecef ---------------------------------------------------------*/
 static int decode_solxyz(char *buff, const solopt_t *opt, sol_t *sol)
-{
+{FNC
     double val[MAXFIELD],P[9];
     int i=0,j=0,n=0;
     const char *sep=opt2sep(opt);
@@ -348,7 +348,7 @@ static int decode_solxyz(char *buff, const solopt_t *opt, sol_t *sol)
 }
 /* decode lat/lon/height -----------------------------------------------------*/
 static int decode_solllh(char *buff, const solopt_t *opt, sol_t *sol)
-{
+{FNC
     double val[MAXFIELD],pos[3],Q[9]={0,0,0,0,0,0,0,0,0},P[9];
     int i=0,n;
     const char *sep=opt2sep(opt);
@@ -396,7 +396,7 @@ static int decode_solllh(char *buff, const solopt_t *opt, sol_t *sol)
 }
 /* decode e/n/u-baseline -----------------------------------------------------*/
 static int decode_solenu(char *buff, const solopt_t *opt, sol_t *sol)
-{
+{FNC
     double val[MAXFIELD],Q[9]={0,0,0,0,0,0,0,0,0};
     int i=0,j,n;
     const char *sep=opt2sep(opt);
@@ -432,7 +432,7 @@ static int decode_solenu(char *buff, const solopt_t *opt, sol_t *sol)
 }
 /* decode gsi f solution -----------------------------------------------------*/
 static int decode_solgsi(char *buff, const solopt_t *opt, sol_t *sol)
-{
+{FNC
     double val[MAXFIELD];
     int i=0,j;
     INIT_ZERO(val);
@@ -449,7 +449,7 @@ static int decode_solgsi(char *buff, const solopt_t *opt, sol_t *sol)
 }
 /* decode solution position --------------------------------------------------*/
 static int decode_solpos(char *buff, const solopt_t *opt, sol_t *sol)
-{
+{FNC
     sol_t sol0;
     char *p=buff;
     memset(&sol0, 0, sizeof(sol_t));
@@ -473,7 +473,7 @@ static int decode_solpos(char *buff, const solopt_t *opt, sol_t *sol)
 }
 /* decode reference position -------------------------------------------------*/
 static void decode_refpos(char *buff, const solopt_t *opt, double *rb)
-{
+{FNC
     double val[MAXFIELD],pos[3];
     int i,n;
     const char *sep=opt2sep(opt);
@@ -502,7 +502,7 @@ static void decode_refpos(char *buff, const solopt_t *opt, double *rb)
 }
 /* decode solution -----------------------------------------------------------*/
 static int decode_sol(char *buff, const solopt_t *opt, sol_t *sol, double *rb)
-{
+{FNC
     char *p=0;
     
     trace(4,"decode_sol: buff=%s\n",buff);
@@ -526,7 +526,7 @@ static int decode_sol(char *buff, const solopt_t *opt, sol_t *sol, double *rb)
 }
 /* decode solution options ---------------------------------------------------*/
 static void decode_solopt(char *buff, solopt_t *opt)
-{
+{FNC
     char *p;
     
     trace(4,"decode_solhead: buff=%s\n",buff);
@@ -570,7 +570,7 @@ static void decode_solopt(char *buff, solopt_t *opt)
 }
 /* read solution option ------------------------------------------------------*/
 static void readsolopt(FILE *fp, solopt_t *opt)
-{
+{FNC
     char buff[MAXSOLMSG+1];
     int i;
     
@@ -594,7 +594,7 @@ static void readsolopt(FILE *fp, solopt_t *opt)
 *-----------------------------------------------------------------------------*/
 extern int inputsol(unsigned char data, gtime_t ts, gtime_t te, double tint,
                     int qflag, const solopt_t *opt, solbuf_t *solbuf)
-{
+{FNC
     sol_t sol;
     int stat;
     memset(&sol, 0, sizeof(sol_t));
@@ -631,7 +631,7 @@ extern int inputsol(unsigned char data, gtime_t ts, gtime_t te, double tint,
 /* read solution data --------------------------------------------------------*/
 static int readsoldata(FILE *fp, gtime_t ts, gtime_t te, double tint, int qflag,
                       const solopt_t *opt, solbuf_t *solbuf)
-{
+{FNC
     int c;
     
     trace(3,"readsoldata:\n");
@@ -645,14 +645,14 @@ static int readsoldata(FILE *fp, gtime_t ts, gtime_t te, double tint, int qflag,
 }
 /* compare solution data -----------------------------------------------------*/
 static int cmpsol(const void *p1, const void *p2)
-{
+{FNC
     sol_t *q1=(sol_t *)p1,*q2=(sol_t *)p2;
     double tt=timediff(q1->time,q2->time);
     return tt<-0.0?-1:(tt>0.0?1:0);
 }
 /* sort solution data --------------------------------------------------------*/
 static int sort_solbuf(solbuf_t *solbuf)
-{
+{FNC
     sol_t *solbuf_data;
     
     trace(4,"sort_solbuf: n=%d\n",solbuf->n);
@@ -684,7 +684,7 @@ static int sort_solbuf(solbuf_t *solbuf)
 *-----------------------------------------------------------------------------*/
 extern int readsolt(char *files[], int nfile, gtime_t ts, gtime_t te,
                     double tint, int qflag, solbuf_t *solbuf)
-{
+{FNC
     FILE *fp;
     solopt_t opt=solopt_default;
     int i;
@@ -711,7 +711,7 @@ extern int readsolt(char *files[], int nfile, gtime_t ts, gtime_t te,
     return sort_solbuf(solbuf);
 }
 extern int readsol(char *files[], int nfile, solbuf_t *sol)
-{
+{FNC
     gtime_t time={0,0.0};
     
     trace(3,"readsol: nfile=%d\n",nfile);
@@ -725,7 +725,7 @@ extern int readsol(char *files[], int nfile, solbuf_t *sol)
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int addsol(solbuf_t *solbuf, const sol_t *sol)
-{
+{FNC
     sol_t *solbuf_data;
     
     trace(4,"addsol:\n");
@@ -760,7 +760,7 @@ extern int addsol(solbuf_t *solbuf, const sol_t *sol)
 * return : solution data pointer (NULL: no solution, out of range)
 *-----------------------------------------------------------------------------*/
 extern sol_t *getsol(solbuf_t *solbuf, int index)
-{
+{FNC
     trace(4,"getsol: index=%d\n",index);
     
     if (index<0||solbuf->n<=index) return NULL;
@@ -777,7 +777,7 @@ extern sol_t *getsol(solbuf_t *solbuf, int index)
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern void initsolbuf(solbuf_t *solbuf, int cyclic, int nmax)
-{
+{FNC
     gtime_t time0={0,0.0};
     
     trace(3,"initsolbuf: cyclic=%d nmax=%d\n",cyclic,nmax);
@@ -801,7 +801,7 @@ extern void initsolbuf(solbuf_t *solbuf, int cyclic, int nmax)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void freesolbuf(solbuf_t *solbuf)
-{
+{FNC
     trace(3,"freesolbuf: n=%d\n",solbuf->n);
     
     free(solbuf->data);
@@ -809,7 +809,7 @@ extern void freesolbuf(solbuf_t *solbuf)
     solbuf->data=NULL;
 }
 extern void freesolstatbuf(solstatbuf_t *solstatbuf)
-{
+{FNC
     trace(3,"freesolstatbuf: n=%d\n",solstatbuf->n);
     
     solstatbuf->n=solstatbuf->nmax=0;
@@ -818,14 +818,14 @@ extern void freesolstatbuf(solstatbuf_t *solstatbuf)
 }
 /* compare solution status ---------------------------------------------------*/
 static int cmpsolstat(const void *p1, const void *p2)
-{
+{FNC
     solstat_t *q1=(solstat_t *)p1,*q2=(solstat_t *)p2;
     double tt=timediff(q1->time,q2->time);
     return tt<-0.0?-1:(tt>0.0?1:0);
 }
 /* sort solution data --------------------------------------------------------*/
 static int sort_solstat(solstatbuf_t *statbuf)
-{
+{FNC
     solstat_t *statbuf_data;
     
     trace(4,"sort_solstat: n=%d\n",statbuf->n);
@@ -844,7 +844,7 @@ static int sort_solstat(solstatbuf_t *statbuf)
 }
 /* decode solution status ----------------------------------------------------*/
 static int decode_solstat(char *buff, solstat_t *stat)
-{
+{FNC
     static const solstat_t stat0={{0,0.0},0,0,0,0,0,0,0,0,0,0,0,0};
     double tow=0.0,az=0.0,el=0.0,resp=0.0,resc=0.0;
 
@@ -888,7 +888,7 @@ static int decode_solstat(char *buff, solstat_t *stat)
 }
 /* add solution status data --------------------------------------------------*/
 static void addsolstat(solstatbuf_t *statbuf, const solstat_t *stat)
-{
+{FNC
     solstat_t *statbuf_data;
     
     trace(4,"addsolstat:\n");
@@ -908,7 +908,7 @@ static void addsolstat(solstatbuf_t *statbuf, const solstat_t *stat)
 /* read solution status data -------------------------------------------------*/
 static int readsolstatdata(FILE *fp, gtime_t ts, gtime_t te, double tint,
                            solstatbuf_t *statbuf)
-{
+{FNC
     solstat_t stat;
     char buff[MAXSOLMSG+1];
     INIT_ZERO(stat);
@@ -940,7 +940,7 @@ static int readsolstatdata(FILE *fp, gtime_t ts, gtime_t te, double tint,
 *-----------------------------------------------------------------------------*/
 extern int readsolstatt(char *files[], int nfile, gtime_t ts, gtime_t te,
                         double tint, solstatbuf_t *statbuf)
-{
+{FNC
     FILE *fp;
     char path[1024];
     int i;
@@ -965,7 +965,7 @@ extern int readsolstatt(char *files[], int nfile, gtime_t ts, gtime_t te,
     return sort_solstat(statbuf);
 }
 extern int readsolstat(char *files[], int nfile, solstatbuf_t *statbuf)
-{
+{FNC
     gtime_t time={0,0.0};
     
     trace(3,"readsolstat: nfile=%d\n",nfile);
@@ -975,7 +975,7 @@ extern int readsolstat(char *files[], int nfile, solstatbuf_t *statbuf)
 /* output solution as the form of x/y/z-ecef ---------------------------------*/
 static int outecef(unsigned char *buff, const char *s, const sol_t *sol,
                    const solopt_t *opt)
-{
+{FNC
     const char *sep=opt2sep(opt);
     char *p=(char *)buff;
     
@@ -991,7 +991,7 @@ static int outecef(unsigned char *buff, const char *s, const sol_t *sol,
 /* output solution as the form of lat/lon/height -----------------------------*/
 static int outpos(unsigned char *buff, const char *s, const sol_t *sol,
                   const solopt_t *opt)
-{
+{FNC
     double pos[3]={0,0,0},dms1[3]={0,0,0},dms2[3]={0,0,0},P[9],Q[9];
     const char *sep=opt2sep(opt);
     char *p=(char *)buff;
@@ -1026,7 +1026,7 @@ static int outpos(unsigned char *buff, const char *s, const sol_t *sol,
 /* output solution as the form of e/n/u-baseline -----------------------------*/
 static int outenu(unsigned char *buff, const char *s, const sol_t *sol,
                   const double *rb, const solopt_t *opt)
-{
+{FNC
     double pos[3],rr[3],enu[3],P[9],Q[9];
     int i;
     const char *sep=opt2sep(opt);
@@ -1047,7 +1047,7 @@ static int outenu(unsigned char *buff, const char *s, const sol_t *sol,
 }
 /* output solution in the form of nmea RMC sentence --------------------------*/
 extern int outnmea_rmc(unsigned char *buff, const sol_t *sol)
-{
+{FNC
     static double dirp=0.0;
     gtime_t time;
     double ep[6],pos[3],enuv[3],dms1[3],dms2[3],vel,dir,amag=0.0;
@@ -1086,7 +1086,7 @@ extern int outnmea_rmc(unsigned char *buff, const sol_t *sol)
 }
 /* output solution in the form of nmea GGA sentence --------------------------*/
 extern int outnmea_gga(unsigned char *buff, const sol_t *sol)
-{
+{FNC
     gtime_t time;
     double h,ep[6],pos[3],dms1[3],dms2[3],dop=1.0;
     int solq;
@@ -1120,7 +1120,7 @@ extern int outnmea_gga(unsigned char *buff, const sol_t *sol)
 /* output solution in the form of nmea GSA sentences -------------------------*/
 extern int outnmea_gsa(unsigned char *buff, const sol_t *sol,
                        const ssat_t *ssat)
-{
+{FNC
     double azel[MAXSAT*2],dop[4];
     int i,sat,sys,nsat,prn[MAXSAT];
     char *p=(char *)buff,*q,*s,sum;
@@ -1197,7 +1197,7 @@ extern int outnmea_gsa(unsigned char *buff, const sol_t *sol,
 /* output solution in the form of nmea GSV sentence --------------------------*/
 extern int outnmea_gsv(unsigned char *buff, const sol_t *sol,
                        const ssat_t *ssat)
-{
+{FNC
     double az,el,snr;
     int i,j,k,n,sat,prn,sys,nmsg,sats[MAXSAT];
     char *p=(char *)buff,*q,*s,sum;
@@ -1295,7 +1295,7 @@ extern int outnmea_gsv(unsigned char *buff, const sol_t *sol,
 * return : number of output bytes
 *-----------------------------------------------------------------------------*/
 extern int outprcopts(unsigned char *buff, const prcopt_t *opt)
-{
+{FNC
     const int sys[]={SYS_GPS,SYS_GLO,SYS_GAL,SYS_QZS,SYS_SBS,0};
     const char *s1[]={"single","dgps","kinematic","static","moving-base","fixed",
                  "ppp-kinematic","ppp-static","ppp-fixed",""};
@@ -1368,7 +1368,7 @@ extern int outprcopts(unsigned char *buff, const prcopt_t *opt)
 * return : number of output bytes
 *-----------------------------------------------------------------------------*/
 extern int outsolheads(unsigned char *buff, const solopt_t *opt)
-{
+{FNC
     const char *s1[]={"WGS84","Tokyo"},*s2[]={"ellipsoidal","geodetic"};
     const char *s3[]={"GPST","UTC ","JST "},*sep=opt2sep(opt);
     char *p=(char *)buff;
@@ -1425,7 +1425,7 @@ extern int outsolheads(unsigned char *buff, const solopt_t *opt)
 *-----------------------------------------------------------------------------*/
 extern int outsols(unsigned char *buff, const sol_t *sol, const double *rb,
                    const solopt_t *opt)
-{
+{FNC
     gtime_t time,ts={0,0.0};
     double gpst;
     int week=0,timeu=0;
@@ -1477,7 +1477,7 @@ extern int outsols(unsigned char *buff, const sol_t *sol, const double *rb,
 *-----------------------------------------------------------------------------*/
 extern int outsolexs(unsigned char *buff, const sol_t *sol, const ssat_t *ssat,
                      const solopt_t *opt)
-{
+{FNC
     gtime_t ts={0,0.0};
     unsigned char *p=buff;
     
@@ -1500,7 +1500,7 @@ extern int outsolexs(unsigned char *buff, const sol_t *sol, const ssat_t *ssat,
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void outprcopt(FILE *fp, const prcopt_t *opt)
-{
+{FNC
     unsigned char buff[MAXSOLMSG+1];
     int n;
     
@@ -1517,7 +1517,7 @@ extern void outprcopt(FILE *fp, const prcopt_t *opt)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void outsolhead(FILE *fp, const solopt_t *opt)
-{
+{FNC
     unsigned char buff[MAXSOLMSG+1];
     int n;
     
@@ -1537,7 +1537,7 @@ extern void outsolhead(FILE *fp, const solopt_t *opt)
 *-----------------------------------------------------------------------------*/
 extern void outsol(FILE *fp, const sol_t *sol, const double *rb,
                    const solopt_t *opt)
-{
+{FNC
     unsigned char buff[MAXSOLMSG+1];
     int n;
     
@@ -1558,7 +1558,7 @@ extern void outsol(FILE *fp, const sol_t *sol, const double *rb,
 *-----------------------------------------------------------------------------*/
 extern void outsolex(FILE *fp, const sol_t *sol, const ssat_t *ssat,
                      const solopt_t *opt)
-{
+{FNC
     unsigned char buff[MAXSOLMSG+1];
     int n;
     

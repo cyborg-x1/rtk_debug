@@ -39,11 +39,11 @@ static const char rcsid[]="$Id:$";
 /* get two component bits ----------------------------------------------------*/
 static unsigned int getbitu2(const unsigned char *buff, int p1, int l1, int p2,
                              int l2)
-{
+{FNC
     return (getbitu(buff,p1,l1)<<l2)+getbitu(buff,p2,l2);
 }
 static int getbits2(const unsigned char *buff, int p1, int l1, int p2, int l2)
-{
+{FNC
     if (getbitu(buff,p1,1))
         return (int)((getbits(buff,p1,l1)<<l2)+getbitu(buff,p2,l2));
     else
@@ -52,13 +52,13 @@ static int getbits2(const unsigned char *buff, int p1, int l1, int p2, int l2)
 /* get three component bits --------------------------------------------------*/
 static unsigned int getbitu3(const unsigned char *buff, int p1, int l1, int p2,
                              int l2, int p3, int l3)
-{
+{FNC
     return (getbitu(buff,p1,l1)<<(l2+l3))+(getbitu(buff,p2,l2)<<l3)+
             getbitu(buff,p3,l3);
 }
 static int getbits3(const unsigned char *buff, int p1, int l1, int p2, int l2,
                     int p3, int l3)
-{
+{FNC
     if (getbitu(buff,p1,1))
         return (int)((getbits(buff,p1,l1)<<(l2+l3))+
                    (getbitu(buff,p2,l2)<<l3)+getbitu(buff,p3,l3));
@@ -67,16 +67,16 @@ static int getbits3(const unsigned char *buff, int p1, int l1, int p2, int l2,
 }
 /* merge two components ------------------------------------------------------*/
 static unsigned int merge_two_u(unsigned int a, unsigned int b, int n)
-{
+{FNC
     return (a<<n)+b;
 }
 static int merge_two_s(int a, unsigned int b, int n)
-{
+{FNC
     return (int)((a<<n)+b);
 }
 /* get sign-magnitude bits ---------------------------------------------------*/
-static double getbitg(const unsigned char *buff, int pos, int len) //TODO: Bug are you here?
-{
+static double getbitg(const unsigned char *buff, int pos, int len)
+{FNC
     double value=((double)getbitu(buff,pos+1,len-1));
     return getbitu(buff,pos,1)?-value:value;
 }
@@ -90,7 +90,7 @@ static double getbitg(const unsigned char *buff, int pos, int len) //TODO: Bug a
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int decode_bds_d1(const unsigned char *buff, eph_t *eph)
-{
+{FNC
     double toc_bds,sqrtA;
     unsigned int toe1,toe2,sow1,sow2,sow3;
     int i,frn1,frn2,frn3;
@@ -170,7 +170,7 @@ extern int decode_bds_d1(const unsigned char *buff, eph_t *eph)
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int decode_bds_d2(const unsigned char *buff, eph_t *eph)
-{
+{FNC
     double toc_bds,sqrtA;
     unsigned int f1p4,cucp5,ep6,cicp7,i0p8,OMGdp9,omgp10;
     unsigned int sow1,sow3,sow4,sow5,sow6,sow7,sow8,sow9,sow10;
@@ -293,7 +293,7 @@ extern int decode_bds_d2(const unsigned char *buff, eph_t *eph)
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int test_glostr(const unsigned char *buff)
-{
+{FNC
     static const unsigned char xor_8bit[256]={ /* xor of 8 bits */
         0,1,1,0,1,0,0,1,1,0,0,1,0,1,1,0,1,0,0,1,0,1,1,0,0,1,1,0,1,0,0,1,
         1,0,0,1,0,1,1,0,0,1,1,0,1,0,0,1,0,1,1,0,1,0,0,1,1,0,0,1,0,1,1,0,
@@ -339,7 +339,7 @@ extern int test_glostr(const unsigned char *buff)
 *          geph->frq is set to 0
 *-----------------------------------------------------------------------------*/
 extern int decode_glostr(const unsigned char *buff, geph_t *geph)
-{
+{FNC
     double tow,tod,tof,toe;
     int P,P1,P2,P3,P4,tk_h,tk_m,tk_s,tb,ln,NT,slot,M,week;
     int i=1,frn1,frn2,frn3,frn4;
@@ -410,7 +410,7 @@ extern int decode_glostr(const unsigned char *buff, geph_t *geph)
 }
 /* decode gps/qzss navigation data subframe 1 --------------------------------*/
 static int decode_subfrm1(const unsigned char *buff, eph_t *eph)
-{
+{FNC
     double tow,toc;
     int i=48,week,iodc0,iodc1,tgd;
     
@@ -441,7 +441,7 @@ static int decode_subfrm1(const unsigned char *buff, eph_t *eph)
 }
 /* decode gps/qzss navigation data subframe 2 --------------------------------*/
 static int decode_subfrm2(const unsigned char *buff, eph_t *eph)
-{
+{FNC
     double sqrtA;
     int i=48;
     
@@ -465,7 +465,7 @@ static int decode_subfrm2(const unsigned char *buff, eph_t *eph)
 }
 /* decode gps/qzss navigation data subframe 3 --------------------------------*/
 static int decode_subfrm3(const unsigned char *buff, eph_t *eph)
-{
+{FNC
     double tow,toc;
     int i=48,iode;
     
@@ -498,7 +498,7 @@ static int decode_subfrm3(const unsigned char *buff, eph_t *eph)
 }
 /* decode gps/qzss almanac ---------------------------------------------------*/
 static void decode_almanac(const unsigned char *buff, int sat, alm_t *alm)
-{
+{FNC
     gtime_t toa;
     double deltai,sqrtA,tt;
     int i=50,f0;
@@ -532,7 +532,7 @@ static void decode_almanac(const unsigned char *buff, int sat, alm_t *alm)
 /* decode gps navigation data subframe 4 -------------------------------------*/
 static void decode_gps_subfrm4(const unsigned char *buff, alm_t *alm,
                                double *ion, double *utc, int *leaps)
-{
+{FNC
     int i,sat,svid=getbitu(buff,50,6);
     
     if (25<=svid&&svid<=32) { /* page 2,3,4,5,7,8,9,10 */
@@ -583,7 +583,7 @@ static void decode_gps_subfrm4(const unsigned char *buff, alm_t *alm,
 }
 /* decode gps navigation data subframe 5 -------------------------------------*/
 static void decode_gps_subfrm5(const unsigned char *buff, alm_t *alm)
-{
+{FNC
     double toas;
     int i,sat,week,svid=getbitu(buff,50,6);
     
@@ -616,7 +616,7 @@ static void decode_gps_subfrm5(const unsigned char *buff, alm_t *alm)
 /* decode qzss navigation data subframe 4/5 ----------------------------------*/
 static void decode_qzs_subfrm45(const unsigned char *buff, alm_t *alm,
                                 double *ion, double *utc, int *leaps)
-{
+{FNC
     int i,j,sat,toas,week,svid=getbitu(buff,50,6);
     
     if (1<=svid&&svid<=5) { /* qzss almanac */
@@ -666,7 +666,7 @@ static void decode_qzs_subfrm45(const unsigned char *buff, alm_t *alm,
 /* decode gps/qzss navigation data subframe 4 --------------------------------*/
 static int decode_subfrm4(const unsigned char *buff, alm_t *alm, double *ion,
                           double *utc, int *leaps)
-{
+{FNC
     int dataid=getbitu(buff,48,2);
     
     trace(4,"decode_subfrm4: dataid=%d\n",dataid);
@@ -683,7 +683,7 @@ static int decode_subfrm4(const unsigned char *buff, alm_t *alm, double *ion,
 /* decode gps/qzss navigation data subframe 5 --------------------------------*/
 static int decode_subfrm5(const unsigned char *buff, alm_t *alm, double *ion,
                           double *utc, int *leaps)
-{
+{FNC
     int dataid=getbitu(buff,48,2);
     
     trace(4,"decode_subfrm5: dataid=%d\n",dataid);
@@ -715,7 +715,7 @@ static int decode_subfrm5(const unsigned char *buff, alm_t *alm, double *ion,
 *-----------------------------------------------------------------------------*/
 extern int decode_frame(const unsigned char *buff, eph_t *eph, alm_t *alm,
                         double *ion, double *utc, int *leaps)
-{
+{FNC
     int id=getbitu(buff,43,3); /* subframe id */
     
     trace(3,"decodefrm: id=%d\n",id);
@@ -736,7 +736,7 @@ extern int decode_frame(const unsigned char *buff, eph_t *eph, alm_t *alm,
 * return : status (1:ok,0:memory allocation error)
 *-----------------------------------------------------------------------------*/
 extern int init_raw(raw_t *raw)
-{
+{FNC
     const double lam_glo[NFREQ]={CLIGHT/FREQ1_GLO,CLIGHT/FREQ2_GLO,0.0};
     gtime_t time0={0,0.0};
     obsd_t data0={{0}};
@@ -820,7 +820,7 @@ extern int init_raw(raw_t *raw)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void free_raw(raw_t *raw)
-{
+{FNC
     trace(3,"free_raw:\n");
     
     free(raw->obs.data ); raw->obs.data =NULL; raw->obs.n =0;
@@ -840,7 +840,7 @@ extern void free_raw(raw_t *raw)
 *                  9: input ion/utc parameter, 31: input lex message)
 *-----------------------------------------------------------------------------*/
 extern int input_raw(raw_t *raw, int format, unsigned char data)
-{
+{FNC
     trace(5,"input_raw: format=%d data=0x%02x\n",format,data);
     
     switch (format) {
@@ -867,7 +867,7 @@ extern int input_raw(raw_t *raw, int format, unsigned char data)
 * return : status(-2: end of file/format error, -1...31: same as above)
 *-----------------------------------------------------------------------------*/
 extern int input_rawf(raw_t *raw, int format, FILE *fp)
-{
+{FNC
     trace(4,"input_rawf: format=%d\n",format);
     
     switch (format) {

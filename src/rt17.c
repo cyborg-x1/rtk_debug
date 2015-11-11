@@ -404,7 +404,7 @@ static void unwrap_genout(raw_t *raw);
 |   layer of buffering.
 */
 extern int input_rt17(raw_t *raw, unsigned char data)
-{
+{FNC
     int status = 0;
     unsigned int page, pages, reply;
                               
@@ -673,7 +673,7 @@ extern int input_rt17(raw_t *raw, unsigned char data)
 |
 */
 extern int input_rt17f(raw_t *raw, FILE *fp)
-{
+{FNC
     int data, status; 
   
     while (1)
@@ -719,7 +719,7 @@ extern int input_rt17f(raw_t *raw, FILE *fp)
 |   nor the checksum byte.
 */
 static int check_packet_checksum(raw_t *raw)
-{
+{FNC
     unsigned char checksum = 0;
     unsigned char *p = &raw->pbuff[1];       /* Starting with status */
     unsigned int length = raw->pbuff[3] + 3; /* status, type, length, data */
@@ -768,7 +768,7 @@ static int check_packet_checksum(raw_t *raw)
 |
 */
 static void clear_message_buffer(raw_t *raw)
-{
+{FNC
     int i;
 
     for (i = 0; i < 4; i++)
@@ -805,7 +805,7 @@ static void clear_message_buffer(raw_t *raw)
 |
 */
 static void clear_packet_buffer(raw_t *raw)
-{
+{FNC
     int i;
 
     for (i = 0; i < 4; i++)
@@ -841,7 +841,7 @@ static void clear_packet_buffer(raw_t *raw)
 |
 */
 static void decode_genout(raw_t *raw, int endian)
-{
+{FNC
     static const char *rt[] = { NULL,                                   /* 00 */
                                 "Position Time",                        /* 01 */
                                 "Latitude Longitude Height",            /* 02 */
@@ -974,7 +974,7 @@ static void decode_genout(raw_t *raw, int endian)
 |   See reference #1 above for documentation of the RETSVDATA GPS Ephemeris.
 */
 static int decode_gps_ephemeris(raw_t *raw, int e)
-{
+{FNC
     unsigned char *p = raw->pbuff;
     int prn, sat, toc, tow;
     unsigned int flags, toe;
@@ -1134,7 +1134,7 @@ static int decode_gps_ephemeris(raw_t *raw, int e)
 |
 */
 static void decode_gsof_1(raw_t *raw, unsigned char *p, int endian)
-{
+{FNC
 
     if (p[1] < 7)
        trace( 2, "RT17: GSOF Position Time message "
@@ -1173,7 +1173,7 @@ static void decode_gsof_1(raw_t *raw, unsigned char *p, int endian)
 |
 */
 static void decode_gsof_16(raw_t *raw, unsigned char *p, int endian)
-{
+{FNC
     if (p[1] < 10)
         trace( 2, "RT17: GSOF Current Time message "
                   "record length %d < 10 bytes. Record discarded.\n", p[1] );
@@ -1211,7 +1211,7 @@ static void decode_gsof_16(raw_t *raw, unsigned char *p, int endian)
 |
 */
 static void decode_gsof_26(raw_t *raw, unsigned char *p, int endian)
-{
+{FNC
     if (p[1] < 7)
        trace( 2, "RT17: GSOF Position Time UTC message "
                  "record length %d < 7 bytes. Record discarded.\n", p[1] );
@@ -1249,7 +1249,7 @@ static void decode_gsof_26(raw_t *raw, unsigned char *p, int endian)
 |
 */
 static void decode_gsof_41(raw_t *raw, unsigned char *p, int endian)
-{
+{FNC
     if (p[1] < 7)
         trace( 2, "RT17: GSOF Base Position and Quality Indicator message "
                    "record length %d < 7 bytes. Record discarded.\n", p[1] );
@@ -1292,7 +1292,7 @@ static void decode_gsof_41(raw_t *raw, unsigned char *p, int endian)
 |   See reference #1 above for documentation of RETSVDATA and ION / UTC data.
 */
 static int decode_ion_utc_data(raw_t *raw, int e)
-{
+{FNC
     int week;
     unsigned char *p = raw->pbuff;
    
@@ -1365,7 +1365,7 @@ static int decode_ion_utc_data(raw_t *raw, int e)
 |
 */
 static int decode_rawdata(raw_t *raw, int endian)
-{
+{FNC
     static const char *rt[] = { "Real-time GPS Survey Data (type 17)",  /* 00 */
                                 "Position Record (type 11)",            /* 01 */
                                 "Event Mark",                           /* 02 */
@@ -1446,7 +1446,7 @@ static int decode_rawdata(raw_t *raw, int endian)
 |
 */
 static int decode_retsvdata(raw_t *raw, int endian)
-{
+{FNC
     static const char *st[] = { "SV Flags",                         /* 00 */
                                 "GPS Ephemeris",                    /* 01 */
                                 "GPS Almanac","ION / UTC Data",     /* 02 */
@@ -1536,7 +1536,7 @@ static int decode_retsvdata(raw_t *raw, int endian)
 |   Handles expanded and concise formats with and without enhanced record data.
 */
 static int decode_type_17(raw_t *raw, unsigned int rif, int e)
-{
+{FNC
     unsigned char *p = raw->buff;
     double clock_offset, receive_time;
     double l1_carrier, l1_doppler, l1_pseudorange;
@@ -1882,7 +1882,7 @@ static int decode_type_17(raw_t *raw, unsigned int rif, int e)
 |   It is enabled for output by outputting positions along with RT27 data.
 */
 static int decode_type_29(raw_t *raw, int endian)
-{
+{FNC
     unsigned char *p = raw->buff;
 
     if (*p < 7)
@@ -1926,7 +1926,7 @@ static int decode_type_29(raw_t *raw, int endian)
 |   Week rollover and increment from the initial week and subsequent weeks is handled.
 */
 static int get_week(raw_t *raw, double receive_time)
-{
+{FNC
     int week = 0;
 
     if (raw->flag & M_WEEK_OPTION)
@@ -2059,7 +2059,7 @@ static short read_i2(unsigned char *p, int endian)
 |   execution platform endianness.
 */
 static int read_i4(unsigned char *p, int endian)
-{
+{FNC
     union i4 {int i4; unsigned char c[4];} u;
     ENDIAN_TEST et;
 
@@ -2104,7 +2104,7 @@ static int read_i4(unsigned char *p, int endian)
 |   execution platform endianness.
 */
 static float read_r4(unsigned char *p, int endian)
-{
+{FNC
     union R4 {float f; unsigned int u4;} u; 
     u.u4 = U4(p, endian);
     return (u.f);
@@ -2139,7 +2139,7 @@ static float read_r4(unsigned char *p, int endian)
 |   execution platform endianness.
 */
 static double read_r8(unsigned char *p, int endian)
-{
+{FNC
     ENDIAN_TEST et;
     union R8 {double d; unsigned char c[8];} u;
 
@@ -2186,7 +2186,7 @@ static double read_r8(unsigned char *p, int endian)
 |   endianness to our execution platform endianness.
 */
 static unsigned short read_u2(unsigned char *p, int endian)
-{
+{FNC
     ENDIAN_TEST et;
     union U2 {unsigned short u2; unsigned char c[2];} u;
 
@@ -2230,7 +2230,7 @@ static unsigned short read_u2(unsigned char *p, int endian)
 |   execution platform endianness.
 */
 static unsigned int read_u4(unsigned char *p, int endian)
-{
+{FNC
     ENDIAN_TEST et;
     union U4 {unsigned int u4; unsigned char c[4];} u;
 
@@ -2275,7 +2275,7 @@ static unsigned int read_u4(unsigned char *p, int endian)
 |   The -WEEK=n initial week option overrides us.
 |
 */static void set_week(raw_t *raw, int week, double receive_time)
-{
+{FNC
     if (!(raw->flag & M_WEEK_OPTION))
     {
         if (raw->week)
@@ -2328,7 +2328,7 @@ static unsigned int read_u4(unsigned char *p, int endian)
 |
 */
 static int sync_packet(raw_t *raw, unsigned char data)
-{
+{FNC
     unsigned char type;
 
     raw->pbuff[0] = raw->pbuff[1];
@@ -2387,7 +2387,7 @@ static int sync_packet(raw_t *raw, unsigned char data)
 |   trailers and page framing.
 */
 static void unwrap_genout(raw_t *raw)
-{
+{FNC
     unsigned char *p_in = raw->buff;
     unsigned char *p_out = p_in;
     unsigned int length_in, length_in_total = raw->len;
@@ -2448,7 +2448,7 @@ static void unwrap_genout(raw_t *raw)
 |   Flags are consistent. They should be the same in every page frame.
 */
 static void unwrap_rawdata(raw_t *raw, unsigned int *rif)
-{
+{FNC
     unsigned char *p_in = raw->buff;
     unsigned char *p_out = p_in;
     unsigned int length_in, length_in_total = raw->len;

@@ -40,14 +40,14 @@ static const char rcsid[]="$Id:$";
 
 /* wave length of LC (m) -----------------------------------------------------*/
 static double lam_LC(int i, int j, int k)
-{
+{FNC
     const double f1=FREQ1,f2=FREQ2,f5=FREQ5;
     
     return CLIGHT/(i*f1+j*f2+k*f5);
 }
 /* carrier-phase LC (m) ------------------------------------------------------*/
 static double L_LC(int i, int j, int k, const double *L)
-{
+{FNC
     const double f1=FREQ1,f2=FREQ2,f5=FREQ5;
     double L1,L2,L5;
     
@@ -61,7 +61,7 @@ static double L_LC(int i, int j, int k, const double *L)
 }
 /* pseudorange LC (m) --------------------------------------------------------*/
 static double P_LC(int i, int j, int k, const double *P)
-{
+{FNC
     const double f1=FREQ1,f2=FREQ2,f5=FREQ5;
     double P1,P2,P5;
     
@@ -75,7 +75,7 @@ static double P_LC(int i, int j, int k, const double *P)
 }
 /* noise variance of LC (m) --------------------------------------------------*/
 static double var_LC(int i, int j, int k, double sig)
-{
+{FNC
     const double f1=FREQ1,f2=FREQ2,f5=FREQ5;
     
     return (SQR(i*f1)+SQR(j*f2)+SQR(k*f5))/SQR(i*f1+j*f2+k*f5)*SQR(sig);
@@ -83,7 +83,7 @@ static double var_LC(int i, int j, int k, double sig)
 /* complementaty error function (ref [1] p.227-229) --------------------------*/
 static double q_gamma(double a, double x, double log_gamma_a);
 static double p_gamma(double a, double x, double log_gamma_a)
-{
+{FNC
     double y,w;
     int i;
     
@@ -100,7 +100,7 @@ static double p_gamma(double a, double x, double log_gamma_a)
     return y;
 }
 static double q_gamma(double a, double x, double log_gamma_a)
-{
+{FNC
     double y,w,la=1.0,lb=x+1.0-a,lc;
     int i;
     
@@ -117,12 +117,12 @@ static double q_gamma(double a, double x, double log_gamma_a)
     return y;
 }
 static double f_erfc(double x)
-{
+{FNC
     return x>=0.0?q_gamma(0.5,x*x,LOG_PI/2.0):1.0+p_gamma(0.5,x*x,LOG_PI/2.0);
 }
 /* confidence function of integer ambiguity ----------------------------------*/
 static double conffunc(int N, double B, double sig)
-{
+{FNC
     double x,p=1.0;
     int i;
     
@@ -135,7 +135,7 @@ static double conffunc(int N, double B, double sig)
 /* average LC ----------------------------------------------------------------*/
 static void average_LC(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav,
                        const double *azel)
-{
+{FNC
     ambc_t *amb;
     double LC1,LC2,LC3,var1,var2,var3,sig;
     int i,j,sat;
@@ -192,7 +192,7 @@ static void average_LC(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav,
 }
 /* fix wide-lane ambiguity ---------------------------------------------------*/
 static int fix_amb_WL(rtk_t *rtk, const nav_t *nav, int sat1, int sat2, int *NW)
-{
+{FNC
     ambc_t *amb1,*amb2;
     double BW,vW,lam_WL=lam_LC(1,-1,0);
     
@@ -217,7 +217,7 @@ static int fix_amb_WL(rtk_t *rtk, const nav_t *nav, int sat1, int sat2, int *NW)
 }
 /* linear dependency check ---------------------------------------------------*/
 static int is_depend(int sat1, int sat2, int *flgs, int *max_flg)
-{
+{FNC
     int i;
     
     if (flgs[sat1-1]==0&&flgs[sat2-1]==0) {
@@ -240,7 +240,7 @@ static int is_depend(int sat1, int sat2, int *flgs, int *max_flg)
 }
 /* select fixed ambiguities --------------------------------------------------*/
 static int sel_amb(int *sat1, int *sat2, double *N, double *var, int n)
-{
+{FNC
     int i,j,flgs[MAXSAT]={0},max_flg=0;
     
     /* sort by variance */
@@ -264,7 +264,7 @@ static int sel_amb(int *sat1, int *sat2, double *N, double *var, int n)
 /* fixed solution ------------------------------------------------------------*/
 static int fix_sol(rtk_t *rtk, const int *sat1, const int *sat2,
                    const double *NC, int n)
-{
+{FNC
     double *v,*H,*R;
     int i,j,k,info;
     
@@ -304,7 +304,7 @@ static int fix_sol(rtk_t *rtk, const int *sat1, const int *sat2,
 }
 /* fix narrow-lane ambiguity by rounding -------------------------------------*/
 static int fix_amb_ROUND(rtk_t *rtk, int *sat1, int *sat2, const int *NW, int n)
-{
+{FNC
     double C1,C2,B1,v1,BC,v,vc,*NC,*var,lam_NL=lam_LC(1,1,0),lam1,lam2;
     int i,j,k,m=0,N1,stat;
     
@@ -356,7 +356,7 @@ static int fix_amb_ROUND(rtk_t *rtk, int *sat1, int *sat2, const int *NW, int n)
 }
 /* fix narrow-lane ambiguity by ILS ------------------------------------------*/
 static int fix_amb_ILS(rtk_t *rtk, int *sat1, int *sat2, int *NW, int n)
-{
+{FNC
     double C1,C2,*B1,*N1,*NC,*D,*E,*Q,s[2],lam_NL=lam_LC(1,1,0),lam1,lam2;
     int i,j,k,m=0,info,stat,flgs[MAXSAT]={0},max_flg=0;
     
@@ -428,7 +428,7 @@ static int fix_amb_ILS(rtk_t *rtk, int *sat1, int *sat2, int *NW, int n)
 /* resolve integer ambiguity for ppp -----------------------------------------*/
 extern int pppamb(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav,
                   const double *azel)
-{
+{FNC
     double elmask;
     int i,j,m=0,stat=0,*NW,*sat1,*sat2;
     

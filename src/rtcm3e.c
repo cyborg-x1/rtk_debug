@@ -58,13 +58,13 @@ static const double ssrudint[16]={
 };
 /* set sign-magnitude bits ---------------------------------------------------*/
 static void setbitg(unsigned char *buff, int pos, int len, int value)
-{
+{FNC
     setbitu(buff,pos,1,value<0?1:0);
     setbitu(buff,pos+1,len-1,value<0?-value:value);
 }
 /* set signed 38 bit field ---------------------------------------------------*/
 static void set38bits(unsigned char *buff, int pos, double value)
-{
+{FNC
     int word_h=(int)floor(value/64.0);
     unsigned int word_l=(unsigned int)(value-word_h*64.0);
     setbits(buff,pos  ,32,word_h);
@@ -72,20 +72,20 @@ static void set38bits(unsigned char *buff, int pos, double value)
 }
 /* lock time -----------------------------------------------------------------*/
 static int locktime(gtime_t time, gtime_t *lltime, unsigned char LLI)
-{
+{FNC
     if (!lltime->time||(LLI&1)) *lltime=time;
     return (int)timediff(time,*lltime);
 }
 /* glonass frequency channel number in rtcm (0-13,-1:error) ------------------*/
 static int fcn_glo(int sat, rtcm_t *rtcm)
-{
+{FNC
     int prn;
     if (satsys(sat,&prn)!=SYS_GLO||rtcm->nav.geph[prn-1].sat!=sat) return -1;
     return rtcm->nav.geph[prn-1].frq+7;
 }
 /* lock time indicator (ref [2] table 3.4-2) ---------------------------------*/
 static int to_lock(int lock)
-{
+{FNC
     if (lock<0  ) return 0;
     if (lock<24 ) return lock;
     if (lock<72 ) return (lock+24  )/2;
@@ -97,7 +97,7 @@ static int to_lock(int lock)
 }
 /* msm lock time indicator (ref [11] table 3.4-1D) ---------------------------*/
 static int to_msm_lock(int lock)
-{
+{FNC
     if (lock<32    ) return 0;
     if (lock<64    ) return 1;
     if (lock<128   ) return 2;
@@ -117,7 +117,7 @@ static int to_msm_lock(int lock)
 }
 /* msm lock time indicator with extended-resolution (ref [11] table 3.4-1E) --*/
 static int to_msm_lock_ex(int lock)
-{
+{FNC
     if (lock<0       ) return 0;
     if (lock<64      ) return lock;
     if (lock<128     ) return (lock+64       )/2;
@@ -144,7 +144,7 @@ static int to_msm_lock_ex(int lock)
 }
 /* L1 code indicator gps -----------------------------------------------------*/
 static int to_code1_gps(unsigned char code)
-{
+{FNC
     switch (code) {
         case CODE_L1C: return 0; /* L1 C/A */
         case CODE_L1P:
@@ -156,7 +156,7 @@ static int to_code1_gps(unsigned char code)
 }
 /* L2 code indicator gps -----------------------------------------------------*/
 static int to_code2_gps(unsigned char code)
-{
+{FNC
     switch (code) {
         case CODE_L2C:
         case CODE_L2S:
@@ -172,7 +172,7 @@ static int to_code2_gps(unsigned char code)
 }
 /* L1 code indicator glonass -------------------------------------------------*/
 static int to_code1_glo(unsigned char code)
-{
+{FNC
     switch (code) {
         case CODE_L1C: return 0; /* L1 C/A */
         case CODE_L1P: return 1; /* L1 P */
@@ -181,7 +181,7 @@ static int to_code1_glo(unsigned char code)
 }
 /* L2 code indicator glonass -------------------------------------------------*/
 static int to_code2_glo(unsigned char code)
-{
+{FNC
     switch (code) {
         case CODE_L2C: return 0; /* L2 C/A */
         case CODE_L2P: return 1; /* L2 P */
@@ -190,14 +190,14 @@ static int to_code2_glo(unsigned char code)
 }
 /* carrier-phase - pseudorange in cycle --------------------------------------*/
 static double cp_pr(double cp, double pr_cyc)
-{
+{FNC
     return fmod(cp-pr_cyc+1500.0,3000.0)-1500.0;
 }
 /* generate obs field data gps -----------------------------------------------*/
 static void gen_obs_gps(rtcm_t *rtcm, const obsd_t *data, int *code1, int *pr1,
                         int *ppr1, int *lock1, int *amb, int *cnr1, int *code2,
                         int *pr21, int *ppr2, int *lock2, int *cnr2)
-{
+{FNC
     double lam1,lam2,pr1c=0.0,ppr;
     int lt1,lt2;
     
@@ -243,7 +243,7 @@ static void gen_obs_gps(rtcm_t *rtcm, const obsd_t *data, int *code1, int *pr1,
 static void gen_obs_glo(rtcm_t *rtcm, const obsd_t *data, int fcn, int *code1,
                         int *pr1, int *ppr1, int *lock1, int *amb, int *cnr1,
                         int *code2, int *pr21, int *ppr2, int *lock2, int *cnr2)
-{
+{FNC
     double lam1=0.0,lam2=0.0,pr1c=0.0,ppr;
     int lt1,lt2;
     
@@ -290,7 +290,7 @@ static void gen_obs_glo(rtcm_t *rtcm, const obsd_t *data, int fcn, int *code1,
 }
 /* encode rtcm header --------------------------------------------------------*/
 static int encode_head(int type, rtcm_t *rtcm, int sys, int sync, int nsat)
-{
+{FNC
     double tow;
     int i=24,week,epoch;
     
@@ -317,7 +317,7 @@ static int encode_head(int type, rtcm_t *rtcm, int sys, int sync, int nsat)
 }
 /* encode type 1001: basic L1-only gps rtk observables -----------------------*/
 static int encode_type1001(rtcm_t *rtcm, int sync)
-{
+{FNC
     int i,j,nsat=0,sys,prn;
     int code1,pr1,ppr1,lock1,amb;
     
@@ -352,7 +352,7 @@ static int encode_type1001(rtcm_t *rtcm, int sync)
 }
 /* encode type 1002: extended L1-only gps rtk observables --------------------*/
 static int encode_type1002(rtcm_t *rtcm, int sync)
-{
+{FNC
     int i,j,nsat=0,sys,prn;
     int code1,pr1,ppr1,lock1,amb,cnr1;
     
@@ -389,7 +389,7 @@ static int encode_type1002(rtcm_t *rtcm, int sync)
 }
 /* encode type 1003: basic L1&L2 gps rtk observables -------------------------*/
 static int encode_type1003(rtcm_t *rtcm, int sync)
-{
+{FNC
     int i,j,nsat=0,sys,prn;
     int code1,pr1,ppr1,lock1,amb,code2,pr21,ppr2,lock2;
     
@@ -428,7 +428,7 @@ static int encode_type1003(rtcm_t *rtcm, int sync)
 }
 /* encode type 1004: extended L1&L2 gps rtk observables ----------------------*/
 static int encode_type1004(rtcm_t *rtcm, int sync)
-{
+{FNC
     int i,j,nsat=0,sys,prn;
     int code1,pr1,ppr1,lock1,amb,cnr1,code2,pr21,ppr2,lock2,cnr2;
     
@@ -470,7 +470,7 @@ static int encode_type1004(rtcm_t *rtcm, int sync)
 }
 /* encode type 1005: stationary rtk reference station arp --------------------*/
 static int encode_type1005(rtcm_t *rtcm, int sync)
-{
+{FNC
     double *p=rtcm->sta.pos;
     int i=24;
     
@@ -494,7 +494,7 @@ static int encode_type1005(rtcm_t *rtcm, int sync)
 }
 /* encode type 1006: stationary rtk reference station arp with height --------*/
 static int encode_type1006(rtcm_t *rtcm, int sync)
-{
+{FNC
     double *p=rtcm->sta.pos;
     int i=24,hgt=0;
     
@@ -525,7 +525,7 @@ static int encode_type1006(rtcm_t *rtcm, int sync)
 }
 /* encode type 1007: antenna descriptor --------------------------------------*/
 static int encode_type1007(rtcm_t *rtcm, int sync)
-{
+{FNC
     int i=24,j,antsetup=rtcm->sta.antsetup;
     int n=MIN(strlen(rtcm->sta.antdes),31);
     
@@ -545,7 +545,7 @@ static int encode_type1007(rtcm_t *rtcm, int sync)
 }
 /* encode type 1008: antenna descriptor & serial number ----------------------*/
 static int encode_type1008(rtcm_t *rtcm, int sync)
-{
+{FNC
     int i=24,j,antsetup=rtcm->sta.antsetup;
     int n=MIN(strlen(rtcm->sta.antdes),31);
     int m=MIN(strlen(rtcm->sta.antsno),31);
@@ -572,7 +572,7 @@ static int encode_type1008(rtcm_t *rtcm, int sync)
 }
 /* encode type 1009: basic L1-only glonass rtk observables -------------------*/
 static int encode_type1009(rtcm_t *rtcm, int sync)
-{
+{FNC
     int i,j,nsat=0,sat,prn,fcn;
     int code1,pr1,ppr1,lock1,amb;
     
@@ -606,7 +606,7 @@ static int encode_type1009(rtcm_t *rtcm, int sync)
 }
 /* encode type 1010: extended L1-only glonass rtk observables ----------------*/
 static int encode_type1010(rtcm_t *rtcm, int sync)
-{
+{FNC
     int i,j,nsat=0,sat,prn,fcn;
     int code1,pr1,ppr1,lock1,amb,cnr1;
     
@@ -644,7 +644,7 @@ static int encode_type1010(rtcm_t *rtcm, int sync)
 }
 /* encode type 1011: basic  L1&L2 glonass rtk observables --------------------*/
 static int encode_type1011(rtcm_t *rtcm, int sync)
-{
+{FNC
     int i,j,nsat=0,sat,prn,fcn;
     int code1,pr1,ppr1,lock1,amb,code2,pr21,ppr2,lock2;
     
@@ -684,7 +684,7 @@ static int encode_type1011(rtcm_t *rtcm, int sync)
 }
 /* encode type 1012: extended L1&L2 glonass rtk observables ------------------*/
 static int encode_type1012(rtcm_t *rtcm, int sync)
-{
+{FNC
     int i,j,nsat=0,sat,prn,fcn;
     int code1,pr1,ppr1,lock1,amb,cnr1,code2,pr21,ppr2,lock2,cnr2;
     
@@ -727,7 +727,7 @@ static int encode_type1012(rtcm_t *rtcm, int sync)
 }
 /* encode type 1019: gps ephemerides -----------------------------------------*/
 static int encode_type1019(rtcm_t *rtcm, int sync)
-{
+{FNC
     eph_t *eph;
     unsigned int sqrtA,e;
     int i=24,prn,week,toe,toc,i0,OMG0,omg,M0,deln,idot,OMGd,crs,crc;
@@ -797,7 +797,7 @@ static int encode_type1019(rtcm_t *rtcm, int sync)
 }
 /* encode type 1020: glonass ephemerides -------------------------------------*/
 static int encode_type1020(rtcm_t *rtcm, int sync)
-{
+{FNC
     geph_t *geph;
     gtime_t time;
     double ep[6];
@@ -878,7 +878,7 @@ static int encode_type1020(rtcm_t *rtcm, int sync)
 }
 /* encode type 1033: receiver and antenna descriptor -------------------------*/
 static int encode_type1033(rtcm_t *rtcm, int sync)
-{
+{FNC
     int i=24,j,antsetup=rtcm->sta.antsetup;
     int n=MIN(strlen(rtcm->sta.antdes ),31);
     int m=MIN(strlen(rtcm->sta.antsno ),31);
@@ -918,7 +918,7 @@ static int encode_type1033(rtcm_t *rtcm, int sync)
 }
 /* encode type 1044: qzss ephemerides (ref [15]) -----------------------------*/
 static int encode_type1044(rtcm_t *rtcm, int sync)
-{
+{FNC
     eph_t *eph;
     unsigned int sqrtA,e;
     int i=24,prn,week,toe,toc,i0,OMG0,omg,M0,deln,idot,OMGd,crs,crc;
@@ -987,7 +987,7 @@ static int encode_type1044(rtcm_t *rtcm, int sync)
 }
 /* encode type 1045: galileo satellite ephemerides (ref [15]) ----------------*/
 static int encode_type1045(rtcm_t *rtcm, int sync)
-{
+{FNC
     eph_t *eph;
     unsigned int sqrtA,e;
     int i=24,prn,week,toe,toc,i0,OMG0,omg,M0,deln,idot,OMGd,crs,crc;
@@ -1057,7 +1057,7 @@ static int encode_type1045(rtcm_t *rtcm, int sync)
 }
 /* encode type 1047: beidou ephemerides (tentative mt and format) ------------*/
 static int encode_type1047(rtcm_t *rtcm, int sync)
-{
+{FNC
     eph_t *eph;
     unsigned int sqrtA,e;
     int i=24,prn,week,toe,toc,i0,OMG0,omg,M0,deln,idot,OMGd,crs,crc;
@@ -1129,7 +1129,7 @@ static int encode_type1047(rtcm_t *rtcm, int sync)
 static int encode_ssr_head(int type, rtcm_t *rtcm, int sys, int nsat, int sync,
                            int iod, double udint, int refd, int provid,
                            int solid)
-{
+{FNC
     double tow;
     int i=24,msgno,epoch,week,udi,ns=6;
     
@@ -1176,7 +1176,7 @@ static int encode_ssr_head(int type, rtcm_t *rtcm, int sys, int nsat, int sync,
 }
 /* encode ssr 1: orbit corrections -------------------------------------------*/
 static int encode_ssr1(rtcm_t *rtcm, int sys, int sync)
-{
+{FNC
     double udint=0.0;
     int i,j,iod=0,nsat,prn,iode,iodcrc,refd=0,np,ni,nj,offp,deph[3],ddeph[3];
     
@@ -1230,7 +1230,7 @@ static int encode_ssr1(rtcm_t *rtcm, int sys, int sync)
 }
 /* encode ssr 2: clock corrections -------------------------------------------*/
 static int encode_ssr2(rtcm_t *rtcm, int sys, int sync)
-{
+{FNC
     double udint=0.0;
     int i,j,iod=0,nsat,prn,np,offp,iode,dclk[3];
     
@@ -1274,7 +1274,7 @@ static int encode_ssr2(rtcm_t *rtcm, int sys, int sync)
 }
 /* encode ssr 3: satellite code biases ---------------------------------------*/
 static int encode_ssr3(rtcm_t *rtcm, int sys, int sync)
-{
+{FNC
     const int codes_gps[]={
         CODE_L1C,CODE_L1P,CODE_L1W,CODE_L1Y,CODE_L1M,CODE_L2C,CODE_L2D,CODE_L2S,
         CODE_L2L,CODE_L2X,CODE_L2P,CODE_L2W,CODE_L2Y,CODE_L2M,CODE_L5I,CODE_L5Q,
@@ -1346,7 +1346,7 @@ static int encode_ssr3(rtcm_t *rtcm, int sys, int sync)
 }
 /* encode ssr 4: combined orbit and clock corrections ------------------------*/
 static int encode_ssr4(rtcm_t *rtcm, int sys, int sync)
-{
+{FNC
     double udint=0.0;
     int i,j,iod=0,nsat,prn,iode,iodcrc,refd=0,np,ni,nj,offp;
     int deph[3],ddeph[3],dclk[3];
@@ -1407,7 +1407,7 @@ static int encode_ssr4(rtcm_t *rtcm, int sys, int sync)
 }
 /* encode ssr 5: ura ---------------------------------------------------------*/
 static int encode_ssr5(rtcm_t *rtcm, int sys, int sync)
-{
+{FNC
     double udint=0.0;
     int i,j,nsat,iod=0,prn,ura,np,offp;
     
@@ -1444,7 +1444,7 @@ static int encode_ssr5(rtcm_t *rtcm, int sys, int sync)
 }
 /* encode ssr 6: high rate clock correction ----------------------------------*/
 static int encode_ssr6(rtcm_t *rtcm, int sys, int sync)
-{
+{FNC
     double udint=0.0;
     int i,j,nsat,iod=0,prn,hrclk,np,offp;
     
@@ -1482,7 +1482,7 @@ static int encode_ssr6(rtcm_t *rtcm, int sys, int sync)
 }
 /* satellite no to msm satellite id ------------------------------------------*/
 static int to_satid(int sys, int sat)
-{
+{FNC
     int prn;
     
     if (satsys(sat,&prn)!=sys) return 0;
@@ -1494,7 +1494,7 @@ static int to_satid(int sys, int sat)
 }
 /* observation code to msm signal id -----------------------------------------*/
 static int to_sigid(int sys, unsigned char code, int *freq)
-{
+{FNC
     const char **msm_sig;
     char *sig;
     int i;
@@ -1529,7 +1529,7 @@ static int to_sigid(int sys, unsigned char code, int *freq)
 static void gen_msm_index(rtcm_t *rtcm, int sys, int *nsat, int *nsig,
                           int *ncell, unsigned char *sat_ind,
                           unsigned char *sig_ind, unsigned char *cell_ind)
-{
+{FNC
     int i,j,sat,sig,cell,f;
     
     *nsat=*nsig=*ncell=0;
@@ -1569,7 +1569,7 @@ static void gen_msm_index(rtcm_t *rtcm, int sys, int *nsat, int *nsig,
 static void gen_msm_sat(rtcm_t *rtcm, int sys, int nsat,
                         const unsigned char *sat_ind, double *rrng,
                         double *rrate, unsigned char *info)
-{
+{FNC
     obsd_t *data;
     double lambda,rrng_s,rrate_s;
     int i,j,k,sat,sig,f,fcn;
@@ -1605,7 +1605,7 @@ static void gen_msm_sig(rtcm_t *rtcm, int sys, int nsat, int nsig, int ncell,
                         const double *rrate, double *psrng, double *phrng,
                         double *rate, int *lock, unsigned char *half,
                         float *cnr)
-{
+{FNC
     obsd_t *data;
     double lambda,psrng_s,phrng_s,rate_s;
     int i,j,k,sat,sig,cell,f,lt,LLI;
@@ -1655,7 +1655,7 @@ static int encode_msm_head(int type, rtcm_t *rtcm, int sys, int sync, int *nsat,
                            unsigned char *info, double *psrng, double *phrng,
                            double *rate, int *lock, unsigned char *half,
                            float *cnr)
-{
+{FNC
     double tow;
     unsigned char sat_ind[64]={0},sig_ind[32]={0},cell_ind[32*64]={0};
     unsigned int dow,epoch;
@@ -1726,7 +1726,7 @@ static int encode_msm_head(int type, rtcm_t *rtcm, int sys, int sync, int *nsat,
 /* encode rough range integer ms ---------------------------------------------*/
 static int encode_msm_int_rrng(rtcm_t *rtcm, int i, const double *rrng,
                                int nsat)
-{
+{FNC
     unsigned int int_ms;
     int j;
     
@@ -1749,7 +1749,7 @@ static int encode_msm_int_rrng(rtcm_t *rtcm, int i, const double *rrng,
 /* encode rough range modulo 1 ms --------------------------------------------*/
 static int encode_msm_mod_rrng(rtcm_t *rtcm, int i, const double *rrng,
                                int nsat)
-{
+{FNC
     unsigned int mod_ms;
     int j;
     
@@ -1767,7 +1767,7 @@ static int encode_msm_mod_rrng(rtcm_t *rtcm, int i, const double *rrng,
 /* encode extended satellite info --------------------------------------------*/
 static int encode_msm_info(rtcm_t *rtcm, int i, const unsigned char *info,
                            int nsat)
-{
+{FNC
     int j;
     
     for (j=0;j<nsat;j++) {
@@ -1777,7 +1777,7 @@ static int encode_msm_info(rtcm_t *rtcm, int i, const unsigned char *info,
 }
 /* encode rough phase-range-rate ---------------------------------------------*/
 static int encode_msm_rrate(rtcm_t *rtcm, int i, const double *rrate, int nsat)
-{
+{FNC
     int j,rrate_val;
     
     for (j=0;j<nsat;j++) {
@@ -1795,7 +1795,7 @@ static int encode_msm_rrate(rtcm_t *rtcm, int i, const double *rrate, int nsat)
 }
 /* encode fine pseudorange ---------------------------------------------------*/
 static int encode_msm_psrng(rtcm_t *rtcm, int i, const double *psrng, int ncell)
-{
+{FNC
     int j,psrng_val;
     
     for (j=0;j<ncell;j++) {
@@ -1817,7 +1817,7 @@ static int encode_msm_psrng(rtcm_t *rtcm, int i, const double *psrng, int ncell)
 /* encode fine pseudorange with extended resolution --------------------------*/
 static int encode_msm_psrng_ex(rtcm_t *rtcm, int i, const double *psrng,
                                int ncell)
-{
+{FNC
     int j,psrng_val;
     
     for (j=0;j<ncell;j++) {
@@ -1838,7 +1838,7 @@ static int encode_msm_psrng_ex(rtcm_t *rtcm, int i, const double *psrng,
 }
 /* encode fine phase-range ---------------------------------------------------*/
 static int encode_msm_phrng(rtcm_t *rtcm, int i, const double *phrng, int ncell)
-{
+{FNC
     int j,phrng_val;
     
     for (j=0;j<ncell;j++) {
@@ -1860,7 +1860,7 @@ static int encode_msm_phrng(rtcm_t *rtcm, int i, const double *phrng, int ncell)
 /* encode fine phase-range with extended resolution --------------------------*/
 static int encode_msm_phrng_ex(rtcm_t *rtcm, int i, const double *phrng,
                                int ncell)
-{
+{FNC
     int j,phrng_val;
     
     for (j=0;j<ncell;j++) {
@@ -1881,7 +1881,7 @@ static int encode_msm_phrng_ex(rtcm_t *rtcm, int i, const double *phrng,
 }
 /* encode lock-time indicator ------------------------------------------------*/
 static int encode_msm_lock(rtcm_t *rtcm, int i, const int *lock, int ncell)
-{
+{FNC
     int j,lock_val;
     
     for (j=0;j<ncell;j++) {
@@ -1892,7 +1892,7 @@ static int encode_msm_lock(rtcm_t *rtcm, int i, const int *lock, int ncell)
 }
 /* encode lock-time indicator with extended range and resolution -------------*/
 static int encode_msm_lock_ex(rtcm_t *rtcm, int i, const int *lock, int ncell)
-{
+{FNC
     int j,lock_val;
     
     for (j=0;j<ncell;j++) {
@@ -1904,7 +1904,7 @@ static int encode_msm_lock_ex(rtcm_t *rtcm, int i, const int *lock, int ncell)
 /* encode half-cycle-ambiguity indicator -------------------------------------*/
 static int encode_msm_half_amb(rtcm_t *rtcm, int i, const unsigned char *half,
                                int ncell)
-{
+{FNC
     int j;
     
     for (j=0;j<ncell;j++) {
@@ -1914,7 +1914,7 @@ static int encode_msm_half_amb(rtcm_t *rtcm, int i, const unsigned char *half,
 }
 /* encode signal cnr ---------------------------------------------------------*/
 static int encode_msm_cnr(rtcm_t *rtcm, int i, const float *cnr, int ncell)
-{
+{FNC
     int j,cnr_val;
     
     for (j=0;j<ncell;j++) {
@@ -1925,7 +1925,7 @@ static int encode_msm_cnr(rtcm_t *rtcm, int i, const float *cnr, int ncell)
 }
 /* encode signal cnr with extended resolution --------------------------------*/
 static int encode_msm_cnr_ex(rtcm_t *rtcm, int i, const float *cnr, int ncell)
-{
+{FNC
     int j,cnr_val;
     
     for (j=0;j<ncell;j++) {
@@ -1936,7 +1936,7 @@ static int encode_msm_cnr_ex(rtcm_t *rtcm, int i, const float *cnr, int ncell)
 }
 /* encode fine phase-range-rate ----------------------------------------------*/
 static int encode_msm_rate(rtcm_t *rtcm, int i, const double *rate, int ncell)
-{
+{FNC
     int j,rate_val;
     
     for (j=0;j<ncell;j++) {
@@ -1957,7 +1957,7 @@ static int encode_msm_rate(rtcm_t *rtcm, int i, const double *rate, int ncell)
 }
 /* encode msm 1: compact pseudorange -----------------------------------------*/
 static int encode_msm1(rtcm_t *rtcm, int sys, int sync)
-{
+{FNC
     double rrng[64],rrate[64],psrng[64];
     int i,nsat,ncell;
     
@@ -1979,7 +1979,7 @@ static int encode_msm1(rtcm_t *rtcm, int sys, int sync)
 }
 /* encode msm 2: compact phaserange ------------------------------------------*/
 static int encode_msm2(rtcm_t *rtcm, int sys, int sync)
-{
+{FNC
     double rrng[64],rrate[64],phrng[64];
     unsigned char half[64];
     int i,nsat,ncell,lock[64];
@@ -2004,7 +2004,7 @@ static int encode_msm2(rtcm_t *rtcm, int sys, int sync)
 }
 /* encode msm 3: compact pseudorange and phaserange --------------------------*/
 static int encode_msm3(rtcm_t *rtcm, int sys, int sync)
-{
+{FNC
     double rrng[64],rrate[64],psrng[64],phrng[64];
     unsigned char half[64];
     int i,nsat,ncell,lock[64];
@@ -2030,7 +2030,7 @@ static int encode_msm3(rtcm_t *rtcm, int sys, int sync)
 }
 /* encode msm 4: full pseudorange and phaserange plus cnr --------------------*/
 static int encode_msm4(rtcm_t *rtcm, int sys, int sync)
-{
+{FNC
     double rrng[64],rrate[64],psrng[64],phrng[64];
     float cnr[64];
     unsigned char half[64];
@@ -2058,7 +2058,7 @@ static int encode_msm4(rtcm_t *rtcm, int sys, int sync)
 }
 /* encode msm 5: full pseudorange, phaserange, phaserangerate and cnr --------*/
 static int encode_msm5(rtcm_t *rtcm, int sys, int sync)
-{
+{FNC
     double rrng[64],rrate[64],psrng[64],phrng[64],rate[64];
     float cnr[64];
     unsigned char info[64],half[64];
@@ -2089,7 +2089,7 @@ static int encode_msm5(rtcm_t *rtcm, int sys, int sync)
 }
 /* encode msm 6: full pseudorange and phaserange plus cnr (high-res) ---------*/
 static int encode_msm6(rtcm_t *rtcm, int sys, int sync)
-{
+{FNC
     double rrng[64],rrate[64],psrng[64],phrng[64];
     float cnr[64];
     unsigned char half[64];
@@ -2117,7 +2117,7 @@ static int encode_msm6(rtcm_t *rtcm, int sys, int sync)
 }
 /* encode msm 7: full pseudorange, phaserange, phaserangerate and cnr (h-res) */
 static int encode_msm7(rtcm_t *rtcm, int sys, int sync)
-{
+{FNC
     double rrng[64],rrate[64],psrng[64],phrng[64],rate[64];
     float cnr[64];
     unsigned char info[64],half[64];
@@ -2148,7 +2148,7 @@ static int encode_msm7(rtcm_t *rtcm, int sys, int sync)
 }
 /* encode rtcm ver.3 message -------------------------------------------------*/
 extern int encode_rtcm3(rtcm_t *rtcm, int type, int sync)
-{
+{FNC
     int ret=0;
     
     trace(3,"encode_rtcm3: type=%d sync=%d\n",type,sync);

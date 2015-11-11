@@ -123,7 +123,7 @@ typedef struct {                        /* signal index type */
 
 /* set string without tail space ---------------------------------------------*/
 static void setstr(char *dst, const char *src, int n)
-{
+{FNC
     char *p=dst;
     const char *q=src;
     while (*q&&q<src+n) *p++=*q++;
@@ -132,7 +132,7 @@ static void setstr(char *dst, const char *src, int n)
 }
 /* adjust time considering week handover -------------------------------------*/
 static gtime_t adjweek(gtime_t t, gtime_t t0)
-{
+{FNC
     double tt=timediff(t,t0);
     if (tt<-302400.0) return timeadd(t, 604800.0);
     if (tt> 302400.0) return timeadd(t,-604800.0);
@@ -140,7 +140,7 @@ static gtime_t adjweek(gtime_t t, gtime_t t0)
 }
 /* adjust time considering week handover -------------------------------------*/
 static gtime_t adjday(gtime_t t, gtime_t t0)
-{
+{FNC
     double tt=timediff(t,t0);
     if (tt<-43200.0) return timeadd(t, 86400.0);
     if (tt> 43200.0) return timeadd(t,-86400.0);
@@ -148,7 +148,7 @@ static gtime_t adjday(gtime_t t, gtime_t t0)
 }
 /* time string for ver.3 (yyyymmdd hhmmss UTC) -------------------------------*/
 static void timestr_rnx(char *str)
-{
+{FNC
     gtime_t time;
     double ep[6];
     time=timeget();
@@ -159,7 +159,7 @@ static void timestr_rnx(char *str)
 }
 /* satellite to satellite code -----------------------------------------------*/
 static int sat2code(int sat, char *code)
-{
+{FNC
     int prn;
     switch (satsys(sat,&prn)) {
         case SYS_GPS: sprintf(code,"G%2d",prn-MINPRNGPS+1); break;
@@ -174,19 +174,19 @@ static int sat2code(int sat, char *code)
 }
 /* ura index to ura value (m) ------------------------------------------------*/
 static double uravalue(int sva)
-{
+{FNC
     return 0<=sva&&sva<15?ura_eph[sva]:32767.0;
 }
 /* ura value (m) to ura index ------------------------------------------------*/
 static int uraindex(double value)
-{
+{FNC
     int i;
     for (i=0;i<15;i++) if (ura_eph[i]>=value) break;
     return i;
 }
 /* initialize station parameter ----------------------------------------------*/
 static void init_sta(sta_t *sta)
-{
+{FNC
     int i;
     *sta->name   ='\0';
     *sta->marker ='\0';
@@ -206,7 +206,7 @@ static void init_sta(sta_t *sta)
 
 /* convert rinex obs type ver.2 -> ver.3 -------------------------------------*/
 static void convcode(double ver, int sys, const char *str, char *type)
-{
+{FNC
     strcpy(type,"   ");
     
     if      (!strcmp(str,"P1")) { /* ver.2.11 GPS L1PY,GLO L2P */
@@ -293,7 +293,7 @@ static void convcode(double ver, int sys, const char *str, char *type)
 /* decode obs header ---------------------------------------------------------*/
 static void decode_obsh(FILE *fp, char *buff, double ver, int *tsys,
                         char tobs[][MAXOBSTYPE][4], nav_t *nav, sta_t *sta)
-{
+{FNC
     /* default codes for unknown code */
     const char *defcodes[]={
         "CWX   ",   /* GPS: L125___ */
@@ -442,7 +442,7 @@ static void decode_obsh(FILE *fp, char *buff, double ver, int *tsys,
 }
 /* decode nav header ---------------------------------------------------------*/
 static void decode_navh(char *buff, nav_t *nav)
-{
+{FNC
     int i,j;
     char *label=buff+60;
     
@@ -533,7 +533,7 @@ static void decode_navh(char *buff, nav_t *nav)
 }
 /* decode gnav header --------------------------------------------------------*/
 static void decode_gnavh(char *buff, nav_t *nav)
-{
+{FNC
     char *label=buff+60;
     
     trace(4,"decode_gnavh:\n");
@@ -545,7 +545,7 @@ static void decode_gnavh(char *buff, nav_t *nav)
 }
 /* decode geo nav header -----------------------------------------------------*/
 static void decode_hnavh(char *buff, nav_t *nav)
-{
+{FNC
     char *label=buff+60;
     
     trace(4,"decode_hnavh:\n");
@@ -559,7 +559,7 @@ static void decode_hnavh(char *buff, nav_t *nav)
 /* read rinex header ---------------------------------------------------------*/
 static int readrnxh(FILE *fp, double *ver, char *type, int *sys, int *tsys,
                     char tobs[][MAXOBSTYPE][4], nav_t *nav, sta_t *sta)
-{
+{FNC
     double bias;
     char buff[MAXRNXLEN],*label=buff+60;
     int i=0,block=0,sat;
@@ -631,7 +631,7 @@ static int readrnxh(FILE *fp, double *ver, char *type, int *sys, int *tsys,
 /* decode obs epoch ----------------------------------------------------------*/
 static int decode_obsepoch(FILE *fp, char *buff, double ver, gtime_t *time,
                            int *flag, int *sats)
-{
+{FNC
     int i,j,n;
     char satid[8]="";
     
@@ -678,7 +678,7 @@ static int decode_obsepoch(FILE *fp, char *buff, double ver, gtime_t *time,
 /* decode obs data -----------------------------------------------------------*/
 static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
                           sigind_t *index, obsd_t *obs)
-{
+{FNC
     sigind_t *ind;
     double val[MAXOBSTYPE]={0};
     unsigned char lli[MAXOBSTYPE]={0};
@@ -785,7 +785,7 @@ static int decode_obsdata(FILE *fp, char *buff, double ver, int mask,
 }
 /* save slips ----------------------------------------------------------------*/
 static void saveslips(unsigned char slips[][NFREQ], obsd_t *data)
-{
+{FNC
     int i;
     for (i=0;i<NFREQ;i++) {
         if (data->LLI[i]&1) slips[data->sat-1][i]|=1;
@@ -793,7 +793,7 @@ static void saveslips(unsigned char slips[][NFREQ], obsd_t *data)
 }
 /* restore slips -------------------------------------------------------------*/
 static void restslips(unsigned char slips[][NFREQ], obsd_t *data)
-{
+{FNC
     int i;
     for (i=0;i<NFREQ;i++) {
         if (slips[data->sat-1][i]&1) data->LLI[i]|=1;
@@ -802,7 +802,7 @@ static void restslips(unsigned char slips[][NFREQ], obsd_t *data)
 }
 /* add obs data --------------------------------------------------------------*/
 static int addobsdata(obs_t *obs, const obsd_t *data)
-{
+{FNC
     obsd_t *obs_data;
     
     if (obs->nmax<=obs->n) {
@@ -819,7 +819,7 @@ static int addobsdata(obs_t *obs, const obsd_t *data)
 }
 /* set system mask -----------------------------------------------------------*/
 static int set_sysmask(const char *opt)
-{
+{FNC
     const char *p;
     int mask=SYS_NONE;
     
@@ -840,7 +840,7 @@ static int set_sysmask(const char *opt)
 /* set signal index ----------------------------------------------------------*/
 static void set_index(double ver, int sys, const char *opt,
                       char tobs[MAXOBSTYPE][4], sigind_t *ind)
-{
+{FNC
     const char *p;
     char str[8],*optstr="";
     double shift;
@@ -917,7 +917,7 @@ static void set_index(double ver, int sys, const char *opt,
 /* read rinex obs data body --------------------------------------------------*/
 static int readrnxobsb(FILE *fp, const char *opt, double ver,
                        char tobs[][MAXOBSTYPE][4], int *flag, obsd_t *data)
-{
+{FNC
     gtime_t time={0};
     sigind_t index[6]={{0}};
     char buff[MAXRNXLEN];
@@ -959,7 +959,7 @@ static int readrnxobsb(FILE *fp, const char *opt, double ver,
 static int readrnxobs(FILE *fp, gtime_t ts, gtime_t te, double tint,
                       const char *opt, int rcv, double ver, int tsys,
                       char tobs[][MAXOBSTYPE][4], obs_t *obs)
-{
+{FNC
     obsd_t *data;
     unsigned char slips[MAXSAT][NFREQ]={{0}};
     int i,n,flag=0,stat=0;
@@ -1004,7 +1004,7 @@ static int readrnxobs(FILE *fp, gtime_t ts, gtime_t te, double tint,
 /* decode ephemeris ----------------------------------------------------------*/
 static int decode_eph(double ver, int sat, gtime_t toc, const double *data,
                       eph_t *eph)
-{
+{FNC
     eph_t eph0={0};
     int sys;
     
@@ -1099,7 +1099,7 @@ static int decode_eph(double ver, int sat, gtime_t toc, const double *data,
 /* decode glonass ephemeris --------------------------------------------------*/
 static int decode_geph(double ver, int sat, gtime_t toc, double *data,
                        geph_t *geph)
-{
+{FNC
     geph_t geph0={0};
     gtime_t tof;
     double tow,tod;
@@ -1153,7 +1153,7 @@ static int decode_geph(double ver, int sat, gtime_t toc, double *data,
 /* decode geo ephemeris ------------------------------------------------------*/
 static int decode_seph(double ver, int sat, gtime_t toc, double *data,
                        seph_t *seph)
-{
+{FNC
     seph_t seph0={0};
     int week;
     
@@ -1186,7 +1186,7 @@ static int decode_seph(double ver, int sat, gtime_t toc, double *data,
 /* read rinex navigation data body -------------------------------------------*/
 static int readrnxnavb(FILE *fp, const char *opt, double ver, int sys,
                        int *type, eph_t *eph, geph_t *geph, seph_t *seph)
-{
+{FNC
     gtime_t toc;
     double data[64];
     int i=0,j,prn,sat=0,sp=3,mask;
@@ -1259,7 +1259,7 @@ static int readrnxnavb(FILE *fp, const char *opt, double ver, int sys,
 }
 /* add ephemeris to navigation data ------------------------------------------*/
 static int add_eph(nav_t *nav, const eph_t *eph)
-{
+{FNC
     eph_t *nav_eph;
     
     if (nav->nmax<=nav->n) {
@@ -1275,7 +1275,7 @@ static int add_eph(nav_t *nav, const eph_t *eph)
     return 1;
 }
 static int add_geph(nav_t *nav, const geph_t *geph)
-{
+{FNC
     geph_t *nav_geph;
     
     if (nav->ngmax<=nav->ng) {
@@ -1291,7 +1291,7 @@ static int add_geph(nav_t *nav, const geph_t *geph)
     return 1;
 }
 static int add_seph(nav_t *nav, const seph_t *seph)
-{
+{FNC
     seph_t *nav_seph;
     
     if (nav->nsmax<=nav->ns) {
@@ -1309,7 +1309,7 @@ static int add_seph(nav_t *nav, const seph_t *seph)
 /* read rinex nav/gnav/geo nav -----------------------------------------------*/
 static int readrnxnav(FILE *fp, const char *opt, double ver, int sys,
                       nav_t *nav)
-{
+{FNC
     eph_t eph;
     geph_t geph;
     seph_t seph;
@@ -1336,7 +1336,7 @@ static int readrnxnav(FILE *fp, const char *opt, double ver, int sys,
 }
 /* read rinex clock ----------------------------------------------------------*/
 static int readrnxclk(FILE *fp, const char *opt, int index, nav_t *nav)
-{
+{FNC
     pclk_t *nav_pclk;
     gtime_t time;
     double data[2];
@@ -1392,7 +1392,7 @@ static int readrnxclk(FILE *fp, const char *opt, int index, nav_t *nav)
 static int readrnxfp(FILE *fp, gtime_t ts, gtime_t te, double tint,
                      const char *opt, int flag, int index, char *type,
                      obs_t *obs, nav_t *nav, sta_t *sta)
-{
+{FNC
     double ver;
     int sys,tsys;
     char tobs[NUMSYS][MAXOBSTYPE][4]={{""}};
@@ -1422,7 +1422,7 @@ static int readrnxfp(FILE *fp, gtime_t ts, gtime_t te, double tint,
 static int readrnxfile(const char *file, gtime_t ts, gtime_t te, double tint,
                        const char *opt, int flag, int index, char *type,
                        obs_t *obs, nav_t *nav, sta_t *sta)
-{
+{FNC
     FILE *fp;
     int cstat,stat;
     char tmpfile[1024];
@@ -1486,7 +1486,7 @@ static int readrnxfile(const char *file, gtime_t ts, gtime_t te, double tint,
 extern int readrnxt(const char *file, int rcv, gtime_t ts, gtime_t te,
                     double tint, const char *opt, obs_t *obs, nav_t *nav,
                     sta_t *sta)
-{
+{FNC
     int i,n,stat=0;
     const char *p;
     char type=' ',*files[MAXEXFILE]={0};
@@ -1522,7 +1522,7 @@ extern int readrnxt(const char *file, int rcv, gtime_t ts, gtime_t te,
 }
 extern int readrnx(const char *file, int rcv, const char *opt, obs_t *obs,
                    nav_t *nav, sta_t *sta)
-{
+{FNC
     gtime_t t={0};
     
     trace(3,"readrnx : file=%s rcv=%d\n",file,rcv);
@@ -1531,14 +1531,14 @@ extern int readrnx(const char *file, int rcv, const char *opt, obs_t *obs,
 }
 /* compare precise clock -----------------------------------------------------*/
 static int cmppclk(const void *p1, const void *p2)
-{
+{FNC
     pclk_t *q1=(pclk_t *)p1,*q2=(pclk_t *)p2;
     double tt=timediff(q1->time,q2->time);
     return tt<-1E-9?-1:(tt>1E-9?1:q1->index-q2->index);
 }
 /* combine precise clock -----------------------------------------------------*/
 static void combpclk(nav_t *nav)
-{
+{FNC
     pclk_t *nav_pclk;
     int i,j,k;
     
@@ -1577,7 +1577,7 @@ static void combpclk(nav_t *nav)
 * return : number of precise clock
 *-----------------------------------------------------------------------------*/
 extern int readrnxc(const char *file, nav_t *nav)
-{
+{FNC
     gtime_t t={0};
     int i,n,index=0,stat=1;
     char *files[MAXEXFILE]={0},type;
@@ -1616,7 +1616,7 @@ extern int readrnxc(const char *file, nav_t *nav)
 * return : status (1:ok,0:memory allocation error)
 *-----------------------------------------------------------------------------*/
 extern int init_rnxctr(rnxctr_t *rnx)
-{
+{FNC
     gtime_t time0={0};
     obsd_t data0={{0}};
     eph_t  eph0={0,-1,-1};
@@ -1661,7 +1661,7 @@ extern int init_rnxctr(rnxctr_t *rnx)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void free_rnxctr(rnxctr_t *rnx)
-{
+{FNC
     trace(3,"free_rnxctr:\n");
     
     free(rnx->obs.data); rnx->obs.data=NULL; rnx->obs.n =0;
@@ -1677,7 +1677,7 @@ extern void free_rnxctr(rnxctr_t *rnx)
 *                   2: input navigation data)
 *-----------------------------------------------------------------------------*/
 extern int open_rnxctr(rnxctr_t *rnx, FILE *fp)
-{
+{FNC
     const char *rnxtypes="ONGLJHC";
     double ver;
     char type,tobs[6][MAXOBSTYPE][4]={{""}};
@@ -1712,7 +1712,7 @@ extern int open_rnxctr(rnxctr_t *rnx, FILE *fp)
 *                   2: input navigation data)
 *-----------------------------------------------------------------------------*/
 extern int input_rnxctr(rnxctr_t *rnx, FILE *fp)
-{
+{FNC
     eph_t eph={0};
     geph_t geph={0};
     seph_t seph={0};
@@ -1768,7 +1768,7 @@ extern int input_rnxctr(rnxctr_t *rnx, FILE *fp)
 
 /* output obs types ver.2 ----------------------------------------------------*/
 static void outobstype_ver2(FILE *fp, const rnxopt_t *opt)
-{
+{FNC
     const char label[]="# / TYPES OF OBSERV";
     int i;
     
@@ -1789,7 +1789,7 @@ static void outobstype_ver2(FILE *fp, const rnxopt_t *opt)
 }
 /* output obs types ver.3 ----------------------------------------------------*/
 static void outobstype_ver3(FILE *fp, const rnxopt_t *opt)
-{
+{FNC
     const char label[]="SYS / # / OBS TYPES";
     int i,j;
     
@@ -1820,7 +1820,7 @@ static void outobstype_ver3(FILE *fp, const rnxopt_t *opt)
 * return : status (1:ok, 0:output error)
 *-----------------------------------------------------------------------------*/
 extern int outrnxobsh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
-{
+{FNC
     const char *glo_codes[]={"C1C","C1P","C2C","C2P"};
     double ep[6],pos[3]={0},del[3]={0};
     int i,j,k,n,prn[MAXPRNGLO];
@@ -1920,7 +1920,7 @@ extern int outrnxobsh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
 }
 /* output obs data field -----------------------------------------------------*/
 static void outrnxobsf(FILE *fp, double obs, int lli)
-{
+{FNC
     if (obs==0.0||obs<=-1E9||obs>=1E9) fprintf(fp,"              ");
     else fprintf(fp,"%14.3f",obs);
     if (lli<=0) fprintf(fp,"  "); else fprintf(fp,"%1.1d ",lli);
@@ -1928,7 +1928,7 @@ static void outrnxobsf(FILE *fp, double obs, int lli)
 /* search obs data index -----------------------------------------------------*/
 static int obsindex(double ver, int sys, const unsigned char *code,
                     const char *tobs, const char *mask)
-{
+{FNC
     char *id;
     int i;
     
@@ -1998,7 +1998,7 @@ static int obsindex(double ver, int sys, const unsigned char *code,
 *-----------------------------------------------------------------------------*/
 extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obsd_t *obs, int n,
                       int flag)
-{
+{FNC
     const char *mask;
     double ep[6];
     char sats[MAXOBS][4]={""};
@@ -2075,7 +2075,7 @@ extern int outrnxobsb(FILE *fp, const rnxopt_t *opt, const obsd_t *obs, int n,
 }
 /* output nav member by rinex nav format -------------------------------------*/
 static void outnavf(FILE *fp, double value)
-{
+{FNC
     double e=fabs(value)<1E-99?0.0:floor(log10(fabs(value))+1.0);
     fprintf(fp," %s.%012.0fE%+03.0f",value<0.0?"-":" ",fabs(value)/pow(10.0,e-12.0),e);
 }
@@ -2087,7 +2087,7 @@ static void outnavf(FILE *fp, double value)
 * return : status (1:ok, 0:output error)
 *-----------------------------------------------------------------------------*/
 extern int outrnxnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
-{
+{FNC
     int i;
     char date[64],*sys;
     
@@ -2203,7 +2203,7 @@ extern int outrnxnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
 * return : status (1:ok, 0:output error)
 *-----------------------------------------------------------------------------*/
 extern int outrnxnavb(FILE *fp, const rnxopt_t *opt, const eph_t *eph)
-{
+{FNC
     double ep[6],ttr;
     int week,sys,prn;
     char code[32],*sep;
@@ -2308,7 +2308,7 @@ extern int outrnxnavb(FILE *fp, const rnxopt_t *opt, const eph_t *eph)
 * return : status (1:ok, 0:output error)
 *-----------------------------------------------------------------------------*/
 extern int outrnxgnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
-{
+{FNC
     int i;
     char date[64];
     
@@ -2341,7 +2341,7 @@ extern int outrnxgnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
 * return : status (1:ok, 0:output error)
 *-----------------------------------------------------------------------------*/
 extern int outrnxgnavb(FILE *fp, const rnxopt_t *opt, const geph_t *geph)
-{
+{FNC
     gtime_t toe;
     double ep[6],tof;
     int prn;
@@ -2400,7 +2400,7 @@ extern int outrnxgnavb(FILE *fp, const rnxopt_t *opt, const geph_t *geph)
 * return : status (1:ok, 0:output error)
 *-----------------------------------------------------------------------------*/
 extern int outrnxhnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
-{
+{FNC
     int i;
     char date[64];
     
@@ -2433,7 +2433,7 @@ extern int outrnxhnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
 * return : status (1:ok, 0:output error)
 *-----------------------------------------------------------------------------*/
 extern int outrnxhnavb(FILE *fp, const rnxopt_t *opt, const seph_t *seph)
-{
+{FNC
     double ep[6];
     int prn;
     char code[32],*sep;
@@ -2487,7 +2487,7 @@ extern int outrnxhnavb(FILE *fp, const rnxopt_t *opt, const seph_t *seph)
 * return : status (1:ok, 0:output error)
 *-----------------------------------------------------------------------------*/
 extern int outrnxlnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
-{
+{FNC
     int i;
     char date[64];
     
@@ -2515,7 +2515,7 @@ extern int outrnxlnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
 * return : status (1:ok, 0:output error)
 *-----------------------------------------------------------------------------*/
 extern int outrnxqnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
-{
+{FNC
     int i;
     char date[64];
     
@@ -2543,7 +2543,7 @@ extern int outrnxqnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
 * return : status (1:ok, 0:output error)
 *-----------------------------------------------------------------------------*/
 extern int outrnxcnavh(FILE *fp, const rnxopt_t *opt, const nav_t *nav)
-{
+{FNC
     int i;
     char date[64];
     

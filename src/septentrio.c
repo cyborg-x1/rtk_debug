@@ -140,7 +140,7 @@ static const unsigned int CRC_16CCIT_LookUp[256] = {
 
 /* SBF checksum calculation --------------------------------------------------*/
 static unsigned short checksum(unsigned char *buff, int len)
-{
+{FNC
     int i;
     unsigned short crc = 0;
     for (i=0; i<len; i++) {
@@ -150,7 +150,7 @@ static unsigned short checksum(unsigned char *buff, int len)
 }
 
 static void setcs(unsigned char *buff, int len)
-{
+{FNC
     unsigned char cka=0,ckb=0;
     int i;
 
@@ -164,7 +164,7 @@ static void setcs(unsigned char *buff, int len)
 
 /* get observation data index ------------------------------------------------*/
 static int obsindex(obs_t *obs, gtime_t time, int sat)
-{
+{FNC
     int i,j;
 
     if (obs->n>=MAXOBS) return -1;
@@ -185,7 +185,7 @@ static int obsindex(obs_t *obs, gtime_t time, int sat)
 
 /* check code priority and return obs position -------------------------------*/
 static int checkpri(const char *opt, int sys, int code, int freq)
-{
+{FNC
     int nex=NEXOBS; /* number of extended obs data */
 
     if (sys==SYS_GPS) {
@@ -582,7 +582,7 @@ static int getSigFreq(int _signType){
 
 /* adjust weekly rollover of gps time ----------------------------------------*/
 static gtime_t adjweek(gtime_t time, double tow)
-{
+{FNC
     double tow_p=0.0;
     int week=0;
     tow_p=time2gpst(time,&week);
@@ -1104,7 +1104,7 @@ static int decode_galion(raw_t *raw){
 
 /* decode SBF gpsutc --------------------------------------------------------*/
 static int decode_gpsutc(raw_t *raw)
-{
+{FNC
     unsigned char *p=(raw->buff)+8;                 /* points at TOW location */
 
     trace(4,"SBF decode_gpsutc: len=%d\n", raw->len);
@@ -1125,7 +1125,7 @@ static int decode_gpsutc(raw_t *raw)
 }
 /* decode SBF gpsalm --------------------------------------------------------*/
 static int decode_gpsalm(raw_t *raw)
-{
+{FNC
     unsigned char *p=(raw->buff)+8;                 /* points at TOW location */
     alm_t alm;
 
@@ -1153,7 +1153,7 @@ static int decode_gpsalm(raw_t *raw)
 }
 /* decode SBF galutc --------------------------------------------------------*/
 static int decode_galutc(raw_t *raw)
-{
+{FNC
     unsigned char *p=(raw->buff)+8;                 /* points at TOW location */
 
     trace(4,"SBF decode_galutc: len=%d\n", raw->len);
@@ -1173,7 +1173,7 @@ static int decode_galutc(raw_t *raw)
 }
 /* decode SBF galalm --------------------------------------------------------*/
 static int decode_galalm(raw_t *raw)
-{
+{FNC
     unsigned char *p=(raw->buff)+8;                 /* points at TOW location */
     alm_t alm;
 
@@ -1202,7 +1202,7 @@ static int decode_galalm(raw_t *raw)
 
 /* decode SBF raw message --------------------------------------------------*/
 static int decode_sbf(raw_t *raw)
-{
+{FNC
     unsigned short crc;
 
     /* read the SBF block ID and revision */
@@ -1271,7 +1271,7 @@ static int decode_sbf(raw_t *raw)
 
 /* sync to the beginning of a block ------------------------------------------*/
 static int sync_sbf(unsigned char *buff, unsigned char data)
-{
+{FNC
     buff[0]=buff[1]; buff[1]=data;
     return buff[0]== SBF_SYNC1 && buff[1]==SBF_SYNC2;
 }
@@ -1284,7 +1284,7 @@ static int sync_sbf(unsigned char *buff, unsigned char data)
 *                  9: input ion/utc parameter)
 *-----------------------------------------------------------------------------*/
 extern int input_sbf(raw_t *raw, unsigned char data)
-{
+{FNC
     trace(5,"input_sbf: data=%02x\n",data);
 
     if (raw->nbyte==0) {
@@ -1312,7 +1312,7 @@ extern int input_sbf(raw_t *raw, unsigned char data)
 * return : status(-2: end of file, -1...9: same as above)
 *-----------------------------------------------------------------------------*/
 extern int input_sbff(raw_t *raw, FILE *fp)
-{
+{FNC
     int i,data;
 
     trace(4,"input_sbff:\n");

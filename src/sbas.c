@@ -93,13 +93,13 @@ const sbsigpband_t igpband2[2][5]={ /* band 9-10 */
 };
 /* extract field from line ---------------------------------------------------*/
 static char *getfield(char *p, int pos)
-{
+{FNC
     for (pos--;pos>0;pos--,p++) if (!(p=strchr(p,','))) return NULL;
     return p;
 }
 /* variance of fast correction (udre=UDRE+1) ---------------------------------*/
 static double varfcorr(int udre)
-{
+{FNC
     const double var[14]={
         0.052,0.0924,0.1444,0.283,0.4678,0.8315,1.2992,1.8709,2.5465,3.326,
         5.1968,20.7870,230.9661,2078.695
@@ -108,7 +108,7 @@ static double varfcorr(int udre)
 }
 /* variance of ionosphere correction (give=GIVEI+1) --------------------------*/
 static double varicorr(int give)
-{
+{FNC
     const double var[15]={
         0.0084,0.0333,0.0749,0.1331,0.2079,0.2994,0.4075,0.5322,0.6735,0.8315,
         1.1974,1.8709,3.326,20.787,187.0826
@@ -117,7 +117,7 @@ static double varicorr(int give)
 }
 /* fast correction degradation -----------------------------------------------*/
 static double degfcorr(int ai)
-{
+{FNC
     const double degf[16]={
         0.00000,0.00005,0.00009,0.00012,0.00015,0.00020,0.00030,0.00045,
         0.00060,0.00090,0.00150,0.00210,0.00270,0.00330,0.00460,0.00580
@@ -126,7 +126,7 @@ static double degfcorr(int ai)
 }
 /* decode type 1: prn masks --------------------------------------------------*/
 static int decode_sbstype1(const sbsmsg_t *msg, sbssat_t *sbssat)
-{
+{FNC
     int i,n,sat;
     
     trace(4,"decode_sbstype1:\n");
@@ -152,7 +152,7 @@ static int decode_sbstype1(const sbsmsg_t *msg, sbssat_t *sbssat)
 }
 /* decode type 2-5,0: fast corrections ---------------------------------------*/
 static int decode_sbstype2(const sbsmsg_t *msg, sbssat_t *sbssat)
-{
+{FNC
     int i,j,iodf,type,udre;
     double prc,dt;
     gtime_t t0;
@@ -188,7 +188,7 @@ static int decode_sbstype2(const sbsmsg_t *msg, sbssat_t *sbssat)
 }
 /* decode type 6: integrity info ---------------------------------------------*/
 static int decode_sbstype6(const sbsmsg_t *msg, sbssat_t *sbssat)
-{
+{FNC
     int i,iodf[4],udre;
     
     trace(4,"decode_sbstype6:\n");
@@ -206,7 +206,7 @@ static int decode_sbstype6(const sbsmsg_t *msg, sbssat_t *sbssat)
 }
 /* decode type 7: fast correction degradation factor -------------------------*/
 static int decode_sbstype7(const sbsmsg_t *msg, sbssat_t *sbssat)
-{
+{FNC
     int i;
     
     trace(4,"decode_sbstype7\n");
@@ -222,7 +222,7 @@ static int decode_sbstype7(const sbsmsg_t *msg, sbssat_t *sbssat)
 }
 /* decode type 9: geo navigation message -------------------------------------*/
 static int decode_sbstype9(const sbsmsg_t *msg, nav_t *nav)
-{
+{FNC
     seph_t seph={0};
     int i,sat,t;
     
@@ -266,7 +266,7 @@ static int decode_sbstype9(const sbsmsg_t *msg, nav_t *nav)
 }
 /* decode type 18: ionospheric grid point masks ------------------------------*/
 static int decode_sbstype18(const sbsmsg_t *msg, sbsion_t *sbsion)
-{
+{FNC
     const sbsigpband_t *p;
     int i,j,n,m,band=getbitu(msg->msg,18,4);
     
@@ -294,7 +294,7 @@ static int decode_sbstype18(const sbsmsg_t *msg, sbsion_t *sbsion)
 }
 /* decode half long term correction (vel code=0) -----------------------------*/
 static int decode_longcorr0(const sbsmsg_t *msg, int p, sbssat_t *sbssat)
-{
+{FNC
     int i,n=getbitu(msg->msg,p,6);
     
     trace(4,"decode_longcorr0:\n");
@@ -316,7 +316,7 @@ static int decode_longcorr0(const sbsmsg_t *msg, int p, sbssat_t *sbssat)
 }
 /* decode half long term correction (vel code=1) -----------------------------*/
 static int decode_longcorr1(const sbsmsg_t *msg, int p, sbssat_t *sbssat)
-{
+{FNC
     int i,n=getbitu(msg->msg,p,6),t;
     
     trace(4,"decode_longcorr1:\n");
@@ -341,7 +341,7 @@ static int decode_longcorr1(const sbsmsg_t *msg, int p, sbssat_t *sbssat)
 }
 /* decode half long term correction ------------------------------------------*/
 static int decode_longcorrh(const sbsmsg_t *msg, int p, sbssat_t *sbssat)
-{
+{FNC
     trace(4,"decode_longcorrh:\n");
     
     if (getbitu(msg->msg,p,1)==0) { /* vel code=0 */
@@ -357,7 +357,7 @@ static int decode_longcorrh(const sbsmsg_t *msg, int p, sbssat_t *sbssat)
 }
 /* decode type 24: mixed fast/long term correction ---------------------------*/
 static int decode_sbstype24(const sbsmsg_t *msg, sbssat_t *sbssat)
-{
+{FNC
     int i,j,iodf,blk,udre;
     
     trace(4,"decode_sbstype24:\n");
@@ -380,14 +380,14 @@ static int decode_sbstype24(const sbsmsg_t *msg, sbssat_t *sbssat)
 }
 /* decode type 25: long term satellite error correction ----------------------*/
 static int decode_sbstype25(const sbsmsg_t *msg, sbssat_t *sbssat)
-{
+{FNC
     trace(4,"decode_sbstype25:\n");
     
     return decode_longcorrh(msg,14,sbssat)&&decode_longcorrh(msg,120,sbssat);
 }
 /* decode type 26: ionospheric deley corrections -----------------------------*/
 static int decode_sbstype26(const sbsmsg_t *msg, sbsion_t *sbsion)
-{
+{FNC
     int i,j,block,delay,give,band=getbitu(msg->msg,14,4);
     
     trace(4,"decode_sbstype26:\n");
@@ -422,7 +422,7 @@ static int decode_sbstype26(const sbsmsg_t *msg, sbsion_t *sbsion)
 *               seph[prn-MINPRNSBS+1+MAXPRNSBS]: sat prn previous epehmeris 
 *-----------------------------------------------------------------------------*/
 extern int sbsupdatecorr(const sbsmsg_t *msg, nav_t *nav)
-{
+{FNC
     int type=getbitu(msg->msg,8,6),stat=-1;
     
     trace(3,"sbsupdatecorr: type=%d\n",type);
@@ -452,7 +452,7 @@ extern int sbsupdatecorr(const sbsmsg_t *msg, nav_t *nav)
 /* read sbas log file --------------------------------------------------------*/
 static void readmsgs(const char *file, int sel, gtime_t ts, gtime_t te,
                      sbs_t *sbs)
-{
+{FNC
     sbsmsg_t *sbs_msgs;
     int i,week,prn,ch,msg;
     unsigned int b;
@@ -521,7 +521,7 @@ static void readmsgs(const char *file, int sel, gtime_t ts, gtime_t te,
 }
 /* compare sbas messages -----------------------------------------------------*/
 static int cmpmsgs(const void *p1, const void *p2)
-{
+{FNC
     sbsmsg_t *q1=(sbsmsg_t *)p1,*q2=(sbsmsg_t *)p2;
     return q1->week!=q2->week?q1->week-q2->week:
            (q1->tow<q2->tow?-1:(q1->tow>q2->tow?1:q1->prn-q2->prn));
@@ -543,7 +543,7 @@ static int cmpmsgs(const void *p1, const void *p2)
 *-----------------------------------------------------------------------------*/
 extern int sbsreadmsgt(const char *file, int sel, gtime_t ts, gtime_t te,
                        sbs_t *sbs)
-{
+{FNC
     char *efiles[MAXEXFILE]={0},*ext;
     int i,n;
     
@@ -574,7 +574,7 @@ extern int sbsreadmsgt(const char *file, int sel, gtime_t ts, gtime_t te,
     return sbs->n;
 }
 extern int sbsreadmsg(const char *file, int sel, sbs_t *sbs)
-{
+{FNC
     gtime_t ts={0},te={0};
     
     trace(3,"sbsreadmsg: file=%s sel=%d\n",file,sel);
@@ -588,7 +588,7 @@ extern int sbsreadmsg(const char *file, int sel, sbs_t *sbs)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void sbsoutmsg(FILE *fp, sbsmsg_t *sbsmsg)
-{
+{FNC
     int i,type=sbsmsg->msg[1]>>2;
     
     trace(4,"sbsoutmsg:\n");
@@ -600,7 +600,7 @@ extern void sbsoutmsg(FILE *fp, sbsmsg_t *sbsmsg)
 /* search igps ---------------------------------------------------------------*/
 static void searchigp(gtime_t time, const double *pos, const sbsion_t *ion,
                       const sbsigp_t **igp, double *x, double *y)
-{
+{FNC
     int i,latp[2],lonp[4];
     double lat=pos[0]*R2D,lon=pos[1]*R2D;
     const sbsigp_t *p;
@@ -665,7 +665,7 @@ static void searchigp(gtime_t time, const double *pos, const sbsion_t *ion,
 *-----------------------------------------------------------------------------*/
 extern int sbsioncorr(gtime_t time, const nav_t *nav, const double *pos,
                       const double *azel, double *delay, double *var)
-{
+{FNC
     const double re=6378.1363,hion=350.0;
     int i,err=0;
     double fp,posp[2],x=0.0,y=0.0,t,w[4]={0};
@@ -723,7 +723,7 @@ extern int sbsioncorr(gtime_t time, const nav_t *nav, const double *pos,
 }
 /* get meterological parameters ----------------------------------------------*/
 static void getmet(double lat, double *met)
-{
+{FNC
     static const double metprm[][10]={ /* lat=15,30,45,60,75 */
         {1013.25,299.65,26.31,6.30E-3,2.77,  0.00, 0.00,0.00,0.00E-3,0.00},
         {1017.25,294.15,21.79,6.05E-3,3.15, -3.75, 7.00,8.85,0.25E-3,0.33},
@@ -751,7 +751,7 @@ static void getmet(double lat, double *met)
 *-----------------------------------------------------------------------------*/
 extern double sbstropcorr(gtime_t time, const double *pos, const double *azel,
                           double *var)
-{
+{FNC
     const double k1=77.604,k2=382000.0,rd=287.054,gm=9.784,g=9.80665;
     static double pos_[3]={0},zh=0.0,zw=0.0;
     int i;
@@ -782,7 +782,7 @@ extern double sbstropcorr(gtime_t time, const double *pos, const double *azel,
 /* long term correction ------------------------------------------------------*/
 static int sbslongcorr(gtime_t time, int sat, const sbssat_t *sbssat,
                        double *drs, double *ddts)
-{
+{FNC
     const sbssatp_t *p;
     double t;
     int i;
@@ -814,7 +814,7 @@ static int sbslongcorr(gtime_t time, int sat, const sbssat_t *sbssat,
 /* fast correction -----------------------------------------------------------*/
 static int sbsfastcorr(gtime_t time, int sat, const sbssat_t *sbssat,
                        double *prc, double *var)
-{
+{FNC
     const sbssatp_t *p;
     double t;
     
@@ -861,7 +861,7 @@ static int sbsfastcorr(gtime_t time, int sat, const sbssat_t *sbssat,
 *-----------------------------------------------------------------------------*/
 extern int sbssatcorr(gtime_t time, int sat, const nav_t *nav, double *rs,
                       double *dts, double *var)
-{
+{FNC
     double drs[3]={0},dclk=0.0,prc=0.0;
     int i;
     
@@ -894,7 +894,7 @@ extern int sbssatcorr(gtime_t time, int sat, const nav_t *nav, double *rs,
 *-----------------------------------------------------------------------------*/
 extern int sbsdecodemsg(gtime_t time, int prn, const unsigned int *words,
                         sbsmsg_t *sbsmsg)
-{
+{FNC
     int i,j;
     unsigned char f[29];
     double tow;

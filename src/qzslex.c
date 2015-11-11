@@ -29,7 +29,7 @@ static const char rcsid[]="$Id:$";
 
 /* ura value -----------------------------------------------------------------*/
 static double vareph(int ura)
-{
+{FNC
     const double uraval[]={
         0.08,0.11,0.15,0.21,0.30,0.43,0.60,0.85,1.20,1.70,2.40,3.40,4.85,6.85,
         9.65,9.65
@@ -39,13 +39,13 @@ static double vareph(int ura)
 }
 /* get signed 33bit field ----------------------------------------------------*/
 static double getbits_33(const unsigned char *buff, int pos)
-{
+{FNC
     return (double)getbits(buff,pos,32)*2.0+getbitu(buff,pos+32,1);
 }
 /* decode tof and toe field (ref [1] 5.7.2.2.1.1) ----------------------------*/
 static int decode_lextof(const unsigned char *buff, int i, gtime_t *tof,
                          gtime_t *toe)
-{
+{FNC
     double tt,toes;
     int tow,week;
     char s1[64],s2[64];
@@ -72,7 +72,7 @@ static int decode_lextof(const unsigned char *buff, int i, gtime_t *tof,
 /* decode signal health field (ref [1] 5.7.2.2.1.1) --------------------------*/
 static int decode_lexhealth(const unsigned char *buff, int i, gtime_t tof,
                             nav_t *nav)
-{
+{FNC
     int j,sat;
     unsigned char health;
     
@@ -95,7 +95,7 @@ static int decode_lexhealth(const unsigned char *buff, int i, gtime_t tof,
 /* decode ephemeris and sv clock field (ref [1] 5.7.2.2.1.2) -----------------*/
 static int decode_lexeph(const unsigned char *buff, int i, gtime_t toe,
                          nav_t *nav)
-{
+{FNC
     lexeph_t eph={{0}};
     gtime_t tof;
     unsigned char health;
@@ -152,7 +152,7 @@ static int decode_lexeph(const unsigned char *buff, int i, gtime_t toe,
 /* decode ionosphere correction field (ref [1] 5.7.2.2.1.3) ------------------*/
 static int decode_lexion(const unsigned char *buff, int i, gtime_t tof,
                          nav_t *nav)
-{
+{FNC
     lexion_t ion={{0}};
     int tow,week;
     
@@ -184,7 +184,7 @@ static int decode_lexion(const unsigned char *buff, int i, gtime_t tof,
 }
 /* decode type 10: ephemeris data and clock (ref [1] 5.7.2.2.1,1) ------------*/
 static int decode_lextype10(const lexmsg_t *msg, nav_t *nav, gtime_t *tof)
-{
+{FNC
     gtime_t toe;
     int i=0,j;
     
@@ -204,7 +204,7 @@ static int decode_lextype10(const lexmsg_t *msg, nav_t *nav, gtime_t *tof)
 }
 /* decode type 11: ephemeris data and clock (ref [1] 5.7.2.2.1,1) ------------*/
 static int decode_lextype11(const lexmsg_t *msg, nav_t *nav, gtime_t *tof)
-{
+{FNC
     gtime_t toe;
     int i=0,j;
     
@@ -227,7 +227,7 @@ static int decode_lextype11(const lexmsg_t *msg, nav_t *nav, gtime_t *tof)
 }
 /* convert lex type 12 to rtcm ssr message -----------------------------------*/
 static int lex2rtcm(const unsigned char *msg, int i, unsigned char *buff)
-{
+{FNC
     unsigned int crc;
     int j,ns,type,n=0;
     
@@ -286,7 +286,7 @@ static int lex2rtcm(const unsigned char *msg, int i, unsigned char *buff)
 }
 /* decode type 12: madoca orbit and clock correction -------------------------*/
 static int decode_lextype12(const lexmsg_t *msg, nav_t *nav, gtime_t *tof)
-{
+{FNC
     static rtcm_t stock_rtcm={0};
     rtcm_t rtcm={0};
     double tow;
@@ -370,7 +370,7 @@ static int decode_lextype12(const lexmsg_t *msg, nav_t *nav, gtime_t *tof)
 }
 /* decode type 20: gsi experiment message (ref [1] 5.7.2.2.2) ----------------*/
 static int decode_lextype20(const lexmsg_t *msg, nav_t *nav, gtime_t *tof)
-{
+{FNC
     trace(3,"decode_lextype20:\n");
     
     return 0; /* not supported */
@@ -383,7 +383,7 @@ static int decode_lextype20(const lexmsg_t *msg, nav_t *nav, gtime_t *tof)
 * return : status (1:ok,0:error or not supported type)
 *-----------------------------------------------------------------------------*/
 extern int lexupdatecorr(const lexmsg_t *msg, nav_t *nav, gtime_t *tof)
-{
+{FNC
     trace(3,"lexupdatecorr: type=%d\n",msg->type);
     
     switch (msg->type) {
@@ -404,7 +404,7 @@ extern int lexupdatecorr(const lexmsg_t *msg, nav_t *nav, gtime_t *tof)
 * notes  : only input file with extension .lex or .LEX.
 *-----------------------------------------------------------------------------*/
 extern int lexreadmsg(const char *file, int sel, lex_t *lex)
-{
+{FNC
     lexmsg_t *lex_msgs;
     int i,prn,type,alert;
     unsigned int b;
@@ -459,7 +459,7 @@ extern int lexreadmsg(const char *file, int sel, lex_t *lex)
 * notes  : see ref [1] 5.7.2.1
 *-----------------------------------------------------------------------------*/
 extern void lexoutmsg(FILE *fp, const lexmsg_t *msg)
-{
+{FNC
     int i;
     
     trace(4,"lexoutmsg:\n");
@@ -479,7 +479,7 @@ extern void lexoutmsg(FILE *fp, const lexmsg_t *msg)
 *-----------------------------------------------------------------------------*/
 extern int lexconvbin(int type, int format, const char *infile,
                       const char *outfile)
-{
+{FNC
     FILE *ifp,*ofp;
     lexmsg_t msg;
     unsigned int preamb;
@@ -543,7 +543,7 @@ extern int lexconvbin(int type, int format, const char *infile,
 *-----------------------------------------------------------------------------*/
 extern int lexeph2pos(gtime_t time, int sat, const nav_t *nav, double *rs,
                       double *dts, double *var)
-{
+{FNC
     const lexeph_t *eph;
     double t,t2,t3;
     int i;
@@ -598,7 +598,7 @@ extern int lexeph2pos(gtime_t time, int sat, const nav_t *nav, double *rs,
 *-----------------------------------------------------------------------------*/
 extern int lexioncorr(gtime_t time, const nav_t *nav, const double *pos,
                       const double *azel, double *delay, double *var)
-{
+{FNC
     const double re=6378.137,hion=350.0;
 #if 0
     const double dl1=(141.0-129.0)/(45.5-34.7);

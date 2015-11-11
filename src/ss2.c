@@ -35,7 +35,7 @@ static double         R8(unsigned char *p) {double         r; memcpy(&r,p,8); re
 
 /* checksum ------------------------------------------------------------------*/
 static int chksum(const unsigned char *buff, int len)
-{
+{FNC
     int i;
     unsigned short sum=0;
     
@@ -44,7 +44,7 @@ static int chksum(const unsigned char *buff, int len)
 }
 /* adjust week ---------------------------------------------------------------*/
 static int adjweek(raw_t *raw, double sec)
-{
+{FNC
     double tow;
     int week;
     
@@ -57,7 +57,7 @@ static int adjweek(raw_t *raw, double sec)
 }
 /* decode id#20 navigation data (user) ---------------------------------------*/
 static int decode_ss2llh(raw_t *raw)
-{
+{FNC
 	double ep[6];
     unsigned char *p=raw->buff+4;
     
@@ -74,7 +74,7 @@ static int decode_ss2llh(raw_t *raw)
 }
 /* decode id#21 navigation data (ecef) ---------------------------------------*/
 static int decode_ss2ecef(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+4;
     
     trace(4,"decode_ss2ecef: len=%d\n",raw->len);
@@ -88,7 +88,7 @@ static int decode_ss2ecef(raw_t *raw)
 }
 /* decode id#23 measurement block --------------------------------------------*/
 static int decode_ss2meas(raw_t *raw)
-{
+{FNC
     const double freqif=1.405396825E6,tslew=1.75E-7;
     double tow,slew,code,icp,d;
     int i,j,n,prn,sat,nobs;
@@ -150,7 +150,7 @@ static int decode_ss2meas(raw_t *raw)
 }
 /* decode id#22 ephemeris data ------------------------------------------------*/
 static int decode_ss2eph(raw_t *raw)
-{
+{FNC
     eph_t eph={0};
     unsigned int tow;
     int i,j,prn,sat;
@@ -193,7 +193,7 @@ static int decode_ss2eph(raw_t *raw)
 }
 /* decode id#67 sbas data ----------------------------------------------------*/
 static int decode_ss2sbas(raw_t *raw)
-{
+{FNC
     gtime_t time;
     int i,prn;
     unsigned char *p=raw->buff+4;
@@ -215,7 +215,7 @@ static int decode_ss2sbas(raw_t *raw)
 }
 /* decode superstar 2 raw message --------------------------------------------*/
 static int decode_ss2(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff;
     int type=U1(p+1);
     
@@ -239,7 +239,7 @@ static int decode_ss2(raw_t *raw)
 }
 /* sync code -----------------------------------------------------------------*/
 static int sync_ss2(unsigned char *buff, unsigned char data)
-{
+{FNC
     buff[0]=buff[1]; buff[1]=buff[2]; buff[2]=data;
     return buff[0]==SS2SOH&&(buff[1]^buff[2])==0xFF;
 }
@@ -254,7 +254,7 @@ static int sync_ss2(unsigned char *buff, unsigned char data)
 *          observation data
 *-----------------------------------------------------------------------------*/
 extern int input_ss2(raw_t *raw, unsigned char data)
-{
+{FNC
     trace(5,"input_ss2: data=%02x\n",data);
     
     /* synchronize frame */
@@ -285,7 +285,7 @@ extern int input_ss2(raw_t *raw, unsigned char data)
 * return : status(-2: end of file, -1...9: same as above)
 *-----------------------------------------------------------------------------*/
 extern int input_ss2f(raw_t *raw, FILE *fp)
-{
+{FNC
     int i,data;
     
     trace(4,"input_ss2f:\n");

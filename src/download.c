@@ -40,7 +40,7 @@ typedef struct {                    /* download paths type */
 
 /* execute command with test timeout -----------------------------------------*/
 extern int execcmd_to(const char *cmd)
-{
+{FNC
 #ifdef WIN32
     PROCESS_INFORMATION info;
     STARTUPINFO si={0};
@@ -66,7 +66,7 @@ extern int execcmd_to(const char *cmd)
 /* generate path by replacing keywords ---------------------------------------*/
 static void genpath(const char *file, const char *name, gtime_t time, int seqno,
                     char *path)
-{
+{FNC
     char buff[1024],*p,*q,*r,*env,var[1024]="";
     char l_name[1024]="",u_name[1024]="";
     
@@ -90,7 +90,7 @@ static void genpath(const char *file, const char *name, gtime_t time, int seqno,
 }
 /* parse field strings separated by spaces -----------------------------------*/
 static char *parse_str(char *buff, char *str, int nmax)
-{
+{FNC
     char *p,*q,sep[]=" \r\n";
     
     for (p=buff;*p&&*p==' ';p++) ;
@@ -105,7 +105,7 @@ static char *parse_str(char *buff, char *str, int nmax)
 }
 /* compare str1 and str2 with wildcards (*) ----------------------------------*/
 static int cmp_str(const char *str1, const char *str2)
-{
+{FNC
     char s1[35],s2[35],*p,*q;
     
     sprintf(s1,"^%s$",str1);
@@ -118,7 +118,7 @@ static int cmp_str(const char *str1, const char *str2)
 }
 /* remote to local file path -------------------------------------------------*/
 static void remot2local(const char *remot, const char *dir, char *local)
-{
+{FNC
     char *p;
     
     if ((p=strrchr(remot,'/'))) p++; else p=(char *)remot;
@@ -127,7 +127,7 @@ static void remot2local(const char *remot, const char *dir, char *local)
 }
 /* test file existance -------------------------------------------------------*/
 static int exist_file(const char *local)
-{
+{FNC
 #ifdef WIN32
     DWORD stat=GetFileAttributes(local);
     return stat!=0xFFFFFFFF;
@@ -139,7 +139,7 @@ static int exist_file(const char *local)
 }
 /* test file existance -------------------------------------------------------*/
 static int test_file(const char *local)
-{
+{FNC
     char buff[1024],*p;
     int comp=0;
     
@@ -162,7 +162,7 @@ static int test_file(const char *local)
 }
 /* free download paths -------------------------------------------------------*/
 static void free_path(paths_t *paths)
-{
+{FNC
     int i;
     if (!paths) return;
     for (i=0;i<paths->n;i++) {
@@ -173,7 +173,7 @@ static void free_path(paths_t *paths)
 }
 /* add download paths --------------------------------------------------------*/
 static int add_path(paths_t *paths, const char *remot, const char *dir)
-{
+{FNC
     path_t *paths_path;
     char local[1024];
     
@@ -204,7 +204,7 @@ static int add_path(paths_t *paths, const char *remot, const char *dir)
 static int gen_path(gtime_t time, gtime_t time_p, int seqnos, int seqnoe,
                     const url_t *url, const char *sta, const char *dir,
                     paths_t *paths)
-{
+{FNC
     char remot[1024],remot_p[1024],dir_t[1024];
     int i;
     
@@ -237,7 +237,7 @@ static int gen_path(gtime_t time, gtime_t time_p, int seqnos, int seqnoe,
 static int gen_paths(gtime_t time, gtime_t time_p, int seqnos, int seqnoe,
                      const url_t *url, char **stas, int nsta, const char *dir,
                      paths_t *paths)
-{
+{FNC
     int i;
     
     if (strstr(url->path,"%s")||strstr(url->path,"%S")) {
@@ -256,7 +256,7 @@ static int gen_paths(gtime_t time, gtime_t time_p, int seqnos, int seqnoe,
 }
 /* compact download paths ----------------------------------------------------*/
 static void compact_paths(paths_t *paths)
-{
+{FNC
     int i,j,k;
     
     for (i=0;i<paths->n;i++) {
@@ -271,7 +271,7 @@ static void compact_paths(paths_t *paths)
 }
 /* generate local directory recursively --------------------------------------*/
 static int mkdir_r(const char *dir)
-{
+{FNC
     char pdir[1024],*p;
     
 #ifdef WIN32
@@ -316,7 +316,7 @@ static int mkdir_r(const char *dir)
 /* get remote file list ------------------------------------------------------*/
 static int get_list(const path_t *path, const char *usr, const char *pwd,
                     const char *proxy)
-{
+{FNC
     FILE *fp;
     char cmd[4096],env[1024]="",remot[1024],*opt="",*opt2="",*p;
     int stat;
@@ -346,7 +346,7 @@ static int get_list(const path_t *path, const char *usr, const char *pwd,
 }
 /* test file in remote file list ---------------------------------------------*/
 static int test_list(const path_t *path)
-{
+{FNC
     FILE *fp;
     char buff[1024],*file,*list,*p;
     int i;
@@ -379,7 +379,7 @@ static int test_list(const path_t *path)
 static int exec_down(const path_t *path, char *remot_p, const char *usr,
                      const char *pwd, const char *proxy, int opts, int *n,
                      FILE *fp)
-{
+{FNC
     char dir[1024],errfile[1024],tmpfile[1024],cmd[4096],env[1024]="";
     char opt[1024]="",*opt2="",*p;
     int ret,proto;
@@ -500,7 +500,7 @@ static int exec_down(const path_t *path, char *remot_p, const char *usr,
 static int test_local(gtime_t ts, gtime_t te, double ti, const char *path,
                       const char *sta, const char *dir, int *nc, int *nt,
                       FILE *fp)
-{
+{FNC
     gtime_t time;
     char remot[1024],remot_p[1024],dir_t[1024],local[1024],str[1024];
     int stat,abort=0;
@@ -532,7 +532,7 @@ static int test_local(gtime_t ts, gtime_t te, double ti, const char *path,
 static int test_locals(gtime_t ts, gtime_t te, double ti, const url_t *url,
                        char **stas, int nsta, const char *dir, int *nc, int *nt,
                        FILE *fp)
-{
+{FNC
     int i;
     
     if (strstr(url->path,"%s")||strstr(url->path,"%S")) {
@@ -556,7 +556,7 @@ static int test_locals(gtime_t ts, gtime_t te, double ti, const url_t *url,
 /* print total count of local files ------------------------------------------*/
 static int print_total(const url_t *url, char **stas, int nsta, int *nc,
                        int *nt, FILE *fp)
-{
+{FNC
     int i;
     
     if (strstr(url->path,"%s")||strstr(url->path,"%S")) {
@@ -611,7 +611,7 @@ static int print_total(const url_t *url, char **stas, int nsta, int *nc,
 *-----------------------------------------------------------------------------*/
 extern int dl_readurls(const char *file, char **types, int ntype, url_t *urls,
                        int nmax)
-{
+{FNC
     FILE *fp;
     char buff[2048],type[32],path[1024],dir[1024],*p;
     int i,n=0;
@@ -654,7 +654,7 @@ extern int dl_readurls(const char *file, char **types, int ntype, url_t *urls,
 *    (2) strings after # in a line are treated as comments
 *-----------------------------------------------------------------------------*/
 extern int dl_readstas(const char *file, char **stas, int nmax)
-{
+{FNC
     FILE *fp;
     char buff[4096],*p;
     int n=0;
@@ -706,7 +706,7 @@ extern int dl_exec(gtime_t ts, gtime_t te, double ti, int seqnos, int seqnoe,
                    const url_t *urls, int nurl, char **stas, int nsta,
                    const char *dir, const char *usr, const char *pwd,
                    const char *proxy, int opts, char *msg, FILE *fp)
-{
+{FNC
     paths_t paths={0};
     gtime_t ts_p={0};
     char str[2048],remot_p[1024]="";
@@ -771,7 +771,7 @@ extern int dl_exec(gtime_t ts, gtime_t te, double ti, int seqnos, int seqnoe,
 extern void dl_test(gtime_t ts, gtime_t te, double ti, const url_t *urls,
                     int nurl, char **stas, int nsta, const char *dir,
                     int ncol, int datefmt, FILE *fp)
-{
+{FNC
     gtime_t time;
     double tow;
     char year[32],date[32],date_p[32];

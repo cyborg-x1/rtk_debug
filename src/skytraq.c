@@ -56,7 +56,7 @@ static const char rcsid[]="$Id:$";
 #define I1(p)       (*((char *)(p)))
 
 static unsigned short U2(unsigned char *p)
-{
+{FNC
     unsigned short value;
     unsigned char *q=(unsigned char *)&value+1;
     int i;
@@ -64,7 +64,7 @@ static unsigned short U2(unsigned char *p)
     return value;
 }
 static unsigned int U4(unsigned char *p)
-{
+{FNC
     unsigned int value;
     unsigned char *q=(unsigned char *)&value+3;
     int i;
@@ -72,7 +72,7 @@ static unsigned int U4(unsigned char *p)
     return value;
 }
 static float R4(unsigned char *p)
-{
+{FNC
     float value;
     unsigned char *q=(unsigned char *)&value+3;
     int i;
@@ -80,7 +80,7 @@ static float R4(unsigned char *p)
     return value;
 }
 static double R8(unsigned char *p)
-{
+{FNC
     double value;
     unsigned char *q=(unsigned char *)&value+7;
     int i;
@@ -89,7 +89,7 @@ static double R8(unsigned char *p)
 }
 /* checksum ------------------------------------------------------------------*/
 static unsigned char checksum(unsigned char *buff, int len)
-{
+{FNC
     unsigned char cs=0;
     int i;
     
@@ -100,7 +100,7 @@ static unsigned char checksum(unsigned char *buff, int len)
 }
 /* 8-bit week -> full week ---------------------------------------------------*/
 static void adj_utcweek(gtime_t time, double *utc)
-{
+{FNC
     int week;
     
     if (utc[3]>=256.0) return;
@@ -111,7 +111,7 @@ static void adj_utcweek(gtime_t time, double *utc)
 }
 /* decode skytraq measurement epoch (0xDC) -----------------------------------*/
 static int decode_stqtime(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+4;
     double tow;
     int week;
@@ -126,7 +126,7 @@ static int decode_stqtime(raw_t *raw)
 }
 /* decode skytraq raw measurement (0xDD) -------------------------------------*/
 static int decode_stqraw(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+4,ind;
     double pr1,cp1;
     int i,j,iod,prn,sys,sat,n=0,nsat;
@@ -206,7 +206,7 @@ static int decode_stqraw(raw_t *raw)
 }
 /* save subframe -------------------------------------------------------------*/
 static int save_subfrm(int sat, raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+7,*q;
     int i,id;
     
@@ -232,7 +232,7 @@ static int save_subfrm(int sat, raw_t *raw)
 }
 /* decode ephemeris ----------------------------------------------------------*/
 static int decode_ephem(int sat, raw_t *raw)
-{
+{FNC
     eph_t eph={0};
     
     trace(4,"decode_ephem: sat=%2d\n",sat);
@@ -252,7 +252,7 @@ static int decode_ephem(int sat, raw_t *raw)
 }
 /* decode almanac and ion/utc ------------------------------------------------*/
 static int decode_alm1(int sat, raw_t *raw)
-{
+{FNC
     int sys=satsys(sat,NULL);
     
     trace(4,"decode_alm1 : sat=%2d\n",sat);
@@ -271,7 +271,7 @@ static int decode_alm1(int sat, raw_t *raw)
 }
 /* decode almanac ------------------------------------------------------------*/
 static int decode_alm2(int sat, raw_t *raw)
-{
+{FNC
     int sys=satsys(sat,NULL);
     
     trace(4,"decode_alm2 : sat=%2d\n",sat);
@@ -288,7 +288,7 @@ static int decode_alm2(int sat, raw_t *raw)
 }
 /* decode gps/qzss subframe (0xE0) -------------------------------------------*/
 static int decode_stqgps(raw_t *raw)
-{
+{FNC
     int prn,sat,id;
     unsigned char *p=raw->buff+4;
     
@@ -311,7 +311,7 @@ static int decode_stqgps(raw_t *raw)
 }
 /* decode glonass string (0xE1) ----------------------------------------------*/
 static int decode_stqglo(raw_t *raw)
-{
+{FNC
     geph_t geph={0};
     int i,prn,sat,m;
     unsigned char *p=raw->buff+4;
@@ -354,7 +354,7 @@ static int decode_stqglo(raw_t *raw)
 }
 /* decode glonass string (requested) (0x5C) ----------------------------------*/
 static int decode_stqgloe(raw_t *raw)
-{
+{FNC
     int prn,sat;
     unsigned char *p=raw->buff+4;
     
@@ -376,7 +376,7 @@ static int decode_stqgloe(raw_t *raw)
 }
 /* decode beidou subframe (0xE2,0xE3) ----------------------------------------*/
 static int decode_stqbds(raw_t *raw)
-{
+{FNC
     eph_t eph={0};
     unsigned int word;
     int i,j=0,id,pgn,prn,sat;
@@ -441,7 +441,7 @@ static int decode_stqbds(raw_t *raw)
 }
 /* decode skytraq message ----------------------------------------------------*/
 static int decode_stq(raw_t *raw)
-{
+{FNC
     int type=U1(raw->buff+4);
     unsigned char cs,*p=raw->buff+raw->len-3;
     
@@ -471,7 +471,7 @@ static int decode_stq(raw_t *raw)
 }
 /* sync code -----------------------------------------------------------------*/
 static int sync_stq(unsigned char *buff, unsigned char data)
-{
+{FNC
     buff[0]=buff[1]; buff[1]=data;
     return buff[0]==STQSYNC1&&buff[1]==STQSYNC2;
 }
@@ -490,7 +490,7 @@ static int sync_stq(unsigned char *buff, unsigned char data)
 *
 *-----------------------------------------------------------------------------*/
 extern int input_stq(raw_t *raw, unsigned char data)
-{
+{FNC
     trace(5,"input_stq: data=%02x\n",data);
     
     /* synchronize frame */
@@ -521,7 +521,7 @@ extern int input_stq(raw_t *raw, unsigned char data)
 * return : status(-2: end of file, -1...9: same as above)
 *-----------------------------------------------------------------------------*/
 extern int input_stqf(raw_t *raw, FILE *fp)
-{
+{FNC
     int i,data;
     
     trace(4,"input_stqf:\n");
@@ -562,7 +562,7 @@ extern int input_stqf(raw_t *raw, FILE *fp)
 * note   : see reference [1][2][3][4] for details.
 *-----------------------------------------------------------------------------*/
 extern int gen_stq(const char *msg, unsigned char *buff)
-{
+{FNC
     const char *hz[]={"1Hz","2Hz","4Hz","5Hz","10Hz","20Hz",""};
     unsigned char *q=buff;
     char mbuff[1024],*args[32],*p;

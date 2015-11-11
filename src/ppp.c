@@ -80,7 +80,7 @@ extern int dehanttideinel_(double *xsta, int *year, int *mon, int *day,
 
 /* output solution status for PPP --------------------------------------------*/
 extern void pppoutsolstat(rtk_t *rtk, int level, FILE *fp)
-{
+{FNC
     ssat_t *ssat;
     double tow,pos[3],vel[3],acc[3];
     int i,j,week,nfreq=1;
@@ -141,7 +141,7 @@ extern void pppoutsolstat(rtk_t *rtk, int level, FILE *fp)
 /* solar/lunar tides (ref [2] 7) ---------------------------------------------*/
 static void tide_pl(const double *eu, const double *rp, double GMp,
                     const double *pos, double *dr)
-{
+{FNC
     const double H3=0.292,L3=0.015;
     double r,ep[3],latp,lonp,p,K2,K3,a,H2,L2,dp,du,cosp,sinl,cosl;
     int i;
@@ -183,7 +183,7 @@ static void tide_pl(const double *eu, const double *rp, double GMp,
 static void tide_solid(const double *rsun, const double *rmoon,
                        const double *pos, const double *E, double gmst, int opt,
                        double *dr)
-{
+{FNC
     double dr1[3],dr2[3],eu[3],du,dn,sinl,sin2l;
     
     trace(3,"tide_solid: pos=%.3f %.3f opt=%d\n",pos[0]*R2D,pos[1]*R2D,opt);
@@ -214,7 +214,7 @@ static void tide_solid(const double *rsun, const double *rmoon,
 }
 /* displacement by ocean tide loading (ref [2] 7) ----------------------------*/
 static void tide_oload(gtime_t tut, const double *odisp, double *denu)
-{
+{FNC
     const double args[][5]={
         {1.40519E-4, 2.0,-2.0, 0.0, 0.00},  /* M2 */
         {1.45444E-4, 0.0, 0.0, 0.0, 0.00},  /* S2 */
@@ -262,7 +262,7 @@ static void tide_oload(gtime_t tut, const double *odisp, double *denu)
 }
 /* iers mean pole (ref [7] eq.7.25) ------------------------------------------*/
 static void iers_mean_pole(gtime_t tut, double *xp_bar, double *yp_bar)
-{
+{FNC
     const double ep2000[]={2000,1,1,0,0,0};
     double y,y2,y3;
     
@@ -281,7 +281,7 @@ static void iers_mean_pole(gtime_t tut, double *xp_bar, double *yp_bar)
 /* displacement by pole tide (ref [7] eq.7.26) --------------------------------*/
 static void tide_pole(gtime_t tut, const double *pos, const double *erpv,
                       double *denu)
-{
+{FNC
     double xp_bar,yp_bar,m1,m2,cosl,sinl;
     
     trace(3,"tide_pole: pos=%.3f %.3f\n",pos[0]*R2D,pos[1]*R2D);
@@ -329,7 +329,7 @@ static void tide_pole(gtime_t tut, const double *pos, const double *erpv,
 *-----------------------------------------------------------------------------*/
 extern void tidedisp(gtime_t tutc, const double *rr, int opt, const erp_t *erp,
                      const double *odisp, double *dr)
-{
+{FNC
     gtime_t tut;
     double pos[2],E[9],drt[3],denu[3],rs[3],rm[3],gmst,erpv[5]={0};
     int i;
@@ -385,7 +385,7 @@ extern void tidedisp(gtime_t tutc, const double *rr, int opt, const erp_t *erp,
 }
 /* exclude meas of eclipsing satellite (block IIA) ---------------------------*/
 static void testeclipse(const obsd_t *obs, int n, const nav_t *nav, double *rs)
-{
+{FNC
     double rsun[3],esun[3],r,ang,erpv[5]={0},cosa;
     int i,j;
     const char *type;
@@ -420,7 +420,7 @@ static void testeclipse(const obsd_t *obs, int n, const nav_t *nav, double *rs)
 }
 /* measurement error variance ------------------------------------------------*/
 static double varerr(int sat, int sys, double el, int type, const prcopt_t *opt)
-{
+{FNC
     double a,b,a2,b2,fact=1.0;
     double sinel=sin(el);
     int i=sys==SYS_GLO?1:(sys==SYS_GAL?2:0);
@@ -457,7 +457,7 @@ static double varerr(int sat, int sys, double el, int type, const prcopt_t *opt)
 }
 /* initialize state and covariance -------------------------------------------*/
 static void initx(rtk_t *rtk, double xi, double var, int i)
-{
+{FNC
     int j;
     rtk->x[i]=xi;
     for (j=0;j<rtk->nx;j++) {
@@ -468,7 +468,7 @@ static void initx(rtk_t *rtk, double xi, double var, int i)
 static int ifmeas(const obsd_t *obs, const nav_t *nav, const double *azel,
                   const prcopt_t *opt, const double *dantr, const double *dants,
                   double phw, double *meas, double *var)
-{
+{FNC
     const double *lam=nav->lam[obs->sat-1];
     double c1,c2,L1,L2,P1,P2,P1_C1,P2_C2,gamma;
     int i=0,j=1,k;
@@ -524,7 +524,7 @@ static int ifmeas(const obsd_t *obs, const nav_t *nav, const double *azel,
 }
 /* get tgd parameter (m) -----------------------------------------------------*/
 static double gettgd(int sat, const nav_t *nav)
-{
+{FNC
     int i;
     for (i=0;i<nav->n;i++) {
         if (nav->eph[i].sat!=sat) continue;
@@ -536,7 +536,7 @@ static double gettgd(int sat, const nav_t *nav)
 static int corr_ion(gtime_t time, const nav_t *nav, int sat, const double *pos,
                     const double *azel, int ionoopt, double *ion, double *var,
                     int *brk)
-{
+{FNC
 #ifdef EXTSTEC
     double rate;
 #endif
@@ -570,7 +570,7 @@ static int corrmeas(const obsd_t *obs, const nav_t *nav, const double *pos,
                     const double *azel, const prcopt_t *opt,
                     const double *dantr, const double *dants, double phw,
                     double *meas, double *var, int *brk)
-{
+{FNC
     const double *lam=nav->lam[obs->sat-1];
     double ion=0.0,L1,P1,PC,P1_P2,P1_C1,vari,gamma;
     int i;
@@ -623,7 +623,7 @@ static int corrmeas(const obsd_t *obs, const nav_t *nav, const double *pos,
 }
 /* L1/L2 geometry-free phase measurement -------------------------------------*/
 static double gfmeas(const obsd_t *obs, const nav_t *nav)
-{
+{FNC
     const double *lam=nav->lam[obs->sat-1];
     
     if (lam[0]==0.0||lam[1]==0.0||obs->L[0]==0.0||obs->L[1]==0.0) return 0.0;
@@ -632,7 +632,7 @@ static double gfmeas(const obsd_t *obs, const nav_t *nav)
 }
 /* temporal update of position -----------------------------------------------*/
 static void udpos_ppp(rtk_t *rtk)
-{
+{FNC
     int i;
     
     trace(3,"udpos_ppp:\n");
@@ -656,7 +656,7 @@ static void udpos_ppp(rtk_t *rtk)
 }
 /* temporal update of clock --------------------------------------------------*/
 static void udclk_ppp(rtk_t *rtk)
-{
+{FNC
     double dtr;
     int i;
     
@@ -677,7 +677,7 @@ static void udclk_ppp(rtk_t *rtk)
 }
 /* temporal update of tropospheric parameters --------------------------------*/
 static void udtrop_ppp(rtk_t *rtk)
-{
+{FNC
     double pos[3],azel[]={0.0,PI/2.0},ztd,var;
     int i=IT(&rtk->opt),j;
     
@@ -704,7 +704,7 @@ static void udtrop_ppp(rtk_t *rtk)
 }
 /* detect cycle slip by LLI --------------------------------------------------*/
 static void detslp_ll(rtk_t *rtk, const obsd_t *obs, int n)
-{
+{FNC
     int i,j;
     
     trace(3,"detslp_ll: n=%d\n",n);
@@ -719,7 +719,7 @@ static void detslp_ll(rtk_t *rtk, const obsd_t *obs, int n)
 }
 /* detect cycle slip by geometry free phase jump -----------------------------*/
 static void detslp_gf(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
-{
+{FNC
     double g0,g1;
     int i,j;
     
@@ -744,7 +744,7 @@ static void detslp_gf(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
 }
 /* temporal update of phase biases -------------------------------------------*/
 static void udbias_ppp(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
-{
+{FNC
     double meas[2],var[2],bias[MAXOBS]={0},offset=0.0,pos[3]={0};
     int i,j,k,sat,brk=0;
     
@@ -811,7 +811,7 @@ static void udbias_ppp(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
 }
 /* temporal update of states --------------------------------------------------*/
 static void udstate_ppp(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
-{
+{FNC
     trace(3,"udstate_ppp: n=%d\n",n);
     
     /* temporal update of position */
@@ -830,7 +830,7 @@ static void udstate_ppp(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
 /* satellite antenna phase center variation ----------------------------------*/
 static void satantpcv(const double *rs, const double *rr, const pcv_t *pcv,
                       double *dant)
-{
+{FNC
     double ru[3],rz[3],eu[3],ez[3],nadir,cosa;
     int i;
     
@@ -850,7 +850,7 @@ static void satantpcv(const double *rs, const double *rr, const pcv_t *pcv,
 static double prectrop(gtime_t time, const double *pos, const double *azel,
                        const prcopt_t *opt, const double *x, double *dtdx,
                        double *var)
-{
+{FNC
     const double zazel[]={0.0,PI/2.0};
     double zhd,m_h,m_w,cotz,grad_n,grad_e;
     
@@ -879,7 +879,7 @@ static int res_ppp(int iter, const obsd_t *obs, int n, const double *rs,
                    const double *dts, const double *vare, const int *svh,
                    const nav_t *nav, const double *x, rtk_t *rtk, double *v,
                    double *H, double *R, double *azel)
-{
+{FNC
     prcopt_t *opt=&rtk->opt;
     double r,rr[3],disp[3],pos[3],e[3],meas[2],dtdx[3],dantr[NFREQ]={0};
     double dants[NFREQ]={0},var[MAXOBS*2],dtrp=0.0,vart=0.0,varm[2]={0};
@@ -1007,12 +1007,12 @@ static int res_ppp(int iter, const obsd_t *obs, int n, const double *rs,
 }
 /* number of estimated states ------------------------------------------------*/
 extern int pppnx(const prcopt_t *opt)
-{
+{FNC
     return NX(opt);
 }
 /* precise point positioning -------------------------------------------------*/
 extern void pppos(rtk_t *rtk, const obsd_t *obs, int n, const nav_t *nav)
-{
+{FNC
     const prcopt_t *opt=&rtk->opt;
     double *rs,*dts,*var,*v,*H,*R,*azel,*xp,*Pp;
     int i,nv,info,svh[MAXOBS],stat=SOLQ_SINGLE;

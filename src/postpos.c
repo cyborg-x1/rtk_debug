@@ -69,7 +69,7 @@ static FILE *fp_rtcm=NULL;      /* rtcm data file pointer */
 
 /* show message and check break ----------------------------------------------*/
 static int checkbrk(const char *format, ...)
-{
+{FNC
     va_list arg;
     char buff[1024],*p=buff;
     if (!*format) return showmsg("");
@@ -83,7 +83,7 @@ static int checkbrk(const char *format, ...)
 }
 /* output reference position -------------------------------------------------*/
 static void outrpos(FILE *fp, const double *r, const solopt_t *opt)
-{
+{FNC
     double pos[3],dms1[3],dms2[3];
     const char *sep=opt->sep;
     
@@ -110,7 +110,7 @@ static void outrpos(FILE *fp, const double *r, const solopt_t *opt)
 /* output header -------------------------------------------------------------*/
 static void outheader(FILE *fp, char **file, int n, const prcopt_t *popt,
                       const solopt_t *sopt)
-{
+{FNC
     const char *s1[]={"GPST","UTC","JST"};
     gtime_t ts,te;
     double t1,t2;
@@ -161,7 +161,7 @@ static void outheader(FILE *fp, char **file, int n, const prcopt_t *popt,
 }
 /* search next observation data index ----------------------------------------*/
 static int nextobsf(const obs_t *obs, int *i, int rcv)
-{
+{FNC
     double tt;
     int n;
     
@@ -173,7 +173,7 @@ static int nextobsf(const obs_t *obs, int *i, int rcv)
     return n;
 }
 static int nextobsb(const obs_t *obs, int *i, int rcv)
-{
+{FNC
     double tt;
     int n;
     
@@ -186,7 +186,7 @@ static int nextobsb(const obs_t *obs, int *i, int rcv)
 }
 /* input obs data, navigation messages and sbas correction -------------------*/
 static int inputobs(obsd_t *obs, int solq, const prcopt_t *popt)
-{
+{FNC
     gtime_t time={0};
     char path[1024];
     int i,nu,nr,n=0;
@@ -294,7 +294,7 @@ static int inputobs(obsd_t *obs, int solq, const prcopt_t *popt)
 /* process positioning -------------------------------------------------------*/
 static void procpos(FILE *fp, const prcopt_t *popt, const solopt_t *sopt,
                     int mode)
-{
+{FNC
     gtime_t time={0};
     sol_t sol={{0}};
     rtk_t rtk;
@@ -354,7 +354,7 @@ static void procpos(FILE *fp, const prcopt_t *popt, const solopt_t *sopt,
 }
 /* validation of combined solutions ------------------------------------------*/
 static int valcomb(const sol_t *solf, const sol_t *solb)
-{
+{FNC
     double dr[3],var[3];
     int i;
     char tstr[32];
@@ -378,7 +378,7 @@ static int valcomb(const sol_t *solf, const sol_t *solb)
 }
 /* combine forward/backward solutions and output results ---------------------*/
 static void combres(FILE *fp, const prcopt_t *popt, const solopt_t *sopt)
-{
+{FNC
     gtime_t time={0};
     sol_t sols={{0}},sol={{0}};
     double tt,Qf[9],Qb[9],Qs[9],rbs[3]={0},rb[3]={0},rr_f[3],rr_b[3],rr_s[3];
@@ -465,7 +465,7 @@ static void combres(FILE *fp, const prcopt_t *popt, const solopt_t *sopt)
 /* read prec ephemeris, sbas data, lex data, tec grid and open rtcm ----------*/
 static void readpreceph(char **infile, int n, const prcopt_t *prcopt,
                         nav_t *nav, sbs_t *sbs, lex_t *lex)
-{
+{FNC
     seph_t seph0={0};
     int i;
     char *ext;
@@ -520,7 +520,7 @@ static void readpreceph(char **infile, int n, const prcopt_t *prcopt,
 }
 /* free prec ephemeris and sbas data -----------------------------------------*/
 static void freepreceph(nav_t *nav, sbs_t *sbs, lex_t *lex)
-{
+{FNC
     int i;
     
     trace(3,"freepreceph:\n");
@@ -547,7 +547,7 @@ static void freepreceph(nav_t *nav, sbs_t *sbs, lex_t *lex)
 static int readobsnav(gtime_t ts, gtime_t te, double ti, char **infile,
                       const int *index, int n, const prcopt_t *prcopt,
                       obs_t *obs, nav_t *nav, sta_t *sta)
-{
+{FNC
     int i,j,ind=0,nobs=0,rcv=1;
     
     trace(3,"readobsnav: ts=%s n=%d\n",time_str(ts,0),n);
@@ -603,7 +603,7 @@ static int readobsnav(gtime_t ts, gtime_t te, double ti, char **infile,
 }
 /* free obs and nav data -----------------------------------------------------*/
 static void freeobsnav(obs_t *obs, nav_t *nav)
-{
+{FNC
     trace(3,"freeobsnav:\n");
     
     free(obs->data); obs->data=NULL; obs->n =obs->nmax =0;
@@ -614,7 +614,7 @@ static void freeobsnav(obs_t *obs, nav_t *nav)
 /* average of single position ------------------------------------------------*/
 static int avepos(double *ra, int rcv, const obs_t *obs, const nav_t *nav,
                   const prcopt_t *opt)
-{
+{FNC
     obsd_t data[MAXOBS];
     gtime_t ts={0};
     sol_t sol={{0}};
@@ -648,7 +648,7 @@ static int avepos(double *ra, int rcv, const obs_t *obs, const nav_t *nav,
 }
 /* station position from file ------------------------------------------------*/
 static int getstapos(const char *file, char *name, double *r)
-{
+{FNC
     FILE *fp;
     char buff[256],sname[256],*p,*q;
     double pos[3];
@@ -682,7 +682,7 @@ static int getstapos(const char *file, char *name, double *r)
 /* antenna phase center position ---------------------------------------------*/
 static int antpos(prcopt_t *opt, int rcvno, const obs_t *obs, const nav_t *nav,
                   const sta_t *sta, const char *posfile)
-{
+{FNC
     double *rr=rcvno==1?opt->ru:opt->rb,del[3],pos[3],dr[3]={0};
     int i,postype=rcvno==1?opt->rovpos:opt->refpos;
     char *name;
@@ -725,7 +725,7 @@ static int antpos(prcopt_t *opt, int rcvno, const obs_t *obs, const nav_t *nav,
 /* open procssing session ----------------------------------------------------*/
 static int openses(const prcopt_t *popt, const solopt_t *sopt,
                    const filopt_t *fopt, nav_t *nav, pcvs_t *pcvs, pcvs_t *pcvr)
-{
+{FNC
     char *ext;
     
     trace(3,"openses :\n");
@@ -775,7 +775,7 @@ static int openses(const prcopt_t *popt, const solopt_t *sopt,
 }
 /* close procssing session ---------------------------------------------------*/
 static void closeses(nav_t *nav, pcvs_t *pcvs, pcvs_t *pcvr)
-{
+{FNC
     trace(3,"closeses:\n");
     
     /* free antenna parameters */
@@ -795,7 +795,7 @@ static void closeses(nav_t *nav, pcvs_t *pcvs, pcvs_t *pcvr)
 /* set antenna parameters ----------------------------------------------------*/
 static void setpcv(gtime_t time, prcopt_t *popt, nav_t *nav, const pcvs_t *pcvs,
                    const pcvs_t *pcvr, const sta_t *sta)
-{
+{FNC
     pcv_t *pcv;
     double pos[3],del[3];
     int i,j,mode=PMODE_DGPS<=popt->mode&&popt->mode<=PMODE_FIXED;
@@ -836,7 +836,7 @@ static void setpcv(gtime_t time, prcopt_t *popt, nav_t *nav, const pcvs_t *pcvs,
 }
 /* read ocean tide loading parameters ----------------------------------------*/
 static void readotl(prcopt_t *popt, const char *file, const sta_t *sta)
-{
+{FNC
     int i,mode=PMODE_DGPS<=popt->mode&&popt->mode<=PMODE_FIXED;
     
     for (i=0;i<(mode?2:1);i++) {
@@ -846,7 +846,7 @@ static void readotl(prcopt_t *popt, const char *file, const sta_t *sta)
 /* write header to output file -----------------------------------------------*/
 static int outhead(const char *outfile, char **infile, int n,
                    const prcopt_t *popt, const solopt_t *sopt)
-{
+{FNC
     FILE *fp=stdout;
     
     trace(3,"outhead: outfile=%s n=%d\n",outfile,n);
@@ -868,7 +868,7 @@ static int outhead(const char *outfile, char **infile, int n,
 }
 /* open output file for append -----------------------------------------------*/
 static FILE *openfile(const char *outfile)
-{
+{FNC
     trace(3,"openfile: outfile=%s\n",outfile);
     
     return !*outfile?stdout:fopen(outfile,"a");
@@ -877,7 +877,7 @@ static FILE *openfile(const char *outfile)
 static int execses(gtime_t ts, gtime_t te, double ti, const prcopt_t *popt,
                    const solopt_t *sopt, const filopt_t *fopt, int flag,
                    char **infile, const int *index, int n, char *outfile)
-{
+{FNC
     FILE *fp;
     prcopt_t popt_=*popt;
     char tracefile[1024],statfile[1024];
@@ -983,7 +983,7 @@ static int execses_r(gtime_t ts, gtime_t te, double ti, const prcopt_t *popt,
                      const solopt_t *sopt, const filopt_t *fopt, int flag,
                      char **infile, const int *index, int n, char *outfile,
                      const char *rov)
-{
+{FNC
     gtime_t t0={0};
     int i,stat=0;
     char *ifile[MAXINFILE],ofile[1024],*rov_,*p,*q,s[64]="";
@@ -1033,7 +1033,7 @@ static int execses_b(gtime_t ts, gtime_t te, double ti, const prcopt_t *popt,
                      const solopt_t *sopt, const filopt_t *fopt, int flag,
                      char **infile, const int *index, int n, char *outfile,
                      const char *rov, const char *base)
-{
+{FNC
     gtime_t t0={0};
     int i,stat=0;
     char *ifile[MAXINFILE],ofile[1024],*base_,*p,*q,s[64];
@@ -1134,7 +1134,7 @@ extern int postpos(gtime_t ts, gtime_t te, double ti, double tu,
                    const prcopt_t *popt, const solopt_t *sopt,
                    const filopt_t *fopt, char **infile, int n, char *outfile,
                    const char *rov, const char *base)
-{
+{FNC
     gtime_t tts,tte,ttte;
     double tunit,tss;
     int i,j,k,nf,stat=0,week,flag=1,index[MAXINFILE]={0};

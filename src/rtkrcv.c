@@ -190,20 +190,20 @@ static opt_t rcvopts[]={
 };
 /* external stop signal ------------------------------------------------------*/
 static void sigshut(int sig)
-{
+{FNC
     trace(3,"sigshut: sig=%d\n",sig);
     
     intflg=1;
 }
 /* discard space characters at tail ------------------------------------------*/
 static void chop(char *str)
-{
+{FNC
     char *p;
     for (p=str+strlen(str)-1;p>=str&&!isgraph((int)*p);p--) *p='\0';
 }
 /* thread to send keep alive for monitor port --------------------------------*/
 static void *sendkeepalive(void *arg)
-{
+{FNC
     trace(3,"sendkeepalive: start\n");
     
     while (keepalive) {
@@ -215,7 +215,7 @@ static void *sendkeepalive(void *arg)
 }
 /* open monitor port ---------------------------------------------------------*/
 static int openmoni(int port)
-{
+{FNC
     pthread_t thread;
     char path[64];
     
@@ -230,7 +230,7 @@ static int openmoni(int port)
 }
 /* close monitor port --------------------------------------------------------*/
 static void closemoni(void)
-{
+{FNC
     trace(3,"closemoni:\n");
     keepalive=0;
     
@@ -244,7 +244,7 @@ static void closemoni(void)
 }
 /* confirm overwrite ---------------------------------------------------------*/
 static int confwrite(vt_t *vt, const char *file)
-{
+{FNC
     FILE *fp;
     char buff[MAXSTR],*p;
     
@@ -258,7 +258,7 @@ static int confwrite(vt_t *vt, const char *file)
 }
 /* login ---------------------------------------------------------------------*/
 static int login(vt_t *vt)
-{
+{FNC
     char buff[256];
     
     trace(3,"login: passwd=%s type=%d\n",passwd,vt->type);
@@ -276,7 +276,7 @@ static int login(vt_t *vt)
 }
 /* read receiver commands ----------------------------------------------------*/
 static int readcmd(const char *file, char *cmd, int type)
-{
+{FNC
     FILE *fp;
     char buff[MAXSTR],*p=cmd;
     int i=0;
@@ -296,7 +296,7 @@ static int readcmd(const char *file, char *cmd, int type)
 }
 /* read antenna file ---------------------------------------------------------*/
 static void readant(vt_t *vt, prcopt_t *opt, nav_t *nav)
-{
+{FNC
     const pcv_t pcv0={0};
     pcvs_t pcvr={0},pcvs={0};
     pcv_t *pcv;
@@ -332,7 +332,7 @@ static void readant(vt_t *vt, prcopt_t *opt, nav_t *nav)
 }
 /* start rtk server ----------------------------------------------------------*/
 static int startsvr(vt_t *vt)
-{
+{FNC
     double pos[3],npos[3];
     char s[3][MAXRCVCMD]={"","",""},*cmds[]={NULL,NULL,NULL};
     char *ropts[]={"","",""};
@@ -408,7 +408,7 @@ static int startsvr(vt_t *vt)
 }
 /* stop rtk server -----------------------------------------------------------*/
 static void stopsvr(vt_t *vt)
-{
+{FNC
     char s[3][MAXRCVCMD]={"","",""},*cmds[]={NULL,NULL,NULL};
     int i,ret;
     
@@ -436,7 +436,7 @@ static void stopsvr(vt_t *vt)
 }
 /* print time ----------------------------------------------------------------*/
 static void prtime(vt_t *vt, gtime_t time)
-{
+{FNC
     double tow;
     int week;
     char tstr[64]="";
@@ -455,7 +455,7 @@ static void prtime(vt_t *vt, gtime_t time)
 }
 /* print solution ------------------------------------------------------------*/
 static void prsolution(vt_t *vt, const sol_t *sol, const double *rb)
-{
+{FNC
     const char *solstr[]={"------","FIX","FLOAT","SBAS","DGPS","SINGLE","PPP",""};
     double pos[3]={0},Qr[9],Qe[9]={0},dms1[3]={0},dms2[3]={0},bl[3]={0};
     double enu[3]={0},pitch=0.0,yaw=0.0,len;
@@ -549,7 +549,7 @@ static void prsolution(vt_t *vt, const sol_t *sol, const double *rb)
 }
 /* print status --------------------------------------------------------------*/
 static void prstatus(vt_t *vt)
-{
+{FNC
     rtk_t rtk;
     const char *svrstate[]={"stop","run"},*type[]={"rover","base","corr"};
     const char *sol[]={"-","fix","float","SBAS","DGPS","single","PPP",""};
@@ -654,7 +654,7 @@ static void prstatus(vt_t *vt)
     vt_printf(vt,"%-28s: %.3f\n","ratio for ar validation",rtk.sol.ratio);
     vt_printf(vt,"%-28s: %d\n","# of satellites rover",nsat0);
     vt_printf(vt,"%-28s: %d\n","# of satellites base",nsat1);
-    vt_printf(vt,"%-28s: %d\n","# of valid satellites",rtk.sol.ns);
+    vt_printf(vt,"%-28s: %d\n",":::::::::::# of valid satellites",rtk.sol.ns);
     vt_printf(vt,"%-28s: %.1f,%.1f,%.1f,%.1f\n","GDOP/PDOP/HDOP/VDOP",dop[0],dop[1],dop[2],dop[3]);
     vt_printf(vt,"%-28s: %d\n","# of real estimated states",rtk.na);
     vt_printf(vt,"%-28s: %d\n","# of all estimated states",rtk.nx);
@@ -699,7 +699,7 @@ static void prstatus(vt_t *vt)
 }
 /* print satellite -----------------------------------------------------------*/
 static void prsatellite(vt_t *vt, int nf)
-{
+{FNC
     rtk_t rtk;
     double az,el;
     char id[32];
@@ -744,7 +744,7 @@ static void prsatellite(vt_t *vt, int nf)
 }
 /* print observation data ----------------------------------------------------*/
 static void probserv(vt_t *vt, int nf)
-{
+{FNC
     obsd_t obs[MAXOBS*2];
     char tstr[64],id[32];
     int i,j,n=0,frq[]={1,2,5,7,8,6};
@@ -783,7 +783,7 @@ static void probserv(vt_t *vt, int nf)
 }
 /* print navigation data -----------------------------------------------------*/
 static void prnavidata(vt_t *vt)
-{
+{FNC
     eph_t eph[MAXSAT];
     geph_t geph[MAXPRNGLO];
     double ion[8],utc[4];
@@ -838,7 +838,7 @@ static void prnavidata(vt_t *vt)
 }
 /* print error/warning messages ----------------------------------------------*/
 static void prerror(vt_t *vt)
-{
+{FNC
     int n;
     
     trace(4,"prerror:\n");
@@ -853,7 +853,7 @@ static void prerror(vt_t *vt)
 }
 /* print stream --------------------------------------------------------------*/
 static void prstream(vt_t *vt)
-{
+{FNC
     const char *ch[]={
         "input rover","input base","input corr","output sol1","output sol2",
         "log rover","log base","log corr","monitor"
@@ -890,7 +890,7 @@ static void prstream(vt_t *vt)
 }
 /* start command -------------------------------------------------------------*/
 static void cmd_start(char **args, int narg, vt_t *vt)
-{
+{FNC
     trace(3,"cmd_start:\n");
     
     if (!startsvr(vt)) return;
@@ -898,7 +898,7 @@ static void cmd_start(char **args, int narg, vt_t *vt)
 }
 /* stop command --------------------------------------------------------------*/
 static void cmd_stop(char **args, int narg, vt_t *vt)
-{
+{FNC
     trace(3,"cmd_stop:\n");
     
     stopsvr(vt);
@@ -906,7 +906,7 @@ static void cmd_stop(char **args, int narg, vt_t *vt)
 }
 /* restart command -----------------------------------------------------------*/
 static void cmd_restart(char **args, int narg, vt_t *vt)
-{
+{FNC
     trace(3,"cmd_restart:\n");
     
     stopsvr(vt);
@@ -915,7 +915,7 @@ static void cmd_restart(char **args, int narg, vt_t *vt)
 }
 /* solution command ----------------------------------------------------------*/
 static void cmd_solution(char **args, int narg, vt_t *vt)
-{
+{FNC
     int i,cycle=0;
     
     trace(3,"cmd_solution:\n");
@@ -934,7 +934,7 @@ static void cmd_solution(char **args, int narg, vt_t *vt)
 }
 /* status command ------------------------------------------------------------*/
 static void cmd_status(char **args, int narg, vt_t *vt)
-{
+{FNC
     int cycle=0;
     
     trace(3,"cmd_status:\n");
@@ -950,7 +950,7 @@ static void cmd_status(char **args, int narg, vt_t *vt)
 }
 /* satellite command ---------------------------------------------------------*/
 static void cmd_satellite(char **args, int narg, vt_t *vt)
-{
+{FNC
     int i,nf=2,cycle=0;
     
     trace(3,"cmd_satellite:\n");
@@ -967,7 +967,7 @@ static void cmd_satellite(char **args, int narg, vt_t *vt)
 }
 /* observ command ------------------------------------------------------------*/
 static void cmd_observ(char **args, int narg, vt_t *vt)
-{
+{FNC
     int i,nf=2,cycle=0;
     
     trace(3,"cmd_observ:\n");
@@ -984,7 +984,7 @@ static void cmd_observ(char **args, int narg, vt_t *vt)
 }
 /* navidata command ----------------------------------------------------------*/
 static void cmd_navidata(char **args, int narg, vt_t *vt)
-{
+{FNC
     int cycle=0;
     
     trace(3,"cmd_navidata:\n");
@@ -1000,7 +1000,7 @@ static void cmd_navidata(char **args, int narg, vt_t *vt)
 }
 /* error command -------------------------------------------------------------*/
 static void cmd_error(char **args, int narg, vt_t *vt)
-{
+{FNC
     trace(3,"cmd_error:\n");
     
     rtksvrlock(&svr);
@@ -1015,7 +1015,7 @@ static void cmd_error(char **args, int narg, vt_t *vt)
 }
 /* stream command ------------------------------------------------------------*/
 static void cmd_stream(char **args, int narg, vt_t *vt)
-{
+{FNC
     int cycle=0;
     
     trace(3,"cmd_stream:\n");
@@ -1031,7 +1031,7 @@ static void cmd_stream(char **args, int narg, vt_t *vt)
 }
 /* option command ------------------------------------------------------------*/
 static void cmd_option(char **args, int narg, vt_t *vt)
-{
+{FNC
     char buff[MAXSTR],*p;
     int i,n;
     
@@ -1062,7 +1062,7 @@ static void cmd_option(char **args, int narg, vt_t *vt)
 }
 /* set command ---------------------------------------------------------------*/
 static void cmd_set(char **args, int narg, vt_t *vt)
-{
+{FNC
     opt_t *opt;
     int *modf;
     char buff[MAXSTR];
@@ -1107,7 +1107,7 @@ static void cmd_set(char **args, int narg, vt_t *vt)
 }
 /* load command --------------------------------------------------------------*/
 static void cmd_load(char **args, int narg, vt_t *vt)
-{
+{FNC
     char file[MAXSTR]="";
     
     trace(3,"cmd_load:\n");
@@ -1133,7 +1133,7 @@ static void cmd_load(char **args, int narg, vt_t *vt)
 }
 /* save command --------------------------------------------------------------*/
 static void cmd_save(char **args, int narg, vt_t *vt)
-{
+{FNC
     char file[MAXSTR]="",comment[256],s[64];
     INIT_ZERO(s);
     
@@ -1157,7 +1157,7 @@ static void cmd_save(char **args, int narg, vt_t *vt)
 }
 /* log command ---------------------------------------------------------------*/
 static void cmd_log(char **args, int narg, vt_t *vt)
-{
+{FNC
     trace(3,"cmd_log:\n");
     
     if (narg<2) {
@@ -1179,7 +1179,7 @@ static void cmd_log(char **args, int narg, vt_t *vt)
 }
 /* help command --------------------------------------------------------------*/
 static void cmd_help(char **args, int narg, vt_t *vt)
-{
+{FNC
     char str[]="path";
     int i;
     
@@ -1196,7 +1196,7 @@ static void cmd_help(char **args, int narg, vt_t *vt)
 }
 /* exec command --------------------------------------------------------------*/
 static int cmd_exec(const char *cmd, vt_t *vt)
-{
+{FNC
     FILE *fp;
     int ret;
     char buff[MAXSTR];
@@ -1216,7 +1216,7 @@ static int cmd_exec(const char *cmd, vt_t *vt)
 }
 /* command interpreter -------------------------------------------------------*/
 static void cmdshell(vt_t *vt)
-{
+{FNC
     const char *cmds[]={
         "start","stop","restart","solution","status","satellite","observ",
         "navidata","stream","error","option","set","load","save","log","help",
@@ -1385,7 +1385,7 @@ static void cmdshell(vt_t *vt)
 *     
 *-----------------------------------------------------------------------------*/
 int main(int argc, char **argv)
-{
+{FNC
     vt_t vt={0};
     int i,start=0,port=0,outstat=0,trace=0;
     char *dev="",file[MAXSTR]="";
