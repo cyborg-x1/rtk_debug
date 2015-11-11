@@ -1225,7 +1225,7 @@ static void cmdshell(vt_t *vt)
     int i,j,narg;
     char buff[MAXCMD],*args[MAXARG],*p;
     INIT_ZERO(buff);
-    INIT_ZERO(args)
+    INIT_ZERO(args);
     
     trace(3,"cmdshell:\n");
     

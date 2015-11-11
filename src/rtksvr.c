@@ -27,7 +27,7 @@
 *           2014/06/28  1.9  fix probram on ephemeris update of beidou
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
-
+#include "initzero.h"
 static const char rcsid[]="$Id:$";
 
 /* write solution header to output stream ------------------------------------*/
@@ -122,9 +122,15 @@ static void updatesvr(rtksvr_t *svr, int ret, obs_t *obs, nav_t *nav, int sat,
     eph_t *eph1,*eph2,*eph3;
     geph_t *geph1,*geph2,*geph3;
     gtime_t tof;
-    double pos[3],del[3]={0},dr[3];
-    int i,n=0,prn,sbssat=svr->rtk.opt.sbassatsel,sys,iode;
-    
+    double pos[3],del[3],dr[3];
+    int i,n=0,prn=0,sbssat=svr->rtk.opt.sbassatsel,sys=0,iode=0;
+
+    INIT_ZERO(del);
+    INIT_ZERO(dr);
+    INIT_ZERO(pos);
+    INIT_ZERO(prn);
+
+
     tracet(4,"updatesvr: ret=%d sat=%2d index=%d\n",ret,sat,index);
     
     if (ret==1) { /* observation data */
@@ -314,9 +320,10 @@ static int decoderaw(rtksvr_t *svr, int index)
 /* decode download file ------------------------------------------------------*/
 static void decodefile(rtksvr_t *svr, int index)
 {
-    nav_t nav={0};
+    nav_t nav;
     char file[1024];
     int nb;
+    INIT_ZERO(nav);
     
     tracet(4,"decodefile: index=%d\n",index);
     
@@ -384,7 +391,9 @@ static void *rtksvrthread(void *arg)
     double tt;
     unsigned int tick,ticknmea;
     unsigned char *p,*q;
-    int i,j,n,fobs[3]={0},cycle,cputime;
+    int i,j,n,fobs[3],cycle,cputime;
+    INIT_ZERO(fobs);
+
     
     tracet(3,"rtksvrthread:\n");
     
@@ -495,13 +504,21 @@ static void *rtksvrthread(void *arg)
 *-----------------------------------------------------------------------------*/
 extern int rtksvrinit(rtksvr_t *svr)
 {
-    gtime_t time0={0};
-    sol_t  sol0 ={{0}};
-    eph_t  eph0 ={0,-1,-1};
-    geph_t geph0={0,-1};
-    seph_t seph0={0};
+    gtime_t time0;
+    sol_t  sol0;
+    eph_t  eph0;
+    geph_t geph0;
+    seph_t seph0;
     int i,j;
     
+    INIT_ZERO(time0);
+    INIT_ZERO(sol0);
+    INIT_ZERO(eph0);
+    INIT_ZERO(geph0);
+    INIT_ZERO(seph0);
+
+
+
     tracet(3,"rtksvrinit:\n");
     
     svr->state=svr->cycle=svr->nmeacycle=svr->nmeareq=0;
@@ -624,9 +641,13 @@ extern int rtksvrstart(rtksvr_t *svr, int cycle, int buffsize, int *strs,
                        const double *nmeapos, prcopt_t *prcopt,
                        solopt_t *solopt, stream_t *moni)
 {
-    gtime_t time,time0={0};
+    gtime_t time,time0;
     int i,j,rw;
     
+    INIT_ZERO(time);
+    INIT_ZERO(time0);
+
+
     tracet(3,"rtksvrstart: cycle=%d buffsize=%d navsel=%d nmeacycle=%d nmeareq=%d\n",
            cycle,buffsize,navsel,nmeacycle,nmeareq);
     
@@ -874,6 +895,8 @@ extern void rtksvrsstat(rtksvr_t *svr, int *sstat, char *msg)
     int i;
     char s[MAXSTRMSG],*p=msg;
     
+    INIT_ZERO(s);
+
     tracet(4,"rtksvrsstat:\n");
     
     rtksvrlock(svr);
