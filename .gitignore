@@ -1,4 +1,6 @@
 /Debug/*
 /.settings/Splint_Eclipse_Plugin.prefs
 *.o
-rtkrcv
+rtkrcv/.settings/org.eclipse.cdt.codan.core.prefs
+/rtkrcv
+/.settings/org.eclipse.cdt.codan.core.prefs
