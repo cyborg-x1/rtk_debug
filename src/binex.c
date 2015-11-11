@@ -1210,7 +1210,7 @@ extern int input_bnx(raw_t *raw, unsigned char data)
     int len_h,len_c;
     
     trace(5,"input_bnx: data=%02x\n",data);
-    
+
     /* synchronize binex message */
     if (raw->nbyte==0) {
         if (!sync_bnx(raw->buff,data)) return 0;

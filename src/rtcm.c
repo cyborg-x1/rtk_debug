@@ -44,6 +44,7 @@
 *           2013/12/06 1.8  support SBAS/BeiDou SSR messages (ref[16])
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "initzero.h"
 
 static const char rcsid[]="$Id:$";
 
@@ -65,12 +66,26 @@ extern int encode_rtcm3(rtcm_t *rtcm, int type, int sync);
 *-----------------------------------------------------------------------------*/
 extern int init_rtcm(rtcm_t *rtcm)
 {
-    gtime_t time0={0};
-    obsd_t data0={{0}};
-    eph_t  eph0 ={0,-1,-1};
-    geph_t geph0={0,-1};
-    ssr_t ssr0={{{0}}};
+    gtime_t time0;
+    obsd_t data0;
+    eph_t  eph0;
+    geph_t geph0;
+    ssr_t ssr0;
     int i,j;
+
+
+    INIT_ZERO(time0);
+    INIT_ZERO(data0);
+    INIT_ZERO(eph0);
+    INIT_ZERO(geph0);
+    INIT_ZERO(ssr0);
+
+    eph0.sat=0;
+    eph0.iode=-1,
+    eph0.iodc=-1;
+    geph0.sat=0;
+    geph0.iode=-1;
+
     
     trace(3,"init_rtcm:\n");
     
