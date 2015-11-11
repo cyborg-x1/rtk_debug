@@ -18,6 +18,7 @@
 *           2015/03/19 1.5  fix bug on ionosphere correction for GLO and BDS
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "initzero.h"
 
 static const char rcsid[]="$Id:$";
 
@@ -202,8 +203,8 @@ static int rescode(int iter, const obsd_t *obs, int n, const double *rs,
                    double *v, double *H, double *var, double *azel, int *vsat,
                    double *resp, int *ns)
 {
-    double r,dion,dtrp,vmeas,vion,vtrp,rr[3],pos[3],dtr,e[3],P,lam_L1;
-    int i,j,nv=0,sys,mask[4]={0};
+    double r=0,dion=0,dtrp=0,vmeas=0,vion=0,vtrp=0,rr[3]={0,0,0},pos[3]={0,0,0},dtr=0,e[3]={0,0,0},P=0,lam_L1=0;
+    int i=0,j=0,nv=0,sys=0,mask[4]={0,0,0,0};
     
     trace(3,"resprng : n=%d\n",n);
     
@@ -282,7 +283,9 @@ static int valsol(const double *azel, const int *vsat, int n,
 {
     double azels[MAXOBS*2],dop[4],vv;
     int i,ns;
-    
+    INIT_ZERO(azels);
+    INIT_ZERO(dop);
+
     trace(3,"valsol  : n=%d nv=%d\n",n,nv);
     
     /* chi-square validation of residuals */
@@ -311,8 +314,12 @@ static int estpos(const obsd_t *obs, int n, const double *rs, const double *dts,
                   const prcopt_t *opt, sol_t *sol, double *azel, int *vsat,
                   double *resp, char *msg)
 {
-    double x[NX]={0},dx[NX],Q[NX*NX],*v,*H,*var,sig;
-    int i,j,k,info,stat,nv,ns;
+    double x[NX],dx[NX],Q[NX*NX],*v,*H,*var,sig;
+    int i=0,j=0,k=0,info=0,stat=0,nv=0,ns=0;
+    INIT_ZERO(x);
+    INIT_ZERO(dx);
+    INIT_ZERO(Q);
+
     
     trace(3,"estpos  : n=%d\n",n);
     
@@ -360,7 +367,7 @@ static int estpos(const obsd_t *obs, int n, const double *rs, const double *dts,
             
             /* validate solution */
             if ((stat=valsol(azel,vsat,n,opt,v,nv,NX,msg))) {
-                sol->stat=opt->sateph==EPHOPT_SBAS?SOLQ_SBAS:SOLQ_SINGLE;
+                sol->stat=opt->sateph==EPHOPT_SBAS?(unsigned char)SOLQ_SBAS:(unsigned char)SOLQ_SINGLE;
             }
             free(v); free(H); free(var);
             
@@ -380,10 +387,12 @@ static int raim_fde(const obsd_t *obs, int n, const double *rs,
                     double *azel, int *vsat, double *resp, char *msg)
 {
     obsd_t *obs_e;
-    sol_t sol_e={{0}};
+    sol_t sol_e;
+
     char tstr[32],name[16],msg_e[128];
     double *rs_e,*dts_e,*vare_e,*azel_e,*resp_e,rms_e,rms=100.0;
     int i,j,k,nvsat,stat=0,*svh_e,*vsat_e,sat=0;
+    INIT_ZERO(sol_e);
     
     trace(3,"raim_fde: %s n=%2d\n",time_str(obs[0].time,0),n);
     
@@ -454,7 +463,7 @@ static int resdop(const obsd_t *obs, int n, const double *rs, const double *dts,
 {
     double lam,rate,pos[3],E[9],a[3],e[3],vs[3],cosel;
     int i,j,nv=0;
-    
+    INIT_ZERO(e);
     trace(3,"resdop  : n=%d\n",n);
     
     ecef2pos(rr,pos); xyz2enu(pos,E);
@@ -495,9 +504,14 @@ static void estvel(const obsd_t *obs, int n, const double *rs, const double *dts
                    const nav_t *nav, const prcopt_t *opt, sol_t *sol,
                    const double *azel, const int *vsat)
 {
-    double x[4]={0},dx[4],Q[16],*v,*H;
+    double x[4],dx[4],Q[16],*v,*H;
     int i,j,nv;
     
+    INIT_ZERO(x);
+    INIT_ZERO(dx);
+    INIT_ZERO(Q);
+
+
     trace(3,"estvel  : n=%d\n",n);
     
     v=mat(n,1); H=mat(4,n);
@@ -542,8 +556,10 @@ extern int pntpos(const obsd_t *obs, int n, const nav_t *nav,
 {
     prcopt_t opt_=*opt;
     double *rs,*dts,*var,*azel_,*resp;
-    int i,stat,vsat[MAXOBS]={0},svh[MAXOBS];
+    int i,stat,vsat[MAXOBS],svh[MAXOBS];
     
+    INIT_ZERO(vsat);
+
     sol->stat=SOLQ_NONE;
     
     if (n<=0) {strcpy(msg,"no observation data"); return 0;}
