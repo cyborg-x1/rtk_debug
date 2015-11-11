@@ -27,6 +27,7 @@
 #include <signal.h>
 #include "rtklib.h"
 #include "vt.h"
+#include "initzero.h"
 
 static const char rcsid[]="$Id:$";
 
@@ -559,11 +560,23 @@ static void prstatus(vt_t *vt)
     const char *freq[]={"-","L1","L1+L2","L1+L2+L5","","",""};
     rtcm_t rtcm[3];
     int i,j,n,thread,cycle,state,rtkstat,nsat0,nsat1,prcout;
-    int cputime,nb[3]={0},nmsg[3][10]={{0}};
+    int cputime,nb[3];
+    unsigned nmsg[3][10];
     char tstr[64],s[1024],*p;
-    double runtime,rt[3]={0},dop[4]={0},rr[3],bl1=0.0,bl2=0.0;
+    double runtime,rt[3],dop[4],rr[3],bl1=0.0,bl2=0.0;
     double azel[MAXSAT*2],pos[3],vel[3],*del;
     
+    INIT_ZERO(nmsg);
+    INIT_ZERO(nb);
+    INIT_ZERO(rt);
+    INIT_ZERO(dop);
+    INIT_ZERO(rr);
+    INIT_ZERO(pos);
+    INIT_ZERO(vel);
+
+
+
+
     trace(4,"prstatus:\n");
     
     rtksvrlock(&svr);
@@ -736,6 +749,8 @@ static void probserv(vt_t *vt, int nf)
     char tstr[64],id[32];
     int i,j,n=0,frq[]={1,2,5,7,8,6};
     
+    INIT_ZERO(obs);
+
     trace(4,"probserv:\n");
     
     rtksvrlock(&svr);
@@ -774,7 +789,9 @@ static void prnavidata(vt_t *vt)
     double ion[8],utc[4];
     gtime_t time;
     char id[32],s1[64],s2[64],s3[64];
-    int i,valid,prn,leaps;
+    int i=0,valid=0,prn=0,leaps=0;
+    INIT_ZERO(ion);
+    INIT_ZERO(utc);
     
     trace(4,"prnavidata:\n");
     
@@ -848,7 +865,8 @@ static void prstream(vt_t *vt)
                        "gw10","javad","nvs","binex","rt17","","","sp3","","",""};
     const char *sol[]={"llh","xyz","enu","nmea"};
     stream_t stream[9];
-    int i,format[9]={0};
+    int i,format[9];
+    INIT_ZERO(format);
     
     trace(4,"prstream:\n");
     
@@ -1117,6 +1135,7 @@ static void cmd_load(char **args, int narg, vt_t *vt)
 static void cmd_save(char **args, int narg, vt_t *vt)
 {
     char file[MAXSTR]="",comment[256],s[64];
+    INIT_ZERO(s);
     
     trace(3,"cmd_save:\n");
     
@@ -1205,6 +1224,8 @@ static void cmdshell(vt_t *vt)
     };
     int i,j,narg;
     char buff[MAXCMD],*args[MAXARG],*p;
+    INIT_ZERO(buff);
+    INIT_ZERO(args)
     
     trace(3,"cmdshell:\n");
     
