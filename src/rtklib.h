@@ -44,6 +44,16 @@
 extern "C" {
 #endif
 
+#define FNC\
+{\
+   const char *file=__FILE__;\
+   const char *function=__FUNCTION__;\
+   printf("%s->%s",file,function);\
+}\
+
+
+
+
 /* constants -----------------------------------------------------------------*/
 
 #define VER_RTKLIB  "2.4.2"             /* library version */
