@@ -43,6 +43,9 @@
 #include <ctype.h>
 #include "rtklib.h"
 
+
+#include "initzero.h"
+
 static const char rcsid[]="$Id: solution.c,v 1.1 2008/07/17 21:48:06 ttaka Exp $"; //?
 
 /* constants and macros ------------------------------------------------------*/
@@ -234,6 +237,7 @@ static int decode_nmea(char *buff, sol_t *sol)
 {
     char *p,*q,*val[MAXFIELD];
     int n=0;
+    INIT_ZERO(val);
     
     trace(4,"decode_nmea: buff=%s\n",buff);
     
@@ -306,16 +310,19 @@ static char *decode_soltime(char *buff, const solopt_t *opt, gtime_t *time)
 /* decode x/y/z-ecef ---------------------------------------------------------*/
 static int decode_solxyz(char *buff, const solopt_t *opt, sol_t *sol)
 {
-    double val[MAXFIELD],P[9]={0,0,0,0,0,0,0,0,0};
-    int i=0,j,n;
+    double val[MAXFIELD],P[9];
+    int i=0,j=0,n=0;
     const char *sep=opt2sep(opt);
+    INIT_ZERO(val);
+    INIT_ZERO(P);
+
     
     trace(4,"decode_solxyz:\n");
     
     if ((n=tonum(buff,sep,val))<3) return 0;
     
     for (j=0;j<3;j++) {
-        sol->rr[j]=val[i++]; //Set to an array which was never used before?
+        sol->rr[j]=val[i++]; /*Set to an array which was never used before?*/
         /* xyz */
     }
     if (i<n) sol->stat=(unsigned char)val[i++];
@@ -345,6 +352,7 @@ static int decode_solllh(char *buff, const solopt_t *opt, sol_t *sol)
     double val[MAXFIELD],pos[3],Q[9]={0,0,0,0,0,0,0,0,0},P[9];
     int i=0,n;
     const char *sep=opt2sep(opt);
+    INIT_ZERO(val);
     
     trace(4,"decode_solllh:\n");
     
@@ -352,7 +360,7 @@ static int decode_solllh(char *buff, const solopt_t *opt, sol_t *sol)
     
     if (!opt->degf) {
         if (n<3) return 0;
-        pos[0]=val[i++]*D2R; /* lat/lon/hgt (ddd.ddd) */
+        pos[0]=val[i++]*D2R; /* lat/lon/hgt (ddd.ddd) */ /*here again*/
         pos[1]=val[i++]*D2R;
         pos[2]=val[i++];
     }
@@ -392,6 +400,7 @@ static int decode_solenu(char *buff, const solopt_t *opt, sol_t *sol)
     double val[MAXFIELD],Q[9]={0,0,0,0,0,0,0,0,0};
     int i=0,j,n;
     const char *sep=opt2sep(opt);
+    INIT_ZERO(val);
     
     trace(4,"decode_solenu:\n");
     
@@ -426,6 +435,7 @@ static int decode_solgsi(char *buff, const solopt_t *opt, sol_t *sol)
 {
     double val[MAXFIELD];
     int i=0,j;
+    INIT_ZERO(val);
     
     trace(4,"decode_solgsi:\n");
     
@@ -441,8 +451,8 @@ static int decode_solgsi(char *buff, const solopt_t *opt, sol_t *sol)
 static int decode_solpos(char *buff, const solopt_t *opt, sol_t *sol)
 {
     sol_t sol0;
-    memset(&sol0, 0, sizeof(sol_t));
     char *p=buff;
+    memset(&sol0, 0, sizeof(sol_t));
     
     trace(4,"decode_solpos: buff=%s\n",buff);
     
@@ -467,6 +477,8 @@ static void decode_refpos(char *buff, const solopt_t *opt, double *rb)
     double val[MAXFIELD],pos[3];
     int i,n;
     const char *sep=opt2sep(opt);
+    INIT_ZERO(val);
+    INIT_ZERO(pos);
     
     trace(3,"decode_refpos: buff=%s\n",buff);
     
@@ -491,7 +503,7 @@ static void decode_refpos(char *buff, const solopt_t *opt, double *rb)
 /* decode solution -----------------------------------------------------------*/
 static int decode_sol(char *buff, const solopt_t *opt, sol_t *sol, double *rb)
 {
-    char *p;
+    char *p=0;
     
     trace(4,"decode_sol: buff=%s\n",buff);
     
@@ -584,9 +596,9 @@ extern int inputsol(unsigned char data, gtime_t ts, gtime_t te, double tint,
                     int qflag, const solopt_t *opt, solbuf_t *solbuf)
 {
     sol_t sol;
+    int stat;
     memset(&sol, 0, sizeof(sol_t));
 
-    int stat;
     
     trace(4,"inputsol: data=0x%02x\n",data);
     
@@ -700,7 +712,7 @@ extern int readsolt(char *files[], int nfile, gtime_t ts, gtime_t te,
 }
 extern int readsol(char *files[], int nfile, solbuf_t *sol)
 {
-    gtime_t time={0};
+    gtime_t time={0,0.0};
     
     trace(3,"readsol: nfile=%d\n",nfile);
     
@@ -766,7 +778,7 @@ extern sol_t *getsol(solbuf_t *solbuf, int index)
 *-----------------------------------------------------------------------------*/
 extern void initsolbuf(solbuf_t *solbuf, int cyclic, int nmax)
 {
-    gtime_t time0={0};
+    gtime_t time0={0,0.0};
     
     trace(3,"initsolbuf: cyclic=%d nmax=%d\n",cyclic,nmax);
     
@@ -833,11 +845,13 @@ static int sort_solstat(solstatbuf_t *statbuf)
 /* decode solution status ----------------------------------------------------*/
 static int decode_solstat(char *buff, solstat_t *stat)
 {
-    static const solstat_t stat0={{0}};
-    double tow,az,el,resp,resc;
-    int n,week,sat,frq,vsat,snr,fix,slip,lock,outc,slipc,rejc;
-    char id[32]="",*p;
-    
+    static const solstat_t stat0={{0,0.0},0,0,0,0,0,0,0,0,0,0,0,0};
+    double tow=0.0,az=0.0,el=0.0,resp=0.0,resc=0.0;
+
+    int n=0,week=0,sat=0,frq=0,vsat=0,snr=0,fix=0,slip=0,lock=0,outc=0,slipc=0,rejc=0;
+
+    char id[32]="",*p=0;
+
     trace(4,"decode_solstat: buff=%s\n",buff);
     
     if (strstr(buff,"$SAT")!=buff) return 0;
@@ -895,8 +909,10 @@ static void addsolstat(solstatbuf_t *statbuf, const solstat_t *stat)
 static int readsolstatdata(FILE *fp, gtime_t ts, gtime_t te, double tint,
                            solstatbuf_t *statbuf)
 {
-    solstat_t stat={{0}};
+    solstat_t stat;
     char buff[MAXSOLMSG+1];
+    INIT_ZERO(stat);
+
     
     trace(3,"readsolstatdata:\n");
     
@@ -976,10 +992,15 @@ static int outecef(unsigned char *buff, const char *s, const sol_t *sol,
 static int outpos(unsigned char *buff, const char *s, const sol_t *sol,
                   const solopt_t *opt)
 {
-    double pos[3],dms1[3],dms2[3],P[9],Q[9];
+    double pos[3]={0,0,0},dms1[3]={0,0,0},dms2[3]={0,0,0},P[9],Q[9];
     const char *sep=opt2sep(opt);
     char *p=(char *)buff;
-    
+
+    INIT_ZERO(pos);
+    INIT_ZERO(Q);
+    INIT_ZERO(P);
+    INIT_ZERO(Q);
+
     trace(3,"outpos  :\n");
     
     ecef2pos(sol->rr,pos);
@@ -1407,7 +1428,7 @@ extern int outsols(unsigned char *buff, const sol_t *sol, const double *rb,
 {
     gtime_t time,ts={0,0.0};
     double gpst;
-    int week,timeu;
+    int week=0,timeu=0;
     const char *sep=opt2sep(opt);
     char s[64];
     unsigned char *p=buff;
