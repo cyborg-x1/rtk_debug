@@ -583,8 +583,8 @@ static int getSigFreq(int _signType){
 /* adjust weekly rollover of gps time ----------------------------------------*/
 static gtime_t adjweek(gtime_t time, double tow)
 {
-    double tow_p;
-    int week;
+    double tow_p=0.0;
+    int week=0;
     tow_p=time2gpst(time,&week);
     if      (tow<tow_p-302400.0) tow+=604800.0;
     else if (tow>tow_p+302400.0) tow-=604800.0;

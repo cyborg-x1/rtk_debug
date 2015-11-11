@@ -14,6 +14,7 @@
 *           2014/04/27 1.3 fix bug on decoding iode for message 0x01-02
 *-----------------------------------------------------------------------------*/
 #include "rtklib.h"
+#include "initzero.h"
 
 static const char rcsid[]="$Id:$";
 
@@ -1034,12 +1035,16 @@ static unsigned char *decode_bnx_7f_05_obs(raw_t *raw, unsigned char *buff,
 /* decode binex mesaage 0x7f-05: trimble netr8 -------------------------------*/
 static int decode_bnx_7f_05(raw_t *raw, unsigned char *buff, int len)
 {
-    obsd_t data={{0}};
+    obsd_t data;
+
+    INIT_ZERO(data);
+
     double clkoff=0.0,toff[16]={0};
     char *msg;
     unsigned char *p=buff;
     unsigned int flag;
-    int i,nsat,nobs,prn,sys,sat,clkrst=0,rsys=0,nsys=0,tsys[16]={0};
+    int i,nsat,nobs,prn,sys,sat,clkrst=0,rsys=0,nsys=0,tsys[16];
+    INIT_ZERO(tsys);
     
     trace(4,"decode_bnx_7f_05\n");
     
