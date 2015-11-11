@@ -75,9 +75,9 @@ static int merge_two_s(int a, unsigned int b, int n)
     return (int)((a<<n)+b);
 }
 /* get sign-magnitude bits ---------------------------------------------------*/
-static double getbitg(const unsigned char *buff, int pos, int len)
+static double getbitg(const unsigned char *buff, int pos, int len) //TODO: Bug are you here?
 {
-    double value=getbitu(buff,pos+1,len-1);
+    double value=((double)getbitu(buff,pos+1,len-1));
     return getbitu(buff,pos,1)?-value:value;
 }
 /* decode BeiDou D1 ephemeris --------------------------------------------------
