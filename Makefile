@@ -1,7 +1,8 @@
 CC = gcc
-CFLAGS = -c -Wall -g -Os -Iinclude
+CFLAGS = -c -Wall -g -Os -Iinclude -DENAGLO -DENAQZS -DENACMP -DNFREQ=3
 LD = $(CC)
-LDFLAGS = -lm -lpthread
+
+LDFLAGS = -lm -lpthread 
 
 TARGET = rtkrcv
 
