@@ -315,8 +315,8 @@ static int decode_solxyz(char *buff, const solopt_t *opt, sol_t *sol)
     if ((n=tonum(buff,sep,val))<3) return 0;
     
     for (j=0;j<3;j++) {
-        sol->rr[j]=val[i];
-        i++;/* xyz */
+        sol->rr[j]=val[i++];
+        /* xyz */
     }
     if (i<n) sol->stat=(unsigned char)val[i++];
     if (i<n) sol->ns  =(unsigned char)val[i++];
