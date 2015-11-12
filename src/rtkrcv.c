@@ -490,7 +490,7 @@ static void prsolution(vt_t *vt, const sol_t *sol, const double *rb)
         vt_printf(vt," %s:%3.0f %02.0f %07.4f",pos[1]<0?"W":"E",fabs(dms2[0]),dms2[1],dms2[2]);
         vt_printf(vt," H:%8.3f",pos[2]);
         if (solflag&1) {
-            vt_printf(vt," (N:%6.3f E:%6.3f U:%6.3f)",SQRT(Qe[4]),SQRT(Qe[0]),SQRT(Qe[8]));
+            //vt_printf(vt," (N:%6.3f E:%6.3f U:%6.3f)",SQRT(Qe[4]),SQRT(Qe[0]),SQRT(Qe[8]));
         }
     }
     else if (soltype==1) {
@@ -503,7 +503,7 @@ static void prsolution(vt_t *vt, const sol_t *sol, const double *rb)
         vt_printf(vt," %s:%12.8f",pos[1]<0.0?"W":"E",fabs(pos[1])*R2D);
         vt_printf(vt," H:%8.3f",pos[2]);
         if (solflag&1) {
-            vt_printf(vt," (E:%6.3f N:%6.3f U:%6.3fm)",SQRT(Qe[0]),SQRT(Qe[4]),SQRT(Qe[8]));
+            //vt_printf(vt," (E:%6.3f N:%6.3f U:%6.3fm)",SQRT(Qe[0]),SQRT(Qe[4]),SQRT(Qe[8]));
         }
     }
     else if (soltype==2) {
@@ -511,7 +511,7 @@ static void prsolution(vt_t *vt, const sol_t *sol, const double *rb)
         vt_printf(vt," Y:%12.3f",sol->rr[1]);
         vt_printf(vt," Z:%12.3f",sol->rr[2]);
         if (solflag&1) {
-            vt_printf(vt," (X:%6.3f Y:%6.3f Z:%6.3f)",SQRT(Qr[0]),SQRT(Qr[4]),SQRT(Qr[8]));
+            //vt_printf(vt," (X:%6.3f Y:%6.3f Z:%6.3f)",SQRT(Qr[0]),SQRT(Qr[4]),SQRT(Qr[8]));
         }
     }
     else if (soltype==3) {
@@ -524,7 +524,7 @@ static void prsolution(vt_t *vt, const sol_t *sol, const double *rb)
         vt_printf(vt," N:%12.3f",enu[1]);
         vt_printf(vt," U:%12.3f",enu[2]);
         if (solflag&1) {
-            vt_printf(vt," (E:%6.3f N:%6.3f U:%6.3f)",SQRT(Qe[0]),SQRT(Qe[4]),SQRT(Qe[8]));
+            //vt_printf(vt," (E:%6.3f N:%6.3f U:%6.3f)",SQRT(Qe[0]),SQRT(Qe[4]),SQRT(Qe[8]));
         }
     }
     else if (soltype==4) {
@@ -539,7 +539,7 @@ static void prsolution(vt_t *vt, const sol_t *sol, const double *rb)
         vt_printf(vt," Y:%12.3f",yaw*R2D);
         vt_printf(vt," L:%12.3f",len);
         if (solflag&1) {
-            vt_printf(vt," (E:%6.3f N:%6.3f U:%6.3f)",SQRT(Qe[0]),SQRT(Qe[4]),SQRT(Qe[8]));
+            //vt_printf(vt," (E:%6.3f N:%6.3f U:%6.3f)",SQRT(Qe[0]),SQRT(Qe[4]),SQRT(Qe[8]));
         }
     }
     if (solflag&2) {
@@ -667,35 +667,35 @@ static void prstatus(vt_t *vt)
     vt_printf(vt,"%-28s: %.3f,%.3f,%.3f\n","vel enu (m/s) rover",vel[0],vel[1],vel[2]);
     vt_printf(vt,"%-28s: %.3f,%.3f,%.3f\n","pos xyz float (m) rover",
             rtk.x?rtk.x[0]:0,rtk.x?rtk.x[1]:0,rtk.x?rtk.x[2]:0);
-    vt_printf(vt,"%-28s: %.3f,%.3f,%.3f\n","pos xyz float std (m) rover",
-            rtk.P?SQRT(rtk.P[0]):0,rtk.P?SQRT(rtk.P[1+1*rtk.nx]):0,rtk.P?SQRT(rtk.P[2+2*rtk.nx]):0);
-    vt_printf(vt,"%-28s: %.3f,%.3f,%.3f\n","pos xyz fixed (m) rover",
-            rtk.xa?rtk.xa[0]:0,rtk.xa?rtk.xa[1]:0,rtk.xa?rtk.xa[2]:0);
-    vt_printf(vt,"%-28s: %.3f,%.3f,%.3f\n","pos xyz fixed std (m) rover",
-            rtk.Pa?SQRT(rtk.Pa[0]):0,rtk.Pa?SQRT(rtk.Pa[1+1*rtk.na]):0,rtk.Pa?SQRT(rtk.Pa[2+2*rtk.na]):0);
-    vt_printf(vt,"%-28s: %.3f,%.3f,%.3f\n","pos xyz (m) base",
-            rtk.rb[0],rtk.rb[1],rtk.rb[2]);
-    vt_printf(vt,"%-28s: %s\n","ant type rover",rtk.opt.pcvr[0].type);
-    del=rtk.opt.antdel[0];
-    vt_printf(vt,"%-28s: %.3f %.3f %.3f\n","ant delta rover",del[0],del[1],del[2]);
-    vt_printf(vt,"%-28s: %s\n","ant type base" ,rtk.opt.pcvr[1].type);
-    del=rtk.opt.antdel[1];
-    vt_printf(vt,"%-28s: %.3f %.3f %.3f\n","ant delta base",del[0],del[1],del[2]);
-    if (norm(rtk.rb,3)>0.0) ecef2pos(rtk.rb,pos); else pos[0]=pos[1]=pos[2]=0.0;
-    vt_printf(vt,"%-28s: %.8f,%.8f,%.3f\n","pos llh (deg,m) base",
-            pos[0]*R2D,pos[1]*R2D,pos[2]);
-    ecef2enu(pos,rtk.rb+3,vel);
-    vt_printf(vt,"%-28s: %.3f,%.3f,%.3f\n","vel enu (m/s) base",
-            vel[0],vel[1],vel[2]);
-    if (rtk.opt.mode>0&&rtk.x&&norm(rtk.x,3)>0.0) {
-        for (i=0;i<3;i++) rr[i]=rtk.x[i]-rtk.rb[i]; bl1=norm(rr,3);
-    }
-    if (rtk.opt.mode>0&&rtk.xa&&norm(rtk.xa,3)>0.0) {
-        for (i=0;i<3;i++) rr[i]=rtk.xa[i]-rtk.rb[i]; bl2=norm(rr,3);
-    }
-    vt_printf(vt,"%-28s: %.3f\n","baseline length float (m)",bl1);
-    vt_printf(vt,"%-28s: %.3f\n","baseline length fixed (m)",bl2);
-    vt_printf(vt,"%-28s: %d\n","monitor port",moniport);
+//    vt_printf(vt,"%-28s: %.3f,%.3f,%.3f\n","pos xyz float std (m) rover",
+//            rtk.P?SQRT(rtk.P[0]):0,rtk.P?SQRT(rtk.P[1+1*rtk.nx]):0,rtk.P?SQRT(rtk.P[2+2*rtk.nx]):0);
+//    vt_printf(vt,"%-28s: %.3f,%.3f,%.3f\n","pos xyz fixed (m) rover",
+//            rtk.xa?rtk.xa[0]:0,rtk.xa?rtk.xa[1]:0,rtk.xa?rtk.xa[2]:0);
+//    vt_printf(vt,"%-28s: %.3f,%.3f,%.3f\n","pos xyz fixed std (m) rover",
+//            rtk.Pa?SQRT(rtk.Pa[0]):0,rtk.Pa?SQRT(rtk.Pa[1+1*rtk.na]):0,rtk.Pa?SQRT(rtk.Pa[2+2*rtk.na]):0);
+//    vt_printf(vt,"%-28s: %.3f,%.3f,%.3f\n","pos xyz (m) base",
+//            rtk.rb[0],rtk.rb[1],rtk.rb[2]);
+//    vt_printf(vt,"%-28s: %s\n","ant type rover",rtk.opt.pcvr[0].type);
+//    del=rtk.opt.antdel[0];
+//    vt_printf(vt,"%-28s: %.3f %.3f %.3f\n","ant delta rover",del[0],del[1],del[2]);
+//    vt_printf(vt,"%-28s: %s\n","ant type base" ,rtk.opt.pcvr[1].type);
+//    del=rtk.opt.antdel[1];
+//    vt_printf(vt,"%-28s: %.3f %.3f %.3f\n","ant delta base",del[0],del[1],del[2]);
+//    if (norm(rtk.rb,3)>0.0) ecef2pos(rtk.rb,pos); else pos[0]=pos[1]=pos[2]=0.0;
+//    vt_printf(vt,"%-28s: %.8f,%.8f,%.3f\n","pos llh (deg,m) base",
+//            pos[0]*R2D,pos[1]*R2D,pos[2]);
+//    ecef2enu(pos,rtk.rb+3,vel);
+//    vt_printf(vt,"%-28s: %.3f,%.3f,%.3f\n","vel enu (m/s) base",
+//            vel[0],vel[1],vel[2]);
+//    if (rtk.opt.mode>0&&rtk.x&&norm(rtk.x,3)>0.0) {
+//        for (i=0;i<3;i++) rr[i]=rtk.x[i]-rtk.rb[i]; bl1=norm(rr,3);
+//    }
+//    if (rtk.opt.mode>0&&rtk.xa&&norm(rtk.xa,3)>0.0) {
+//        for (i=0;i<3;i++) rr[i]=rtk.xa[i]-rtk.rb[i]; bl2=norm(rr,3);
+//    }
+//    vt_printf(vt,"%-28s: %.3f\n","baseline length float (m)",bl1);
+//    vt_printf(vt,"%-28s: %.3f\n","baseline length fixed (m)",bl2);
+//    vt_printf(vt,"%-28s: %d\n","monitor port",moniport);
 }
 /* print satellite -----------------------------------------------------------*/
 static void prsatellite(vt_t *vt, int nf)

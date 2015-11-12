@@ -284,9 +284,9 @@ static int seq_esc(vt_t *vt)
 *-----------------------------------------------------------------------------*/
 extern int vt_getc(vt_t *vt, char *c)
 {
+    int stat;
     struct timeval tv={0,1000}; /* timeout (us) */
     fd_set rs;
-    int stat;
     
     *c='\0';
     

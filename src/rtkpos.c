@@ -403,7 +403,8 @@ static void initx(rtk_t *rtk, double xi, double var, int i)
     int j;
     rtk->x[i]=xi;
     for (j=0;j<rtk->nx;j++) {
-        rtk->P[i+j*rtk->nx]=rtk->P[j+i*rtk->nx]=i==j?var:0.0;
+        rtk->P[i+j*rtk->nx]=i==j?var:0.0;
+        rtk->P[j+i*rtk->nx]=i==j?var:0.0;
     }
 }
 /* select common satellites between rover and reference station --------------*/
@@ -1158,10 +1159,14 @@ static int ddres(rtk_t *rtk, const nav_t *nav, double dt, const double *x,
             
             /* set valid data flags */
             if (opt->mode>PMODE_DGPS) {
-                if (f<nf) rtk->ssat[sat[i]-1].vsat[f]=rtk->ssat[sat[j]-1].vsat[f]=1;
+                if (f<nf){
+                	rtk->ssat[sat[i]-1].vsat[f]=1;
+               		rtk->ssat[sat[j]-1].vsat[f]=1;
+                }
             }
             else {
-                rtk->ssat[sat[i]-1].vsat[f-nf]=rtk->ssat[sat[j]-1].vsat[f-nf]=1;
+                rtk->ssat[sat[i]-1].vsat[f-nf]=1;
+                rtk->ssat[sat[j]-1].vsat[f-nf]=1;
             }
             trace(4,"sat=%3d-%3d %s%d v=%13.3f R=%8.6f %8.6f\n",sat[i],
                   sat[j],f<nf?"L":"P",f%nf+1,v[nv],Ri[nv],Rj[nv]);

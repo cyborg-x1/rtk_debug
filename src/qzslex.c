@@ -605,15 +605,16 @@ extern int lexioncorr(gtime_t time, const nav_t *nav, const double *pos,
     const double dl2=(129.0-126.7)/(34.7-26.0);
 #endif
     double tt,sinlat,coslat,sinaz,cosaz,cosel,rp,ap,sinap,cosap,latpp,lonpp;
-    double dlat,dlon,Enm,F;
+    double dlat,dlon,Enm,F,dummy;
     int n,m;
     
     trace(4,"lexioncorr: time=%s pos=%.3f %.3f azel=%.3f %.3f\n",time_str(time,3),
           pos[0]*R2D,pos[1]*R2D,azel[0]*R2D,azel[1]*R2D);
     
-    *delay=*var=0.0;
+    *delay=0.0;
+    *var=0.0;
     
-    if (pos[2]<-100.0||azel[1]<=0.0) return 1;
+	if (pos[2]<-100.0||azel[1]<=0.0) return 1;
     
     tt=timediff(time,nav->lexion.t0);
     
@@ -659,10 +660,13 @@ extern int lexioncorr(gtime_t time, const nav_t *nav, const double *pos,
     /* slant ionosphere delay (L1) */
     for (n=0;n<=2;n++) for (m=0;m<=1;m++) {
         Enm=nav->lexion.coef[n][m];
-        *delay+=F*Enm*pow(dlat,n)*pow(dlon,m);
+        dummy=F*Enm;
+        dummy*=pow(dlat,(double)n);
+        dummy*=pow(dlon,(double)m);
+        *delay+=dummy;
         
-        trace(5,"lexioncorr: F=%8.3f Enm[%d][%d]=%8.3f delay=%8.3f\n",F,n,m,Enm,
-              F*Enm*pow(dlat,n)*pow(dlon,m));
+//        trace(5,"lexioncorr: F=%8.3f Enm[%d][%d]=%8.3f delay=%8.3f\n",F,n,m,Enm,
+//              F*Enm*pow(dlat,n)*pow(dlon,m));
     }
     trace(4,"lexioncorr: time=%s delay=%.3f\n",time_str(time,0),*delay);
     
