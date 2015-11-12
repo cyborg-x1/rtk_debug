@@ -109,12 +109,12 @@ static double         R8(unsigned char *p) {double         r; memcpy(&r,p,8); re
 
 /* extend sign ---------------------------------------------------------------*/
 static int exsign(unsigned int v, int bits)
-{
+{FNC
     return (int)(v&(1<<(bits-1))?v|(~0u<<bits):v);
 }
 /* checksum ------------------------------------------------------------------*/
 static unsigned char chksum(const unsigned char *buff, int len)
-{
+{FNC
     unsigned char sum=0;
     int i;
     for (i=0;i<len;i++) sum^=buff[i];
@@ -122,7 +122,7 @@ static unsigned char chksum(const unsigned char *buff, int len)
 }
 /* adjust weekly rollover of gps time ----------------------------------------*/
 static gtime_t adjweek(gtime_t time, double tow)
-{
+{FNC
     double tow_p;
     int week;
     tow_p=time2gpst(time,&week);
@@ -132,7 +132,7 @@ static gtime_t adjweek(gtime_t time, double tow)
 }
 /* get observation data index ------------------------------------------------*/
 static int obsindex(obs_t *obs, gtime_t time, int sat)
-{
+{FNC
     int i,j;
     
     if (obs->n>=MAXOBS) return -1;
@@ -152,7 +152,7 @@ static int obsindex(obs_t *obs, gtime_t time, int sat)
 }
 /* ura value (m) to ura index ------------------------------------------------*/
 static int uraindex(double value)
-{
+{FNC
     static const double ura_eph[]={
         2.4,3.4,4.85,6.85,9.65,13.65,24.0,48.0,96.0,192.0,384.0,768.0,1536.0,
         3072.0,6144.0,0.0
@@ -191,7 +191,7 @@ static int uraindex(double value)
 *-----------------------------------------------------------------------------*/
 static int decode_trackstat(unsigned int stat, int *sys, int *code, int *track,
                             int *plock, int *clock, int *parity, int *halfc)
-{
+{FNC
     int satsys,sigtype,freq=0;
     
     *track =stat&0x1F;
@@ -265,7 +265,7 @@ static int decode_trackstat(unsigned int stat, int *sys, int *code, int *track,
 }
 /* check code priority and return obs position -------------------------------*/
 static int checkpri(const char *opt, int sys, int code, int freq)
-{
+{FNC
     int nex=NEXOBS; /* number of extended obs data */
     
     if (sys==SYS_GPS) {
@@ -288,7 +288,7 @@ static int checkpri(const char *opt, int sys, int code, int freq)
 }
 /* decode rangecmpb ----------------------------------------------------------*/
 static int decode_rangecmpb(raw_t *raw)
-{
+{FNC
     double psr,adr,adr_rolls,lockt,tt,dop,snr,wavelen;
     int i,index,nobs,prn,sat,sys,code,freq,pos;
     int track,plock,clock,parity,halfc,lli;
@@ -379,7 +379,7 @@ static int decode_rangecmpb(raw_t *raw)
 }
 /* decode rangeb -------------------------------------------------------------*/
 static int decode_rangeb(raw_t *raw)
-{
+{FNC
     double psr,adr,dop,snr,lockt,tt;
     char *msg;
     int i,index,nobs,prn,sat,sys,code,freq,pos;
@@ -466,7 +466,7 @@ static int decode_rangeb(raw_t *raw)
 }
 /* decode rawephemb ----------------------------------------------------------*/
 static int decode_rawephemb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM4HLEN;
     eph_t eph={0};
     int prn,sat;
@@ -499,7 +499,7 @@ static int decode_rawephemb(raw_t *raw)
 }
 /* decode ionutcb ------------------------------------------------------------*/
 static int decode_ionutcb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM4HLEN;
     int i;
     
@@ -519,7 +519,7 @@ static int decode_ionutcb(raw_t *raw)
 }
 /* decode rawwaasframeb ------------------------------------------------------*/
 static int decode_rawwaasframeb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM4HLEN;
     int i,prn;
     
@@ -543,7 +543,7 @@ static int decode_rawwaasframeb(raw_t *raw)
 }
 /* decode rawsbasframeb ------------------------------------------------------*/
 static int decode_rawsbasframeb(raw_t *raw)
-{
+{FNC
     trace(3,"decode_rawsbasframeb: len=%d\n",raw->len);
     
     /* format same as rawwaasframeb */
@@ -551,7 +551,7 @@ static int decode_rawsbasframeb(raw_t *raw)
 }
 /* decode gloephemerisb ------------------------------------------------------*/
 static int decode_gloephemerisb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM4HLEN;
     geph_t geph={0};
     char *msg;
@@ -610,7 +610,7 @@ static int decode_gloephemerisb(raw_t *raw)
 }
 /* decode qzss rawephemb -----------------------------------------------------*/
 static int decode_qzssrawephemb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM4HLEN,*q;
     eph_t eph={0};
     char *msg;
@@ -656,7 +656,7 @@ static int decode_qzssrawephemb(raw_t *raw)
 }
 /* decode qzss rawsubframeb --------------------------------------------------*/
 static int decode_qzssrawsubframeb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM4HLEN;
     eph_t eph={0};
     char *msg;
@@ -695,7 +695,7 @@ static int decode_qzssrawsubframeb(raw_t *raw)
 }
 /* decode qzssionutcb --------------------------------------------------------*/
 static int decode_qzssionutcb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM4HLEN;
     int i;
     
@@ -715,7 +715,7 @@ static int decode_qzssionutcb(raw_t *raw)
 }
 /* decode galephemerisb ------------------------------------------------------*/
 static int decode_galephemerisb(raw_t *raw)
-{
+{FNC
     eph_t eph={0};
     unsigned char *p=raw->buff+OEM4HLEN;
     double tow,sqrtA,af0_fnav,af1_fnav,af2_fnav,af0_inav,af1_inav,af2_inav,tt;
@@ -805,7 +805,7 @@ static int decode_galephemerisb(raw_t *raw)
 }
 /* decode galalmanacb --------------------------------------------------------*/
 static int decode_galalmanacb(raw_t *raw)
-{
+{FNC
     alm_t alm={0};
     unsigned char *p=raw->buff+OEM4HLEN;
     double dsqrtA,sqrtA=sqrt(29601297.0);
@@ -848,7 +848,7 @@ static int decode_galalmanacb(raw_t *raw)
 }
 /* decode galclockb ----------------------------------------------------------*/
 static int decode_galclockb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM4HLEN;
     double a0,a1,a0g,a1g;
     int leaps,tot,wnt,wnlsf,dn,dtlsf,t0g,wn0g;
@@ -880,7 +880,7 @@ static int decode_galclockb(raw_t *raw)
 }
 /* decode galionob -----------------------------------------------------------*/
 static int decode_galionob(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM4HLEN;
     double ai[3];
     int i,sf[5];
@@ -905,7 +905,7 @@ static int decode_galionob(raw_t *raw)
 }
 /* decode galfnavrawpageb ----------------------------------------------------*/
 static int decode_galfnavrawpageb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM4HLEN;
     unsigned char buff[27];
     int i,sigch,satid,page;
@@ -930,7 +930,7 @@ static int decode_galfnavrawpageb(raw_t *raw)
 }
 /* decode galinavrawwordb ----------------------------------------------------*/
 static int decode_galinavrawwordb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM4HLEN;
     unsigned char buff[16];
     gtime_t time=raw->time;
@@ -969,7 +969,7 @@ static int decode_galinavrawwordb(raw_t *raw)
 }
 /* decode rawcnavframeb ------------------------------------------------------*/
 static int decode_rawcnavframeb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM4HLEN;
     unsigned char buff[38];
     int i,sigch,prn,frmid;
@@ -994,7 +994,7 @@ static int decode_rawcnavframeb(raw_t *raw)
 }
 /* decode bdsephemerisb ------------------------------------------------------*/
 static int decode_bdsephemerisb(raw_t *raw)
-{
+{FNC
     eph_t eph={0};
     unsigned char *p=raw->buff+OEM4HLEN;
     double ura,sqrtA;
@@ -1059,7 +1059,7 @@ static int decode_bdsephemerisb(raw_t *raw)
 }
 /* decode rgeb ---------------------------------------------------------------*/
 static int decode_rgeb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM3HLEN;
     double tow,psr,adr,tt,lockt,dop,snr;
     int i,week,nobs,prn,sat,stat,sys,parity,lli,index,freq;
@@ -1120,7 +1120,7 @@ static int decode_rgeb(raw_t *raw)
 }
 /* decode rged ---------------------------------------------------------------*/
 static int decode_rged(raw_t *raw)
-{
+{FNC
     unsigned int word;
     unsigned char *p=raw->buff+OEM3HLEN;
     double tow,psrh,psrl,psr,adr,adr_rolls,tt,lockt,dop;
@@ -1187,7 +1187,7 @@ static int decode_rged(raw_t *raw)
 }
 /* decode repb ---------------------------------------------------------------*/
 static int decode_repb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM3HLEN;
     eph_t eph={0};
     int prn,sat;
@@ -1219,7 +1219,7 @@ static int decode_repb(raw_t *raw)
 }
 /* decode frmb --------------------------------------------------------------*/
 static int decode_frmb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM3HLEN;
     double tow;
     int i,week,prn,nbit;
@@ -1244,7 +1244,7 @@ static int decode_frmb(raw_t *raw)
 }
 /* decode ionb ---------------------------------------------------------------*/
 static int decode_ionb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM3HLEN;
     int i;
     
@@ -1257,7 +1257,7 @@ static int decode_ionb(raw_t *raw)
 }
 /* decode utcb ---------------------------------------------------------------*/
 static int decode_utcb(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+OEM3HLEN;
     
     trace(3,"decode_utcb: len=%d\n",raw->len);
@@ -1275,7 +1275,7 @@ static int decode_utcb(raw_t *raw)
 }
 /* decode oem4 message -------------------------------------------------------*/
 static int decode_oem4(raw_t *raw)
-{
+{FNC
     double tow;
     int msg,week,type=U2(raw->buff+4);
     
@@ -1321,7 +1321,7 @@ static int decode_oem4(raw_t *raw)
 }
 /* decode oem3 message -------------------------------------------------------*/
 static int decode_oem3(raw_t *raw)
-{
+{FNC
     int type=U4(raw->buff+4);
     
     trace(3,"decode_oem3: type=%3d len=%d\n",type,raw->len);
@@ -1346,12 +1346,12 @@ static int decode_oem3(raw_t *raw)
 }
 /* sync header ---------------------------------------------------------------*/
 static int sync_oem4(unsigned char *buff, unsigned char data)
-{
+{FNC
     buff[0]=buff[1]; buff[1]=buff[2]; buff[2]=data;
     return buff[0]==OEM4SYNC1&&buff[1]==OEM4SYNC2&&buff[2]==OEM4SYNC3;
 }
 static int sync_oem3(unsigned char *buff, unsigned char data)
-{
+{FNC
     buff[0]=buff[1]; buff[1]=buff[2]; buff[2]=data;
     return buff[0]==OEM3SYNC1&&buff[1]==OEM3SYNC2&&buff[2]==OEM3SYNC3;
 }
@@ -1374,7 +1374,7 @@ static int sync_oem3(unsigned char *buff, unsigned char data)
 *
 *-----------------------------------------------------------------------------*/
 extern int input_oem4(raw_t *raw, unsigned char data)
-{
+{FNC
     trace(5,"input_oem4: data=%02x\n",data);
     
     /* synchronize frame */
@@ -1396,7 +1396,7 @@ extern int input_oem4(raw_t *raw, unsigned char data)
     return decode_oem4(raw);
 }
 extern int input_oem3(raw_t *raw, unsigned char data)
-{
+{FNC
     trace(5,"input_oem3: data=%02x\n",data);
     
     /* synchronize frame */
@@ -1425,7 +1425,7 @@ extern int input_oem3(raw_t *raw, unsigned char data)
 * return : status(-2: end of file, -1...9: same as above)
 *-----------------------------------------------------------------------------*/
 extern int input_oem4f(raw_t *raw, FILE *fp)
-{
+{FNC
     int i,data;
     
     trace(4,"input_oem4f:\n");
@@ -1453,7 +1453,7 @@ extern int input_oem4f(raw_t *raw, FILE *fp)
     return decode_oem4(raw);
 }
 extern int input_oem3f(raw_t *raw, FILE *fp)
-{
+{FNC
     int i,data;
     
     trace(4,"input_oem3f:\n");

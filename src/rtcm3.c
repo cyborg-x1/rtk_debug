@@ -97,13 +97,13 @@ static const double ssrudint[16]={
 };
 /* get sign-magnitude bits ---------------------------------------------------*/
 static double getbitg(const unsigned char *buff, int pos, int len)
-{
+{FNC
     double value=getbitu(buff,pos+1,len-1);
     return getbitu(buff,pos,1)?-value:value;
 }
 /* adjust weekly rollover of gps time ----------------------------------------*/
 static void adjweek(rtcm_t *rtcm, double tow)
-{
+{FNC
     double tow_p;
     int week;
     
@@ -116,7 +116,7 @@ static void adjweek(rtcm_t *rtcm, double tow)
 }
 /* adjust weekly rollover of bdt time ----------------------------------------*/
 static int adjbdtweek(int week)
-{
+{FNC
     int w;
     (void)time2bdt(gpst2bdt(utc2gpst(timeget())),&w);
     if (w<1) w=1; /* use 2006/1/1 if time is earlier than 2006/1/1 */
@@ -124,7 +124,7 @@ static int adjbdtweek(int week)
 }
 /* adjust daily rollover of glonass time -------------------------------------*/
 static void adjday_glot(rtcm_t *rtcm, double tod)
-{
+{FNC
     gtime_t time;
     double tow,tod_p;
     int week;
@@ -140,7 +140,7 @@ static void adjday_glot(rtcm_t *rtcm, double tod)
 }
 /* adjust carrier-phase rollover ---------------------------------------------*/
 static double adjcp(rtcm_t *rtcm, int sat, int freq, double cp)
-{
+{FNC
     if (rtcm->cp[sat-1][freq]==0.0) ;
     else if (cp<rtcm->cp[sat-1][freq]-750.0) cp+=1500.0;
     else if (cp>rtcm->cp[sat-1][freq]+750.0) cp-=1500.0;
@@ -149,19 +149,19 @@ static double adjcp(rtcm_t *rtcm, int sat, int freq, double cp)
 }
 /* loss-of-lock indicator ----------------------------------------------------*/
 static int lossoflock(rtcm_t *rtcm, int sat, int freq, int lock)
-{
+{FNC
     int lli=(!lock&&!rtcm->lock[sat-1][freq])||lock<rtcm->lock[sat-1][freq];
     rtcm->lock[sat-1][freq]=lock;
     return lli;
 }
 /* s/n ratio -----------------------------------------------------------------*/
 static unsigned char snratio(double snr)
-{
+{FNC
     return (unsigned char)(snr<=0.0||255.5<=snr?0.0:snr*4.0+0.5);
 }
 /* get observation data index ------------------------------------------------*/
 static int obsindex(obs_t *obs, gtime_t time, int sat)
-{
+{FNC
     int i,j;
     
     for (i=0;i<obs->n;i++) {
@@ -182,7 +182,7 @@ static int obsindex(obs_t *obs, gtime_t time, int sat)
 }
 /* test station id consistency -----------------------------------------------*/
 static int test_staid(rtcm_t *rtcm, int staid)
-{
+{FNC
     char *p;
     int type,id;
     
@@ -206,7 +206,7 @@ static int test_staid(rtcm_t *rtcm, int staid)
 }
 /* decode type 1001-1004 message header --------------------------------------*/
 static int decode_head1001(rtcm_t *rtcm, int *sync)
-{
+{FNC
     double tow;
     char *msg;
     int i=24,staid,nsat,type;
@@ -239,7 +239,7 @@ static int decode_head1001(rtcm_t *rtcm, int *sync)
 }
 /* decode type 1001: L1-only gps rtk observation -----------------------------*/
 static int decode_type1001(rtcm_t *rtcm)
-{
+{FNC
     int sync;
     if (decode_head1001(rtcm,&sync)<0) return -1;
     rtcm->obsflag=!sync;
@@ -247,7 +247,7 @@ static int decode_type1001(rtcm_t *rtcm)
 }
 /* decode type 1002: extended L1-only gps rtk observables --------------------*/
 static int decode_type1002(rtcm_t *rtcm)
-{
+{FNC
     double pr1,cnr1,tt,cp1;
     int i=24+64,j,index,nsat,sync,prn,code,sat,ppr1,lock1,amb,sys;
     
@@ -290,7 +290,7 @@ static int decode_type1002(rtcm_t *rtcm)
 }
 /* decode type 1003: L1&L2 gps rtk observables -------------------------------*/
 static int decode_type1003(rtcm_t *rtcm)
-{
+{FNC
     int sync;
     if (decode_head1001(rtcm,&sync)<0) return -1;
     rtcm->obsflag=!sync;
@@ -298,7 +298,7 @@ static int decode_type1003(rtcm_t *rtcm)
 }
 /* decode type 1004: extended L1&L2 gps rtk observables ----------------------*/
 static int decode_type1004(rtcm_t *rtcm)
-{
+{FNC
     const int L2codes[]={CODE_L2C,CODE_L2P,CODE_L2W,CODE_L2W};
     double pr1,cnr1,cnr2,tt,cp1,cp2;
     int i=24+64,j,index,nsat,sync,prn,sat,code1,code2,pr21,ppr1,ppr2;
@@ -360,12 +360,12 @@ static int decode_type1004(rtcm_t *rtcm)
 }
 /* get signed 38bit field ----------------------------------------------------*/
 static double getbits_38(const unsigned char *buff, int pos)
-{
+{FNC
     return (double)getbits(buff,pos,32)*64.0+getbitu(buff,pos+32,6);
 }
 /* decode type 1005: stationary rtk reference station arp --------------------*/
 static int decode_type1005(rtcm_t *rtcm)
-{
+{FNC
     double rr[3];
     char *msg;
     int i=24+12,j,staid,itrf;
@@ -399,7 +399,7 @@ static int decode_type1005(rtcm_t *rtcm)
 }
 /* decode type 1006: stationary rtk reference station arp with height --------*/
 static int decode_type1006(rtcm_t *rtcm)
-{
+{FNC
     double rr[3],anth;
     char *msg;
     int i=24+12,j,staid,itrf;
@@ -434,7 +434,7 @@ static int decode_type1006(rtcm_t *rtcm)
 }
 /* decode type 1007: antenna descriptor --------------------------------------*/
 static int decode_type1007(rtcm_t *rtcm)
-{
+{FNC
     char des[32]="";
     char *msg;
     int i=24+12,j,staid,n,setup;
@@ -466,7 +466,7 @@ static int decode_type1007(rtcm_t *rtcm)
 }
 /* decode type 1008: antenna descriptor & serial number ----------------------*/
 static int decode_type1008(rtcm_t *rtcm)
-{
+{FNC
     char des[32]="",sno[32]="";
     char *msg;
     int i=24+12,j,staid,n,m,setup;
@@ -502,7 +502,7 @@ static int decode_type1008(rtcm_t *rtcm)
 }
 /* decode type 1009-1012 message header --------------------------------------*/
 static int decode_head1009(rtcm_t *rtcm, int *sync)
-{
+{FNC
     double tod;
     char *msg;
     int i=24,staid,nsat,type;
@@ -535,7 +535,7 @@ static int decode_head1009(rtcm_t *rtcm, int *sync)
 }
 /* decode type 1009: L1-only glonass rtk observables -------------------------*/
 static int decode_type1009(rtcm_t *rtcm)
-{
+{FNC
     int sync;
     if (decode_head1009(rtcm,&sync)<0) return -1;
     rtcm->obsflag=!sync;
@@ -543,7 +543,7 @@ static int decode_type1009(rtcm_t *rtcm)
 }
 /* decode type 1010: extended L1-only glonass rtk observables ----------------*/
 static int decode_type1010(rtcm_t *rtcm)
-{
+{FNC
     double pr1,cnr1,tt,cp1,lam1;
     int i=24+61,j,index,nsat,sync,prn,sat,code,freq,ppr1,lock1,amb,sys=SYS_GLO;
     
@@ -582,7 +582,7 @@ static int decode_type1010(rtcm_t *rtcm)
 }
 /* decode type 1011: L1&L2 glonass rtk observables ---------------------------*/
 static int decode_type1011(rtcm_t *rtcm)
-{
+{FNC
     int sync;
     if (decode_head1009(rtcm,&sync)<0) return -1;
     rtcm->obsflag=!sync;
@@ -590,7 +590,7 @@ static int decode_type1011(rtcm_t *rtcm)
 }
 /* decode type 1012: extended L1&L2 glonass rtk observables ------------------*/
 static int decode_type1012(rtcm_t *rtcm)
-{
+{FNC
     double pr1,cnr1,cnr2,tt,cp1,cp2,lam1,lam2;
     int i=24+61,j,index,nsat,sync,prn,sat,freq,code1,code2,pr21,ppr1,ppr2;
     int lock1,lock2,amb,sys=SYS_GLO;
@@ -648,12 +648,12 @@ static int decode_type1012(rtcm_t *rtcm)
 }
 /* decode type 1013: system parameters ---------------------------------------*/
 static int decode_type1013(rtcm_t *rtcm)
-{
+{FNC
     return 0;
 }
 /* decode type 1019: gps ephemerides -----------------------------------------*/
 static int decode_type1019(rtcm_t *rtcm)
-{
+{FNC
     eph_t eph={0};
     double toc,sqrtA;
     char *msg;
@@ -724,7 +724,7 @@ static int decode_type1019(rtcm_t *rtcm)
 }
 /* decode type 1020: glonass ephemerides -------------------------------------*/
 static int decode_type1020(rtcm_t *rtcm)
-{
+{FNC
     geph_t geph={0};
     double tk_h,tk_m,tk_s,toe,tow,tod,tof;
     char *msg;
@@ -790,67 +790,67 @@ static int decode_type1020(rtcm_t *rtcm)
 }
 /* decode type 1021: helmert/abridged molodenski -----------------------------*/
 static int decode_type1021(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1021: not supported message\n");
     return 0;
 }
 /* decode type 1022: moledenski-badekas transfromation -----------------------*/
 static int decode_type1022(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1022: not supported message\n");
     return 0;
 }
 /* decode type 1023: residual, ellipoidal grid representation ----------------*/
 static int decode_type1023(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1023: not supported message\n");
     return 0;
 }
 /* decode type 1024: residual, plane grid representation ---------------------*/
 static int decode_type1024(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1024: not supported message\n");
     return 0;
 }
 /* decode type 1025: projection (types except LCC2SP,OM) ---------------------*/
 static int decode_type1025(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1025: not supported message\n");
     return 0;
 }
 /* decode type 1026: projection (LCC2SP - lambert conic conformal (2sp)) -----*/
 static int decode_type1026(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1026: not supported message\n");
     return 0;
 }
 /* decode type 1027: projection (type OM - oblique mercator) -----------------*/
 static int decode_type1027(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1027: not supported message\n");
     return 0;
 }
 /* decode type 1030: network rtk residual ------------------------------------*/
 static int decode_type1030(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1030: not supported message\n");
     return 0;
 }
 /* decode type 1031: glonass network rtk residual ----------------------------*/
 static int decode_type1031(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1031: not supported message\n");
     return 0;
 }
 /* decode type 1032: physical reference station position information ---------*/
 static int decode_type1032(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1032: not supported message\n");
     return 0;
 }
 /* decode type 1033: receiver and antenna descriptor -------------------------*/
 static int decode_type1033(rtcm_t *rtcm)
-{
+{FNC
     char des[32]="",sno[32]="",rec[32]="",ver[32]="",rsn[32]="";
     char *msg;
     int i=24+12,j,staid,n,m,n1,n2,n3,setup;
@@ -906,37 +906,37 @@ static int decode_type1033(rtcm_t *rtcm)
 }
 /* decode type 1034: gps network fkp gradient --------------------------------*/
 static int decode_type1034(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1034: not supported message\n");
     return 0;
 }
 /* decode type 1035: glonass network fkp gradient ----------------------------*/
 static int decode_type1035(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1035: not supported message\n");
     return 0;
 }
 /* decode type 1037: glonass network rtk ionospheric correction difference ---*/
 static int decode_type1037(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1037: not supported message\n");
     return 0;
 }
 /* decode type 1038: glonass network rtk geometic correction difference ------*/
 static int decode_type1038(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1038: not supported message\n");
     return 0;
 }
 /* decode type 1039: glonass network rtk combined correction difference ------*/
 static int decode_type1039(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1039: not supported message\n");
     return 0;
 }
 /* decode type 1044: qzss ephemerides (ref [15]) -----------------------------*/
 static int decode_type1044(rtcm_t *rtcm)
-{
+{FNC
     eph_t eph={0};
     double toc,sqrtA;
     char *msg;
@@ -1004,7 +1004,7 @@ static int decode_type1044(rtcm_t *rtcm)
 }
 /* decode type 1045: galileo satellite ephemerides (ref [15]) ----------------*/
 static int decode_type1045(rtcm_t *rtcm)
-{
+{FNC
     eph_t eph={0};
     double toc,sqrtA;
     char *msg;
@@ -1072,7 +1072,7 @@ static int decode_type1045(rtcm_t *rtcm)
 }
 /* decode type 1047: beidou ephemerides (tentative mt and format) ------------*/
 static int decode_type1047(rtcm_t *rtcm)
-{
+{FNC
     eph_t eph={0};
     double toc,sqrtA;
     char *msg;
@@ -1141,7 +1141,7 @@ static int decode_type1047(rtcm_t *rtcm)
 /* decode ssr 1,4 message header ---------------------------------------------*/
 static int decode_ssr1_head(rtcm_t *rtcm, int sys, int *sync, int *iod,
                             double *udint, int *refd, int *hsize)
-{
+{FNC
     double tod,tow;
     char *msg;
     int i=24+12,nsat,udi,provid=0,solid=0,ns=6;
@@ -1182,7 +1182,7 @@ static int decode_ssr1_head(rtcm_t *rtcm, int sys, int *sync, int *iod,
 /* decode ssr 2,3,5,6 message header -----------------------------------------*/
 static int decode_ssr2_head(rtcm_t *rtcm, int sys, int *sync, int *iod,
                             double *udint, int *hsize)
-{
+{FNC
     double tod,tow;
     char *msg;
     int i=24+12,nsat,udi,provid=0,solid=0,ns=6;
@@ -1221,7 +1221,7 @@ static int decode_ssr2_head(rtcm_t *rtcm, int sys, int *sync, int *iod,
 }
 /* decode ssr 1: orbit corrections -------------------------------------------*/
 static int decode_ssr1(rtcm_t *rtcm, int sys)
-{
+{FNC
     double udint,deph[3],ddeph[3];
     int i,j,k,type,sync,iod,nsat,prn,sat,iode,iodcrc,refd=0,np,ni,nj,offp;
     
@@ -1272,7 +1272,7 @@ static int decode_ssr1(rtcm_t *rtcm, int sys)
 }
 /* decode ssr 2: clock corrections -------------------------------------------*/
 static int decode_ssr2(rtcm_t *rtcm, int sys)
-{
+{FNC
     double udint,dclk[3];
     int i,j,k,type,sync,iod,nsat,prn,sat,np,offp;
     
@@ -1314,7 +1314,7 @@ static int decode_ssr2(rtcm_t *rtcm, int sys)
 }
 /* decode ssr 3: satellite code biases ---------------------------------------*/
 static int decode_ssr3(rtcm_t *rtcm, int sys)
-{
+{FNC
     const int codes_gps[]={
         CODE_L1C,CODE_L1P,CODE_L1W,CODE_L1Y,CODE_L1M,CODE_L2C,CODE_L2D,CODE_L2S,
         CODE_L2L,CODE_L2X,CODE_L2P,CODE_L2W,CODE_L2Y,CODE_L2M,CODE_L5I,CODE_L5Q,
@@ -1390,7 +1390,7 @@ static int decode_ssr3(rtcm_t *rtcm, int sys)
 }
 /* decode ssr 4: combined orbit and clock corrections ------------------------*/
 static int decode_ssr4(rtcm_t *rtcm, int sys)
-{
+{FNC
     double udint,deph[3],ddeph[3],dclk[3];
     int i,j,k,type,nsat,sync,iod,prn,sat,iode,iodcrc,refd=0,np,ni,nj,offp;
     
@@ -1446,7 +1446,7 @@ static int decode_ssr4(rtcm_t *rtcm, int sys)
 }
 /* decode ssr 5: ura ---------------------------------------------------------*/
 static int decode_ssr5(rtcm_t *rtcm, int sys)
-{
+{FNC
     double udint;
     int i,j,type,nsat,sync,iod,prn,sat,ura,np,offp;
     
@@ -1483,7 +1483,7 @@ static int decode_ssr5(rtcm_t *rtcm, int sys)
 }
 /* decode ssr 6: high rate clock correction ----------------------------------*/
 static int decode_ssr6(rtcm_t *rtcm, int sys)
-{
+{FNC
     double udint,hrclk;
     int i,j,type,nsat,sync,iod,prn,sat,np,offp;
     
@@ -1521,7 +1521,7 @@ static int decode_ssr6(rtcm_t *rtcm, int sys)
 /* get signal index ----------------------------------------------------------*/
 static void sigindex(int sys, const unsigned char *code, const int *freq, int n,
                      const char *opt, int *ind)
-{
+{FNC
     int i,nex,pri,pri_h[8]={0},index[8]={0},ex[32]={0};
     
     /* test code priority */
@@ -1561,7 +1561,7 @@ static void save_msm_obs(rtcm_t *rtcm, int sys, msm_h_t *h, const double *r,
                          const double *pr, const double *cp, const double *rr,
                          const double *rrf, const double *cnr, const int *lock,
                          const int *ex, const int *half)
-{
+{FNC
     const char *sig[32];
     double tt,wl;
     unsigned char code[32];
@@ -1665,7 +1665,7 @@ static void save_msm_obs(rtcm_t *rtcm, int sys, msm_h_t *h, const double *r,
 /* decode type msm message header --------------------------------------------*/
 static int decode_msm_head(rtcm_t *rtcm, int sys, int *sync, int *iod,
                            msm_h_t *h, int *hsize)
-{
+{FNC
     msm_h_t h0={0};
     double tow,tod;
     char *msg;
@@ -1742,7 +1742,7 @@ static int decode_msm_head(rtcm_t *rtcm, int sys, int *sync, int *iod,
 }
 /* decode unsupported msm message --------------------------------------------*/
 static int decode_msm0(rtcm_t *rtcm, int sys)
-{
+{FNC
     msm_h_t h={0};
     int i,sync,iod;
     if (decode_msm_head(rtcm,sys,&sync,&iod,&h,&i)<0) return -1;
@@ -1751,7 +1751,7 @@ static int decode_msm0(rtcm_t *rtcm, int sys)
 }
 /* decode msm 4: full pseudorange and phaserange plus cnr --------------------*/
 static int decode_msm4(rtcm_t *rtcm, int sys)
-{
+{FNC
     msm_h_t h={0};
     double r[64],pr[64],cp[64],cnr[64];
     int i,j,type,sync,iod,ncell,rng,rng_m,prv,cpv,lock[64],half[64];
@@ -1804,7 +1804,7 @@ static int decode_msm4(rtcm_t *rtcm, int sys)
 }
 /* decode msm 5: full pseudorange, phaserange, phaserangerate and cnr --------*/
 static int decode_msm5(rtcm_t *rtcm, int sys)
-{
+{FNC
     msm_h_t h={0};
     double r[64],rr[64],pr[64],cp[64],rrf[64],cnr[64];
     int i,j,type,sync,iod,ncell,rng,rng_m,rate,prv,cpv,rrv,lock[64];
@@ -1871,7 +1871,7 @@ static int decode_msm5(rtcm_t *rtcm, int sys)
 }
 /* decode msm 6: full pseudorange and phaserange plus cnr (high-res) ---------*/
 static int decode_msm6(rtcm_t *rtcm, int sys)
-{
+{FNC
     msm_h_t h={0};
     double r[64],pr[64],cp[64],cnr[64];
     int i,j,type,sync,iod,ncell,rng,rng_m,prv,cpv,lock[64],half[64];
@@ -1924,7 +1924,7 @@ static int decode_msm6(rtcm_t *rtcm, int sys)
 }
 /* decode msm 7: full pseudorange, phaserange, phaserangerate and cnr (h-res) */
 static int decode_msm7(rtcm_t *rtcm, int sys)
-{
+{FNC
     msm_h_t h={0};
     double r[64],rr[64],pr[64],cp[64],rrf[64],cnr[64];
     int i,j,type,sync,iod,ncell,rng,rng_m,rate,prv,cpv,rrv,lock[64];
@@ -1991,13 +1991,13 @@ static int decode_msm7(rtcm_t *rtcm, int sys)
 }
 /* decode type 1230: glonass L1 and L2 code-phase biases ---------------------*/
 static int decode_type1230(rtcm_t *rtcm)
-{
+{FNC
     trace(2,"rtcm3 1230: not supported message\n");
     return 0;
 }
 /* decode rtcm ver.3 message -------------------------------------------------*/
 extern int decode_rtcm3(rtcm_t *rtcm)
-{
+{FNC
     int ret=0,type=getbitu(rtcm->buff,24,12);
     
     trace(3,"decode_rtcm3: len=%3d type=%d\n",rtcm->len,type);

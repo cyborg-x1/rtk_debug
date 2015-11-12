@@ -32,7 +32,7 @@ static const char rcsid[]="$Id:$";
 
 /* write solution header to output stream ------------------------------------*/
 static void writesolhead(stream_t *stream, const solopt_t *solopt)
-{
+{FNC
     unsigned char buff[1024];
     int n;
     
@@ -41,7 +41,7 @@ static void writesolhead(stream_t *stream, const solopt_t *solopt)
 }
 /* save output buffer --------------------------------------------------------*/
 static void saveoutbuf(rtksvr_t *svr, unsigned char *buff, int n, int index)
-{
+{FNC
     rtksvrlock(svr);
     
     n=n<svr->buffsize-svr->nsb[index]?n:svr->buffsize-svr->nsb[index];
@@ -52,7 +52,7 @@ static void saveoutbuf(rtksvr_t *svr, unsigned char *buff, int n, int index)
 }
 /* write solution to output stream -------------------------------------------*/
 static void writesol(rtksvr_t *svr, int index)
-{
+{FNC
     solopt_t solopt=solopt_default;
     unsigned char buff[1024];
     int i,n;
@@ -88,7 +88,7 @@ static void writesol(rtksvr_t *svr, int index)
 }
 /* update navigation data ----------------------------------------------------*/
 static void updatenav(nav_t *nav)
-{
+{FNC
     int i,j;
     for (i=0;i<MAXSAT;i++) for (j=0;j<NFREQ;j++) {
         nav->lam[i][j]=satwavelen(i+1,j,nav);
@@ -96,7 +96,7 @@ static void updatenav(nav_t *nav)
 }
 /* update glonass frequency channel number in raw data struct ----------------*/
 static void updatefcn(rtksvr_t *svr)
-{
+{FNC
     int i,j,sat,frq;
     
     for (i=0;i<MAXPRNGLO;i++) {
@@ -118,7 +118,7 @@ static void updatefcn(rtksvr_t *svr)
 /* update rtk server struct --------------------------------------------------*/
 static void updatesvr(rtksvr_t *svr, int ret, obs_t *obs, nav_t *nav, int sat,
                       sbsmsg_t *sbsmsg, int index, int iobs)
-{
+{FNC
     eph_t *eph1,*eph2,*eph3;
     geph_t *geph1,*geph2,*geph3;
     gtime_t tof;
@@ -265,7 +265,7 @@ static void updatesvr(rtksvr_t *svr, int ret, obs_t *obs, nav_t *nav, int sat,
 }
 /* decode receiver raw/rtcm data ---------------------------------------------*/
 static int decoderaw(rtksvr_t *svr, int index)
-{
+{FNC
     obs_t *obs;
     nav_t *nav;
     sbsmsg_t *sbsmsg=NULL;
@@ -319,7 +319,7 @@ static int decoderaw(rtksvr_t *svr, int index)
 }
 /* decode download file ------------------------------------------------------*/
 static void decodefile(rtksvr_t *svr, int index)
-{
+{FNC
     nav_t nav;
     char file[1024];
     int nb;
@@ -503,7 +503,7 @@ static void *rtksvrthread(void *arg)
 * return : status (0:error,1:ok)
 *-----------------------------------------------------------------------------*/
 extern int rtksvrinit(rtksvr_t *svr)
-{
+{FNC
     gtime_t time0;
     sol_t  sol0;
     eph_t  eph0;
@@ -578,7 +578,7 @@ extern int rtksvrinit(rtksvr_t *svr)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void rtksvrfree(rtksvr_t *svr)
-{
+{FNC
     int i,j;
     
     free(svr->nav.eph );
@@ -640,7 +640,7 @@ extern int rtksvrstart(rtksvr_t *svr, int cycle, int buffsize, int *strs,
                        char **rcvopts, int nmeacycle, int nmeareq,
                        const double *nmeapos, prcopt_t *prcopt,
                        solopt_t *solopt, stream_t *moni)
-{
+{FNC
     gtime_t time,time0;
     int i,j,rw;
     
@@ -759,7 +759,7 @@ extern int rtksvrstart(rtksvr_t *svr, int cycle, int buffsize, int *strs,
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void rtksvrstop(rtksvr_t *svr, char **cmds)
-{
+{FNC
     int i;
     
     tracet(3,"rtksvrstop:\n");
@@ -795,7 +795,7 @@ extern void rtksvrstop(rtksvr_t *svr, char **cmds)
 *-----------------------------------------------------------------------------*/
 extern int rtksvropenstr(rtksvr_t *svr, int index, int str, const char *path,
                          const solopt_t *solopt)
-{
+{FNC
     tracet(3,"rtksvropenstr: index=%d str=%d path=%s\n",index,str,path);
     
     if (index<3||index>7||!svr->state) return 0;
@@ -829,7 +829,7 @@ extern int rtksvropenstr(rtksvr_t *svr, int index, int str, const char *path,
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void rtksvrclosestr(rtksvr_t *svr, int index)
-{
+{FNC
     tracet(3,"rtksvrclosestr: index=%d\n",index);
     
     if (index<3||index>7||!svr->state) return;
@@ -855,7 +855,7 @@ extern void rtksvrclosestr(rtksvr_t *svr, int index)
 *-----------------------------------------------------------------------------*/
 extern int rtksvrostat(rtksvr_t *svr, int rcv, gtime_t *time, int *sat,
                        double *az, double *el, int **snr, int *vsat)
-{
+{FNC
     int i,j,ns;
     
     tracet(4,"rtksvrostat: rcv=%d\n",rcv);
@@ -891,7 +891,7 @@ extern int rtksvrostat(rtksvr_t *svr, int rcv, gtime_t *time, int *sat,
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void rtksvrsstat(rtksvr_t *svr, int *sstat, char *msg)
-{
+{FNC
     int i;
     char s[MAXSTRMSG],*p=msg;
     

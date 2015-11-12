@@ -34,7 +34,7 @@ static const char rcsid[]="$Id: convkml.c,v 1.1 2008/07/17 21:48:06 ttaka Exp $"
 /* output track --------------------------------------------------------------*/
 static void outtrack(FILE *f, const solbuf_t *solbuf, const char *color,
                      int outalt, int outtime)
-{
+{FNC
     double pos[3];
     int i;
     
@@ -61,7 +61,7 @@ static void outtrack(FILE *f, const solbuf_t *solbuf, const char *color,
 /* output point --------------------------------------------------------------*/
 static void outpoint(FILE *fp, gtime_t time, const double *pos,
                      const char *label, int style, int outalt, int outtime)
-{
+{FNC
     double ep[6],alt=0.0;
     char str[256]="";
     
@@ -94,7 +94,7 @@ static void outpoint(FILE *fp, gtime_t time, const double *pos,
 /* save kml file -------------------------------------------------------------*/
 static int savekml(const char *file, const solbuf_t *solbuf, int tcolor,
                    int pcolor, int outalt, int outtime)
-{
+{FNC
     FILE *fp;
     double pos[3];
     int i,qcolor[]={0,1,2,5,4,3,0};
@@ -158,7 +158,7 @@ static int savekml(const char *file, const solbuf_t *solbuf, int tcolor,
 extern int convkml(const char *infile, const char *outfile, gtime_t ts,
                    gtime_t te, double tint, int qflg, double *offset,
                    int tcolor, int pcolor, int outalt, int outtime)
-{
+{FNC
     solbuf_t solbuf={0};
     double rr[3]={0},pos[3],dr[3];
     int i,j;

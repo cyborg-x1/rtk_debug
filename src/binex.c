@@ -40,7 +40,7 @@ static const double ura_eph[]={
 #define I1(p) (*((char *)(p)))
 
 static unsigned short U2(unsigned char *p)
-{
+{FNC
     unsigned short value;
     unsigned char *q=(unsigned char *)&value+1;
     int i;
@@ -48,7 +48,7 @@ static unsigned short U2(unsigned char *p)
     return value;
 }
 static unsigned int U4(unsigned char *p)
-{
+{FNC
     unsigned int value;
     unsigned char *q=(unsigned char *)&value+3;
     int i;
@@ -56,11 +56,11 @@ static unsigned int U4(unsigned char *p)
     return value;
 }
 static int I4(unsigned char *p)
-{
+{FNC
     return (int)U4(p);
 }
 static float R4(unsigned char *p)
-{
+{FNC
     float value;
     unsigned char *q=(unsigned char *)&value+3;
     int i;
@@ -68,7 +68,7 @@ static float R4(unsigned char *p)
     return value;
 }
 static double R8(unsigned char *p)
-{
+{FNC
     double value;
     unsigned char *q=(unsigned char *)&value+7;
     int i;
@@ -77,7 +77,7 @@ static double R8(unsigned char *p)
 }
 /* get binex 1-4 byte unsigned integer (big endian) --------------------------*/
 static int getbnxi(unsigned char *p, unsigned int *val)
-{
+{FNC
     int i;
     
     for (*val=0,i=0;i<3;i++) {
@@ -89,7 +89,7 @@ static int getbnxi(unsigned char *p, unsigned int *val)
 }
 /* checksum 8 parity ---------------------------------------------------------*/
 static unsigned char csum8(const unsigned char *buff, int len)
-{
+{FNC
     unsigned char cs=0;
     int i;
     
@@ -100,7 +100,7 @@ static unsigned char csum8(const unsigned char *buff, int len)
 }
 /* adjust weekly rollover of gps time ----------------------------------------*/
 static gtime_t adjweek(gtime_t time, double tow)
-{
+{FNC
     double tow_p;
     int week;
     tow_p=time2gpst(time,&week);
@@ -110,7 +110,7 @@ static gtime_t adjweek(gtime_t time, double tow)
 }
 /* adjust daily rollover of time ---------------------------------------------*/
 static gtime_t adjday(gtime_t time, double tod)
-{
+{FNC
     double ep[6],tod_p;
     time2epoch(time,ep);
     tod_p=ep[3]*3600.0+ep[4]*60.0+ep[5];
@@ -121,230 +121,230 @@ static gtime_t adjday(gtime_t time, double tod)
 }
 /* ura value (m) to ura index ------------------------------------------------*/
 static int uraindex(double value)
-{
+{FNC
     int i;
     for (i=0;i<15;i++) if (ura_eph[i]>=value) break;
     return i;
 }
 /* decode binex mesaage 0x00-00: comment -------------------------------------*/
 static int decode_bnx_00_00(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-00: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-01: program or software package -----------------*/
 static int decode_bnx_00_01(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-01: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-02: program operator ----------------------------*/
 static int decode_bnx_00_02(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-02: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-03: reserved ------------------------------------*/
 static int decode_bnx_00_03(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-03: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-04: site name/description -----------------------*/
 static int decode_bnx_00_04(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-04: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-05: site number ---------------------------------*/
 static int decode_bnx_00_05(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-05: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-06: monumnent name ------------------------------*/
 static int decode_bnx_00_06(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-06: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-07: monumnent number ----------------------------*/
 static int decode_bnx_00_07(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-07: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-08: marker name ---------------------------------*/
 static int decode_bnx_00_08(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-08: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-09: marker number -------------------------------*/
 static int decode_bnx_00_09(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-09: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-0a: reference point name ------------------------*/
 static int decode_bnx_00_0a(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-0a: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-0b: reference point number ----------------------*/
 static int decode_bnx_00_0b(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-0b: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-0c: date esttablished ---------------------------*/
 static int decode_bnx_00_0c(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-0c: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-0d: reserved ------------------------------------*/
 static int decode_bnx_00_0d(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-0d: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-0e: reserved ------------------------------------*/
 static int decode_bnx_00_0e(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-0e: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-0f: 4-character id ------------------------------*/
 static int decode_bnx_00_0f(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-0f: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-10: project name --------------------------------*/
 static int decode_bnx_00_10(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-10: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-11: principal investigator for this project -----*/
 static int decode_bnx_00_11(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-11: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-12: pi's agency/institution ---------------------*/
 static int decode_bnx_00_12(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-12: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-13: pi's contact information --------------------*/
 static int decode_bnx_00_13(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-13: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-14: site operator -------------------------------*/
 static int decode_bnx_00_14(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-14: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-15: site operator's agency/institution ----------*/
 static int decode_bnx_00_15(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-15: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-16: site operator's contact information ---------*/
 static int decode_bnx_00_16(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-16: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-17: antenna type --------------------------------*/
 static int decode_bnx_00_17(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-17: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-18: antenna number ------------------------------*/
 static int decode_bnx_00_18(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-18: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-19: receiver type -------------------------------*/
 static int decode_bnx_00_19(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-19: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-1a: receiver number -----------------------------*/
 static int decode_bnx_00_1a(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-1a: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-1b: receiver firmware version -------------------*/
 static int decode_bnx_00_1b(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-1b: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-1c: antenna mount description -------------------*/
 static int decode_bnx_00_1c(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-1c: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-1d: antenna xyz position ------------------------*/
 static int decode_bnx_00_1d(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-1d: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-1e: antenna geographic position -----------------*/
 static int decode_bnx_00_1e(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-1e: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-1f: antenna offset from reference point ---------*/
 static int decode_bnx_00_1f(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-1f: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-20: antenna radome type -------------------------*/
 static int decode_bnx_00_20(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-20: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-21: antenna radome number -----------------------*/
 static int decode_bnx_00_21(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-21: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-22: geocode -------------------------------------*/
 static int decode_bnx_00_22(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-22: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00-7f: notes/additional information ----------------*/
 static int decode_bnx_00_7f(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x00-7f: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x00: site/monument/marker/ref point/setup metadata --*/
 static int decode_bnx_00(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     const static double gpst0[]={1980,1,6,0,0,0};
     char *msg;
     unsigned char *p=buff;
@@ -403,13 +403,13 @@ static int decode_bnx_00(raw_t *raw, unsigned char *buff, int len)
 }
 /* decode binex mesaage 0x01-00: coded (raw bytes) gnss ephemeris ------------*/
 static int decode_bnx_01_00(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x01-00: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x01-01: decoded gps ephmemeris ----------------------*/
 static int decode_bnx_01_01(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     eph_t eph={0};
     unsigned char *p=buff;
     double tow,ura,sqrtA;
@@ -474,7 +474,7 @@ static int decode_bnx_01_01(raw_t *raw, unsigned char *buff, int len)
 }
 /* decode binex mesaage 0x01-02: decoded glonass ephmemeris ------------------*/
 static int decode_bnx_01_02(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     geph_t geph={0};
     unsigned char *p=buff;
     double tod,tof,tau_gps;
@@ -528,7 +528,7 @@ static int decode_bnx_01_02(raw_t *raw, unsigned char *buff, int len)
 }
 /* decode binex mesaage 0x01-03: decoded sbas ephmemeris ---------------------*/
 static int decode_bnx_01_03(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     seph_t seph={0};
     unsigned char *p=buff;
     double tow,tod,tof;
@@ -577,7 +577,7 @@ static int decode_bnx_01_03(raw_t *raw, unsigned char *buff, int len)
 }
 /* decode binex mesaage 0x01-04: decoded galileo ephmemeris ------------------*/
 static int decode_bnx_01_04(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     eph_t eph={0};
     unsigned char *p=buff;
     double tow,ura,sqrtA;
@@ -640,13 +640,13 @@ static int decode_bnx_01_04(raw_t *raw, unsigned char *buff, int len)
 }
 /* beidou signed 10 bit tgd -> sec -------------------------------------------*/
 static double bds_tgd(int tgd)
-{
+{FNC
     tgd&=0x3FF;
     return (tgd&0x200)?-1E10*((~tgd)&0x1FF):1E-10*(tgd&0x1FF);
 }
 /* decode binex mesaage 0x01-05: decoded beidou-2/compass ephmemeris ---------*/
 static int decode_bnx_01_05(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     eph_t eph={0};
     unsigned char *p=buff;
     double tow,toc,sqrtA;
@@ -713,7 +713,7 @@ static int decode_bnx_01_05(raw_t *raw, unsigned char *buff, int len)
 }
 /* decode binex mesaage 0x01-06: decoded qzss ephmemeris ---------------------*/
 static int decode_bnx_01_06(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     eph_t eph={0};
     unsigned char *p=buff;
     double tow,ura,sqrtA;
@@ -777,7 +777,7 @@ static int decode_bnx_01_06(raw_t *raw, unsigned char *buff, int len)
 }
 /* decode binex mesaage 0x01: gnss navigaion informtion ----------------------*/
 static int decode_bnx_01(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     char *msg;
     int srec=U1(buff),prn=U1(buff+1);
     
@@ -799,62 +799,62 @@ static int decode_bnx_01(raw_t *raw, unsigned char *buff, int len)
 }
 /* decode binex mesaage 0x02: generalized gnss data --------------------------*/
 static int decode_bnx_02(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x02: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x03: generalized ancillary site data ----------------*/
 static int decode_bnx_03(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x03: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x7d: receiver internal state prototyping ------------*/
 static int decode_bnx_7d(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x7d: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x7e: ancillary site data prototyping ----------------*/
 static int decode_bnx_7e(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x7e: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x7f-00: jpl fiducial site ---------------------------*/
 static int decode_bnx_7f_00(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x7f-00: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x7f-01: ucar cosmic ---------------------------------*/
 static int decode_bnx_7f_01(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x7f-01: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x7f-02: trimble 4700 --------------------------------*/
 static int decode_bnx_7f_02(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x7f-02: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x7f-03: trimble netrs -------------------------------*/
 static int decode_bnx_7f_03(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x7f-03: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x7f-04: trimble netrs -------------------------------*/
 static int decode_bnx_7f_04(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     trace(2,"binex 0x7f-04: not supported message\n");
     return 0;
 }
 /* decode binex mesaage 0x7f-05: trimble netr8 obs data ----------------------*/
 static unsigned char *decode_bnx_7f_05_obs(raw_t *raw, unsigned char *buff,
                                            int sat, int nobs, obsd_t *data)
-{
+{FNC
     const unsigned char codes_gps[32]={
         CODE_L1C ,CODE_L1C ,CODE_L1P ,CODE_L1W ,CODE_L1Y ,CODE_L1M , /*  0- 5 */
         CODE_L1X ,CODE_L1N ,CODE_NONE,CODE_NONE,CODE_L2W ,CODE_L2C , /*  6-11 */
@@ -1034,7 +1034,7 @@ static unsigned char *decode_bnx_7f_05_obs(raw_t *raw, unsigned char *buff,
 }
 /* decode binex mesaage 0x7f-05: trimble netr8 -------------------------------*/
 static int decode_bnx_7f_05(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     obsd_t data;
 
     INIT_ZERO(data);
@@ -1100,7 +1100,7 @@ static int decode_bnx_7f_05(raw_t *raw, unsigned char *buff, int len)
 }
 /* decode binex mesaage 0x7f: gnss data prototyping --------------------------*/
 static int decode_bnx_7f(raw_t *raw, unsigned char *buff, int len)
-{
+{FNC
     const static double gpst0[]={1980,1,6,0,0,0};
     char *msg;
     unsigned char *p=buff;
@@ -1127,7 +1127,7 @@ static int decode_bnx_7f(raw_t *raw, unsigned char *buff, int len)
 }
 /* decode binex mesaage ------------------------------------------------------*/
 static int decode_bnx(raw_t *raw)
-{
+{FNC
     unsigned int len,cs1,cs2;
     int rec,len_h;
     
@@ -1168,7 +1168,7 @@ static int decode_bnx(raw_t *raw)
 }
 /* synchronize binex message -------------------------------------------------*/
 static int sync_bnx(unsigned char *buff, unsigned char data)
-{
+{FNC
     buff[0]=buff[1]; buff[1]=data;
     
     return buff[0]==BNXSYNC2&&
@@ -1205,7 +1205,7 @@ static int sync_bnx(unsigned char *buff, unsigned char data)
 *
 *-----------------------------------------------------------------------------*/
 extern int input_bnx(raw_t *raw, unsigned char data)
-{
+{FNC
     unsigned int len;
     int len_h,len_c;
     
@@ -1244,7 +1244,7 @@ extern int input_bnx(raw_t *raw, unsigned char data)
 * return : status(-2: end of file, -1...9: same as above)
 *-----------------------------------------------------------------------------*/
 extern int input_bnxf(raw_t *raw, FILE *fp)
-{
+{FNC
     unsigned int len;
     int i,data,len_h,len_c;
     

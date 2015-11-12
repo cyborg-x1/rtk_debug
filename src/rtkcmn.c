@@ -333,7 +333,7 @@ extern int gmf_(double *mjd, double *lat, double *lon, double *hgt, double *zd,
 
 /* fatal error ---------------------------------------------------------------*/
 static void fatalerr(const char *format, ...)
-{
+{FNC
     va_list ap;
     va_start(ap,format); vfprintf(stderr,format,ap); va_end(ap);
     exit(-9);
@@ -345,7 +345,7 @@ static void fatalerr(const char *format, ...)
 * return : satellite number (0:error)
 *-----------------------------------------------------------------------------*/
 extern int satno(int sys, int prn)
-{
+{FNC
     if (prn<=0) return 0;
     switch (sys) {
         case SYS_GPS:
@@ -379,7 +379,7 @@ extern int satno(int sys, int prn)
 * return : satellite system (SYS_GPS,SYS_GLO,...)
 *-----------------------------------------------------------------------------*/
 extern int satsys(int sat, int *prn)
-{
+{FNC
     int sys=SYS_NONE;
     if (sat<=0||MAXSAT<sat) sat=0;
     else if (sat<=NSATGPS) {
@@ -414,7 +414,7 @@ extern int satsys(int sat, int *prn)
 * notes  : 120-138 and 193-195 are also recognized as sbas and qzss
 *-----------------------------------------------------------------------------*/
 extern int satid2no(const char *id)
-{
+{FNC
     int sys,prn;
     char code;
     
@@ -446,7 +446,7 @@ extern int satid2no(const char *id)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void satno2id(int sat, char *id)
-{
+{FNC
     int prn;
     switch (satsys(sat,&prn)) {
         case SYS_GPS: sprintf(id,"G%02d",prn-MINPRNGPS+1); return;
@@ -467,7 +467,7 @@ extern void satno2id(int sat, char *id)
 * return : status (1:excluded,0:not excluded)
 *-----------------------------------------------------------------------------*/
 extern int satexclude(int sat, int svh, const prcopt_t *opt)
-{
+{FNC
     int sys=satsys(sat,NULL);
     
     if (svh<0) return 1; /* ephemeris unavailable */
@@ -495,7 +495,7 @@ extern int satexclude(int sat, int svh, const prcopt_t *opt)
 *-----------------------------------------------------------------------------*/
 extern int testsnr(int base, int freq, double el, double snr,
                    const snrmask_t *mask)
-{
+{FNC
     double minsnr,a;
     int i;
     
@@ -518,7 +518,7 @@ extern int testsnr(int base, int freq, double el, double snr,
 * notes  : obs codes are based on reference [6] and qzss extension
 *-----------------------------------------------------------------------------*/
 extern unsigned char obs2code(const char *obs, int *freq)
-{
+{FNC
     int i;
     if (freq) *freq=0;
     for (i=1;*obscodes[i];i++) {
@@ -537,7 +537,7 @@ extern unsigned char obs2code(const char *obs, int *freq)
 * notes  : obs codes are based on reference [6] and qzss extension
 *-----------------------------------------------------------------------------*/
 extern char *code2obs(unsigned char code, int *freq)
-{
+{FNC
     if (freq) *freq=0;
     if (code<=CODE_NONE||MAXCODE<code) return "";
     if (freq) *freq=obsfreqs[code];
@@ -552,7 +552,7 @@ extern char *code2obs(unsigned char code, int *freq)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void setcodepri(int sys, int freq, const char *pri)
-{
+{FNC
     trace(3,"setcodepri:sys=%d freq=%d pri=%s\n",sys,freq,pri);
     
     if (freq<=0||MAXFREQ<freq) return;
@@ -571,7 +571,7 @@ extern void setcodepri(int sys, int freq, const char *pri)
 * return : priority (15:highest-1:lowest,0:error)
 *-----------------------------------------------------------------------------*/
 extern int getcodepri(int sys, unsigned char code, const char *opt)
-{
+{FNC
     const char *p,*optstr;
     char *obs,str[8]="";
     int i,j;
@@ -603,14 +603,14 @@ extern int getcodepri(int sys, unsigned char code, const char *opt)
 * return : extracted unsigned/signed bits
 *-----------------------------------------------------------------------------*/
 extern unsigned int getbitu(const unsigned char *buff, int pos, int len)
-{
+{FNC
     unsigned int bits=0;
     int i;
     for (i=pos;i<pos+len;i++) bits=(bits<<1)+((buff[i/8]>>(7-i%8))&1u);
     return bits;
 }
 extern int getbits(const unsigned char *buff, int pos, int len)
-{
+{FNC
     unsigned int bits=getbitu(buff,pos,len);
     if (len<=0||32<=len||!(bits&(1u<<(len-1)))) return (int)bits;
     return (int)(bits|(~0u<<len)); /* extend sign */
@@ -624,7 +624,7 @@ extern int getbits(const unsigned char *buff, int pos, int len)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void setbitu(unsigned char *buff, int pos, int len, unsigned int data)
-{
+{FNC
     unsigned int mask=1u<<(len-1);
     int i;
     if (len<=0||32<len) return;
@@ -633,7 +633,7 @@ extern void setbitu(unsigned char *buff, int pos, int len, unsigned int data)
     }
 }
 extern void setbits(unsigned char *buff, int pos, int len, int data)
-{
+{FNC
     if (data<0) data|=1<<(len-1); else data&=~(1<<(len-1)); /* set sign bit */
     setbitu(buff,pos,len,(unsigned int)data);
 }
@@ -645,7 +645,7 @@ extern void setbits(unsigned char *buff, int pos, int len, int data)
 * notes  : see NovAtel OEMV firmware manual 1.7 32-bit CRC
 *-----------------------------------------------------------------------------*/
 extern unsigned int crc32(const unsigned char *buff, int len)
-{
+{FNC
     unsigned int crc=0;
     int i,j;
     
@@ -667,7 +667,7 @@ extern unsigned int crc32(const unsigned char *buff, int len)
 * notes  : see reference [2] A.4.3.3 Parity
 *-----------------------------------------------------------------------------*/
 extern unsigned int crc24q(const unsigned char *buff, int len)
-{
+{FNC
     unsigned int crc=0;
     int i;
     
@@ -684,7 +684,7 @@ extern unsigned int crc24q(const unsigned char *buff, int len)
 * notes  : see reference [10] A.3.
 *-----------------------------------------------------------------------------*/
 extern unsigned short crc16(const unsigned char *buff, int len)
-{
+{FNC
     unsigned short crc=0;
     int i;
     
@@ -705,7 +705,7 @@ extern unsigned short crc16(const unsigned char *buff, int len)
 * notes  : see reference [1] 20.3.5.2 user parity algorithm
 *-----------------------------------------------------------------------------*/
 extern int decode_word(unsigned int word, unsigned char *data)
-{
+{FNC
     const unsigned int hamming[]={
         0xBB1F3480,0x5D8F9A40,0xAEC7CD00,0x5763E680,0x6BB1F340,0x8B7A89C0
     };
@@ -731,7 +731,7 @@ extern int decode_word(unsigned int word, unsigned char *data)
 * return : matrix pointer (if n<=0 or m<=0, return NULL)
 *-----------------------------------------------------------------------------*/
 extern double *mat(int n, int m)
-{
+{FNC
     double *p;
     
     if (n<=0||m<=0) return NULL;
@@ -746,7 +746,7 @@ extern double *mat(int n, int m)
 * return : matrix pointer (if n<=0 or m<=0, return NULL)
 *-----------------------------------------------------------------------------*/
 extern int *imat(int n, int m)
-{
+{FNC
     int *p;
     
     if (n<=0||m<=0) return NULL;
@@ -761,7 +761,7 @@ extern int *imat(int n, int m)
 * return : matrix pointer (if n<=0 or m<=0, return NULL)
 *-----------------------------------------------------------------------------*/
 extern double *zeros(int n, int m)
-{
+{FNC
     double *p;
     
 #if NOCALLOC
@@ -780,7 +780,7 @@ extern double *zeros(int n, int m)
 * return : matrix pointer (if n<=0, return NULL)
 *-----------------------------------------------------------------------------*/
 extern double *eye(int n)
-{
+{FNC
     double *p;
     int i;
     
@@ -794,7 +794,7 @@ extern double *eye(int n)
 * return : a'*b
 *-----------------------------------------------------------------------------*/
 extern double dot(const double *a, const double *b, int n)
-{
+{FNC
     double c=0.0;
     
     while (--n>=0) c+=a[n]*b[n];
@@ -807,7 +807,7 @@ extern double dot(const double *a, const double *b, int n)
 * return : || a ||
 *-----------------------------------------------------------------------------*/
 extern double norm(const double *a, int n)
-{
+{FNC
     return sqrt(dot(a,a,n));
 }
 /* outer product of 3d vectors -------------------------------------------------
@@ -817,7 +817,7 @@ extern double norm(const double *a, int n)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void cross3(const double *a, const double *b, double *c)
-{
+{FNC
     c[0]=a[1]*b[2]-a[2]*b[1];
     c[1]=a[2]*b[0]-a[0]*b[2];
     c[2]=a[0]*b[1]-a[1]*b[0];
@@ -829,7 +829,7 @@ extern void cross3(const double *a, const double *b, double *c)
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int normv3(const double *a, double *b)
-{
+{FNC
     double r;
     if ((r=norm(a,3))<=0.0) return 0;
     b[0]=a[0]/r;
@@ -845,7 +845,7 @@ extern int normv3(const double *a, double *b)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void matcpy(double *A, const double *B, int n, int m)
-{
+{FNC
     memcpy(A,B,sizeof(double)*n*m);
 }
 /* matrix routines -----------------------------------------------------------*/
@@ -864,7 +864,7 @@ extern void matcpy(double *A, const double *B, int n, int m)
 *-----------------------------------------------------------------------------*/
 extern void matmul(const char *tr, int n, int k, int m, double alpha,
                    const double *A, const double *B, double beta, double *C)
-{
+{FNC
     int lda=tr[0]=='T'?m:n,ldb=tr[1]=='T'?k:m;
     
     dgemm_((char *)tr,(char *)tr+1,&n,&k,&m,&alpha,(double *)A,&lda,(double *)B,
@@ -877,7 +877,7 @@ extern void matmul(const char *tr, int n, int k, int m, double alpha,
 * return : status (0:ok,0>:error)
 *-----------------------------------------------------------------------------*/
 extern int matinv(double *A, int n)
-{
+{FNC
     double *work;
     int info,lwork=n*16,*ipiv=imat(n,1);
     
@@ -900,7 +900,7 @@ extern int matinv(double *A, int n)
 *-----------------------------------------------------------------------------*/
 extern int solve(const char *tr, const double *A, const double *Y, int n,
                  int m, double *X)
-{
+{FNC
     double *B=mat(n,n);
     int info,*ipiv=imat(n,1);
     
@@ -917,7 +917,7 @@ extern int solve(const char *tr, const double *A, const double *Y, int n,
 /* multiply matrix -----------------------------------------------------------*/
 extern void matmul(const char *tr, int n, int k, int m, double alpha,
                    const double *A, const double *B, double beta, double *C)
-{
+{FNC
     double d;
     int i,j,x,f=tr[0]=='N'?(tr[1]=='N'?1:2):(tr[1]=='N'?3:4);
     
@@ -934,7 +934,7 @@ extern void matmul(const char *tr, int n, int k, int m, double alpha,
 }
 /* LU decomposition ----------------------------------------------------------*/
 static int ludcmp(double *A, int n, int *indx, double *d)
-{
+{FNC
     double big,s,tmp,*vv=mat(n,1);
     int i,imax=0,j,k;
     
@@ -969,7 +969,7 @@ static int ludcmp(double *A, int n, int *indx, double *d)
 }
 /* LU back-substitution ------------------------------------------------------*/
 static void lubksb(const double *A, int n, const int *indx, double *b)
-{
+{FNC
     double s;
     int i,ii=-1,ip,j;
     
@@ -984,7 +984,7 @@ static void lubksb(const double *A, int n, const int *indx, double *b)
 }
 /* inverse of matrix ---------------------------------------------------------*/
 extern int matinv(double *A, int n)
-{
+{FNC
     double d,*B;
     int i,j,*indx;
     
@@ -1000,7 +1000,7 @@ extern int matinv(double *A, int n)
 /* solve linear equation -----------------------------------------------------*/
 extern int solve(const char *tr, const double *A, const double *Y, int n,
                  int m, double *X)
-{
+{FNC
     double *B=mat(n,n);
     int info;
     
@@ -1025,7 +1025,7 @@ extern int solve(const char *tr, const double *A, const double *Y, int n,
 *-----------------------------------------------------------------------------*/
 extern int lsq(const double *A, const double *y, int n, int m, double *x,
                double *Q)
-{
+{FNC
     double *Ay;
     int info;
     
@@ -1057,7 +1057,7 @@ extern int lsq(const double *A, const double *y, int n, int m, double *x,
 static int filter_(const double *x, const double *P, const double *H,
                    const double *v, const double *R, int n, int m,
                    double *xp, double *Pp)
-{
+{FNC
     double *F=mat(n,m),*Q=mat(m,m),*K=mat(n,m),*I=eye(n);
     int info;
     
@@ -1076,7 +1076,7 @@ static int filter_(const double *x, const double *P, const double *H,
 }
 extern int filter(double *x, double *P, const double *H, const double *v,
                   const double *R, int n, int m)
-{
+{FNC
     double *x_,*xp_,*P_,*Pp_,*H_;
     int i,j,k,info,*ix;
     
@@ -1113,7 +1113,7 @@ extern int filter(double *x, double *P, const double *H, const double *v,
 *-----------------------------------------------------------------------------*/
 extern int smoother(const double *xf, const double *Qf, const double *xb,
                     const double *Qb, int n, double *xs, double *Qs)
-{
+{FNC
     double *invQf=mat(n,n),*invQb=mat(n,n),*xx=mat(n,1);
     int i,info=-1;
     
@@ -1140,7 +1140,7 @@ extern int smoother(const double *xf, const double *Qf, const double *xb,
 * notes  : matirix stored by column-major order (fortran convention)
 *-----------------------------------------------------------------------------*/
 extern void matfprint(const double A[], int n, int m, int p, int q, FILE *fp)
-{
+{FNC
     int i,j;
     
     for (i=0;i<n;i++) {
@@ -1149,7 +1149,7 @@ extern void matfprint(const double A[], int n, int m, int p, int q, FILE *fp)
     }
 }
 extern void matprint(const double A[], int n, int m, int p, int q)
-{
+{FNC
     matfprint(A,n,m,p,q,stdout);
 }
 /* string to number ------------------------------------------------------------
@@ -1159,7 +1159,7 @@ extern void matprint(const double A[], int n, int m, int p, int q)
 * return : converted number (0.0:error)
 *-----------------------------------------------------------------------------*/
 extern double str2num(const char *s, int i, int n)
-{
+{FNC
     double value;
     char str[256],*p=str;
     
@@ -1175,7 +1175,7 @@ extern double str2num(const char *s, int i, int n)
 * return : status (0:ok,0>:error)
 *-----------------------------------------------------------------------------*/
 extern int str2time(const char *s, int i, int n, gtime_t *t)
-{
+{FNC
     double ep[6];
     char str[256],*p=str;
     
@@ -1194,7 +1194,7 @@ extern int str2time(const char *s, int i, int n, gtime_t *t)
 * notes  : proper in 1970-2037 or 1970-2099 (64bit time_t)
 *-----------------------------------------------------------------------------*/
 extern gtime_t epoch2time(const double *ep)
-{
+{FNC
     const int doy[]={1,32,60,91,121,152,182,213,244,274,305,335};
     gtime_t time={0};
     int days,sec,year=(int)ep[0],mon=(int)ep[1],day=(int)ep[2];
@@ -1216,7 +1216,7 @@ extern gtime_t epoch2time(const double *ep)
 * notes  : proper in 1970-2037 or 1970-2099 (64bit time_t)
 *-----------------------------------------------------------------------------*/
 extern void time2epoch(gtime_t t, double *ep)
-{
+{FNC
     const int mday[]={ /* # of days in a month */
         31,28,31,30,31,30,31,31,30,31,30,31,31,28,31,30,31,30,31,31,30,31,30,31,
         31,29,31,30,31,30,31,31,30,31,30,31,31,28,31,30,31,30,31,31,30,31,30,31
@@ -1239,7 +1239,7 @@ extern void time2epoch(gtime_t t, double *ep)
 * return : gtime_t struct
 *-----------------------------------------------------------------------------*/
 extern gtime_t gpst2time(int week, double sec)
-{
+{FNC
     gtime_t t=epoch2time(gpst0);
     
     if (sec<-1E9||1E9<sec) sec=0.0;
@@ -1254,7 +1254,7 @@ extern gtime_t gpst2time(int week, double sec)
 * return : time of week in gps time (s)
 *-----------------------------------------------------------------------------*/
 extern double time2gpst(gtime_t t, int *week)
-{
+{FNC
     gtime_t t0=epoch2time(gpst0);
     time_t sec=t.time-t0.time;
     int w=(int)(sec/(86400*7));
@@ -1269,7 +1269,7 @@ extern double time2gpst(gtime_t t, int *week)
 * return : gtime_t struct
 *-----------------------------------------------------------------------------*/
 extern gtime_t gst2time(int week, double sec)
-{
+{FNC
     gtime_t t=epoch2time(gst0);
     
     if (sec<-1E9||1E9<sec) sec=0.0;
@@ -1284,7 +1284,7 @@ extern gtime_t gst2time(int week, double sec)
 * return : time of week in gst (s)
 *-----------------------------------------------------------------------------*/
 extern double time2gst(gtime_t t, int *week)
-{
+{FNC
     gtime_t t0=epoch2time(gst0);
     time_t sec=t.time-t0.time;
     int w=(int)(sec/(86400*7));
@@ -1299,7 +1299,7 @@ extern double time2gst(gtime_t t, int *week)
 * return : gtime_t struct
 *-----------------------------------------------------------------------------*/
 extern gtime_t bdt2time(int week, double sec)
-{
+{FNC
     gtime_t t=epoch2time(bdt0);
     
     if (sec<-1E9||1E9<sec) sec=0.0;
@@ -1314,7 +1314,7 @@ extern gtime_t bdt2time(int week, double sec)
 * return : time of week in bdt (s)
 *-----------------------------------------------------------------------------*/
 extern double time2bdt(gtime_t t, int *week)
-{
+{FNC
     gtime_t t0=epoch2time(bdt0);
     time_t sec=t.time-t0.time;
     int w=(int)(sec/(86400*7));
@@ -1329,7 +1329,7 @@ extern double time2bdt(gtime_t t, int *week)
 * return : gtime_t struct (t+sec)
 *-----------------------------------------------------------------------------*/
 extern gtime_t timeadd(gtime_t t, double sec)
-{
+{FNC
     double tt;
     
     t.sec+=sec; tt=floor(t.sec); t.time+=(int)tt; t.sec-=tt;
@@ -1341,7 +1341,7 @@ extern gtime_t timeadd(gtime_t t, double sec)
 * return : time difference (t1-t2) (s)
 *-----------------------------------------------------------------------------*/
 extern double timediff(gtime_t t1, gtime_t t2)
-{
+{FNC
     return difftime(t1.time,t2.time)+t1.sec-t2.sec;
 }
 /* get current time in utc -----------------------------------------------------
@@ -1352,7 +1352,7 @@ extern double timediff(gtime_t t1, gtime_t t2)
 static double timeoffset_=0.0;        /* time offset (s) */
 
 extern gtime_t timeget(void)
-{
+{FNC
     double ep[6]={0};
 #ifdef WIN32
     SYSTEMTIME ts;
@@ -1380,7 +1380,7 @@ extern gtime_t timeget(void)
 *          not reentrant
 *-----------------------------------------------------------------------------*/
 extern void timeset(gtime_t t)
-{
+{FNC
     timeoffset_+=timediff(t,timeget());
 }
 /* read leap seconds table -----------------------------------------------------
@@ -1393,7 +1393,7 @@ extern void timeset(gtime_t t)
 *          (3) The date and time should be descending order.
 *-----------------------------------------------------------------------------*/
 extern int read_leaps(const char *file)
-{
+{FNC
     FILE *fp;
     char buff[256],*p;
     int i,n=0,ep[6],ls;
@@ -1418,7 +1418,7 @@ extern int read_leaps(const char *file)
 * notes  : ignore slight time offset under 100 ns
 *-----------------------------------------------------------------------------*/
 extern gtime_t gpst2utc(gtime_t t)
-{
+{FNC
     gtime_t tu;
     int i;
     
@@ -1435,7 +1435,7 @@ extern gtime_t gpst2utc(gtime_t t)
 * notes  : ignore slight time offset under 100 ns
 *-----------------------------------------------------------------------------*/
 extern gtime_t utc2gpst(gtime_t t)
-{
+{FNC
     int i;
     
     for (i=0;leaps[i][0]>0;i++) {
@@ -1452,7 +1452,7 @@ extern gtime_t utc2gpst(gtime_t t)
 *          ignore slight time offset under 100 ns
 *-----------------------------------------------------------------------------*/
 extern gtime_t gpst2bdt(gtime_t t)
-{
+{FNC
     return timeadd(t,-14.0);
 }
 /* bdt to gpstime --------------------------------------------------------------
@@ -1462,12 +1462,12 @@ extern gtime_t gpst2bdt(gtime_t t)
 * notes  : see gpst2bdt()
 *-----------------------------------------------------------------------------*/
 extern gtime_t bdt2gpst(gtime_t t)
-{
+{FNC
     return timeadd(t,14.0);
 }
 /* time to day and sec -------------------------------------------------------*/
 static double time2sec(gtime_t time, gtime_t *day)
-{
+{FNC
     double ep[6],sec;
     time2epoch(time,ep);
     sec=ep[3]*3600.0+ep[4]*60.0+ep[5];
@@ -1482,7 +1482,7 @@ static double time2sec(gtime_t time, gtime_t *day)
 * return : gmst (rad)
 *-----------------------------------------------------------------------------*/
 extern double utc2gmst(gtime_t t, double ut1_utc)
-{
+{FNC
     const double ep2000[]={2000,1,1,12,0,0};
     gtime_t tut,tut0;
     double ut,t1,t2,t3,gmst0,gmst;
@@ -1504,7 +1504,7 @@ extern double utc2gmst(gtime_t t, double ut1_utc)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void time2str(gtime_t t, char *s, int n)
-{
+{FNC
     double ep[6];
     
     if (n<0) n=0; else if (n>12) n=12;
@@ -1521,7 +1521,7 @@ extern void time2str(gtime_t t, char *s, int n)
 * notes  : not reentrant, do not use multiple in a function
 *-----------------------------------------------------------------------------*/
 extern char *time_str(gtime_t t, int n)
-{
+{FNC
     static char buff[64];
     time2str(t,buff,n);
     return buff;
@@ -1532,7 +1532,7 @@ extern char *time_str(gtime_t t, int n)
 * return : day of year (days)
 *-----------------------------------------------------------------------------*/
 extern double time2doy(gtime_t t)
-{
+{FNC
     double ep[6];
     
     time2epoch(t,ep);
@@ -1545,7 +1545,7 @@ extern double time2doy(gtime_t t)
 * return : adjusted gps week number
 *-----------------------------------------------------------------------------*/
 extern int adjgpsweek(int week)
-{
+{FNC
     int w;
     (void)time2gpst(utc2gpst(timeget()),&w);
     if (w<1560) w=1560; /* use 2009/12/1 if time is earlier than 2009/12/1 */
@@ -1557,7 +1557,7 @@ extern int adjgpsweek(int week)
 * return : current tick in ms
 *-----------------------------------------------------------------------------*/
 extern unsigned int tickget(void)
-{
+{FNC
 #ifdef WIN32
     return (unsigned int)timeGetTime();
 #else
@@ -1585,7 +1585,7 @@ extern unsigned int tickget(void)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void sleepms(int ms)
-{
+{FNC
 #ifdef WIN32
     if (ms<5) Sleep(1); else Sleep(ms);
 #else
@@ -1603,7 +1603,7 @@ extern void sleepms(int ms)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void deg2dms(double deg, double *dms)
-{
+{FNC
     double sign=deg<0.0?-1.0:1.0,a=fabs(deg);
     dms[0]=floor(a); a=(a-dms[0])*60.0;
     dms[1]=floor(a); a=(a-dms[1])*60.0;
@@ -1615,7 +1615,7 @@ extern void deg2dms(double deg, double *dms)
 * return : degree
 *-----------------------------------------------------------------------------*/
 extern double dms2deg(const double *dms)
-{
+{FNC
     double sign=dms[0]<0.0?-1.0:1.0;
     return sign*(fabs(dms[0])+dms[1]/60.0+dms[2]/3600.0);
 }
@@ -1627,7 +1627,7 @@ extern double dms2deg(const double *dms)
 * notes  : WGS84, ellipsoidal height
 *-----------------------------------------------------------------------------*/
 extern void ecef2pos(const double *r, double *pos)
-{
+{FNC
     double e2=FE_WGS84*(2.0-FE_WGS84),r2=dot(r,r,2),z,zk,v=RE_WGS84,sinp;
     
     for (z=r[2],zk=0.0;fabs(z-zk)>=1E-4;) {
@@ -1648,7 +1648,7 @@ extern void ecef2pos(const double *r, double *pos)
 * notes  : WGS84, ellipsoidal height
 *-----------------------------------------------------------------------------*/
 extern void pos2ecef(const double *pos, double *r)
-{
+{FNC
     double sinp=sin(pos[0]),cosp=cos(pos[0]),sinl=sin(pos[1]),cosl=cos(pos[1]);
     double e2=FE_WGS84*(2.0-FE_WGS84),v=RE_WGS84/sqrt(1.0-e2*sinp*sinp);
     
@@ -1664,7 +1664,7 @@ extern void pos2ecef(const double *pos, double *r)
 * notes  : matirix stored by column-major order (fortran convention)
 *-----------------------------------------------------------------------------*/
 extern void xyz2enu(const double *pos, double *E)
-{
+{FNC
     double sinp=sin(pos[0]),cosp=cos(pos[0]),sinl=sin(pos[1]),cosl=cos(pos[1]);
     
     E[0]=-sinl;      E[3]=cosl;       E[6]=0.0;
@@ -1679,7 +1679,7 @@ extern void xyz2enu(const double *pos, double *E)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void ecef2enu(const double *pos, const double *r, double *e)
-{
+{FNC
     double E[9];
     
     xyz2enu(pos,E);
@@ -1693,7 +1693,7 @@ extern void ecef2enu(const double *pos, const double *r, double *e)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void enu2ecef(const double *pos, const double *e, double *r)
-{
+{FNC
     double E[9];
     
     xyz2enu(pos,E);
@@ -1707,7 +1707,7 @@ extern void enu2ecef(const double *pos, const double *e, double *r)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void covenu(const double *pos, const double *P, double *Q)
-{
+{FNC
     double E[9],EP[9];
     
     xyz2enu(pos,E);
@@ -1722,7 +1722,7 @@ extern void covenu(const double *pos, const double *P, double *Q)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void covecef(const double *pos, const double *Q, double *P)
-{
+{FNC
     double E[9],EQ[9];
     
     xyz2enu(pos,E);
@@ -1747,7 +1747,7 @@ extern void covecef(const double *pos, const double *Q, double *P)
 
 /* astronomical arguments: f={l,l',F,D,OMG} (rad) ----------------------------*/
 static void ast_args(double t, double *f)
-{
+{FNC
     static const double fc[][5]={ /* coefficients for iau 1980 nutation */
         { 134.96340251, 1717915923.2178,  31.8792,  0.051635, -0.00024470},
         { 357.52910918,  129596581.0481,  -0.5532,  0.000136, -0.00001149},
@@ -1767,7 +1767,7 @@ static void ast_args(double t, double *f)
 }
 /* iau 1980 nutation ---------------------------------------------------------*/
 static void nut_iau1980(double t, const double *f, double *dpsi, double *deps)
-{
+{FNC
     static const double nut[106][10]={
         {   0,   0,   0,   0,   1, -6798.4, -171996, -174.2, 92025,   8.9},
         {   0,   0,   2,  -2,   2,   182.6,  -13187,   -1.6,  5736,  -3.1},
@@ -1902,7 +1902,7 @@ static void nut_iau1980(double t, const double *f, double *dpsi, double *deps)
 *          not thread-safe
 *-----------------------------------------------------------------------------*/
 extern void eci2ecef(gtime_t tutc, const double *erpv, double *U, double *gmst)
-{
+{FNC
     const double ep2000[]={2000,1,1,12,0,0};
     static gtime_t tutc_;
     static double U_[9],gmst_;
@@ -1966,7 +1966,7 @@ extern void eci2ecef(gtime_t tutc, const double *erpv, double *U, double *gmst)
 }
 /* decode antenna parameter field --------------------------------------------*/
 static int decodef(char *p, int n, double *v)
-{
+{FNC
     int i;
     
     for (i=0;i<n;i++) v[i]=0.0;
@@ -1977,7 +1977,7 @@ static int decodef(char *p, int n, double *v)
 }
 /* add antenna parameter -----------------------------------------------------*/
 static void addpcv(const pcv_t *pcv, pcvs_t *pcvs)
-{
+{FNC
     pcv_t *pcvs_pcv;
     
     if (pcvs->nmax<=pcvs->n) {
@@ -1993,7 +1993,7 @@ static void addpcv(const pcv_t *pcv, pcvs_t *pcvs)
 }
 /* read ngs antenna parameter file -------------------------------------------*/
 static int readngspcv(const char *file, pcvs_t *pcvs)
-{
+{FNC
     FILE *fp;
     static const pcv_t pcv0={0};
     pcv_t pcv;
@@ -2040,7 +2040,7 @@ static int readngspcv(const char *file, pcvs_t *pcvs)
 }
 /* read antex file ----------------------------------------------------------*/
 static int readantex(const char *file, pcvs_t *pcvs)
-{
+{FNC
     FILE *fp;
     static const pcv_t pcv0={0};
     pcv_t pcv;
@@ -2117,7 +2117,7 @@ static int readantex(const char *file, pcvs_t *pcvs)
 *          only support non-azimuth-depedent parameters
 *-----------------------------------------------------------------------------*/
 extern int readpcv(const char *file, pcvs_t *pcvs)
-{
+{FNC
     pcv_t *pcv;
     char *ext;
     int i,stat;
@@ -2150,7 +2150,7 @@ extern int readpcv(const char *file, pcvs_t *pcvs)
 *-----------------------------------------------------------------------------*/
 extern pcv_t *searchpcv(int sat, const char *type, gtime_t time,
                         const pcvs_t *pcvs)
-{
+{FNC
     pcv_t *pcv;
     char buff[MAXANT],*types[2],*p;
     int i,j,n=0;
@@ -2198,7 +2198,7 @@ extern pcv_t *searchpcv(int sat, const char *type, gtime_t time,
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void readpos(const char *file, const char *rcv, double *pos)
-{
+{FNC
     static double poss[2048][3];
     static char stas[2048][16];
     FILE *fp;
@@ -2229,7 +2229,7 @@ extern void readpos(const char *file, const char *rcv, double *pos)
 }
 /* read blq record -----------------------------------------------------------*/
 static int readblqrecord(FILE *fp, double *odisp)
-{
+{FNC
     double v[11];
     char buff[256];
     int i,n=0;
@@ -2251,7 +2251,7 @@ static int readblqrecord(FILE *fp, double *odisp)
 * return : status (1:ok,0:file open error)
 *-----------------------------------------------------------------------------*/
 extern int readblq(const char *file, const char *sta, double *odisp)
-{
+{FNC
     FILE *fp;
     char buff[256],staname[32]="",name[32],*p;
     
@@ -2287,7 +2287,7 @@ extern int readblq(const char *file, const char *sta, double *odisp)
 * return : status (1:ok,0:file open error)
 *-----------------------------------------------------------------------------*/
 extern int readerp(const char *file, erp_t *erp)
-{
+{FNC
     FILE *fp;
     erpd_t *erp_data;
     double v[14]={0};
@@ -2333,7 +2333,7 @@ extern int readerp(const char *file, erp_t *erp)
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int geterp(const erp_t *erp, gtime_t time, double *erpv)
-{
+{FNC
     const double ep[]={2000,1,1,12,0,0};
     double mjd,day,a;
     int i=0,j,k;
@@ -2378,7 +2378,7 @@ extern int geterp(const erp_t *erp, gtime_t time, double *erpv)
 }
 /* compare ephemeris ---------------------------------------------------------*/
 static int cmpeph(const void *p1, const void *p2)
-{
+{FNC
     eph_t *q1=(eph_t *)p1,*q2=(eph_t *)p2;
     return q1->ttr.time!=q2->ttr.time?(int)(q1->ttr.time-q2->ttr.time):
            (q1->toe.time!=q2->toe.time?(int)(q1->toe.time-q2->toe.time):
@@ -2386,7 +2386,7 @@ static int cmpeph(const void *p1, const void *p2)
 }
 /* sort and unique ephemeris -------------------------------------------------*/
 static void uniqeph(nav_t *nav)
-{
+{FNC
     eph_t *nav_eph;
     int i,j;
     
@@ -2416,7 +2416,7 @@ static void uniqeph(nav_t *nav)
 }
 /* compare glonass ephemeris -------------------------------------------------*/
 static int cmpgeph(const void *p1, const void *p2)
-{
+{FNC
     geph_t *q1=(geph_t *)p1,*q2=(geph_t *)p2;
     return q1->tof.time!=q2->tof.time?(int)(q1->tof.time-q2->tof.time):
            (q1->toe.time!=q2->toe.time?(int)(q1->toe.time-q2->toe.time):
@@ -2424,7 +2424,7 @@ static int cmpgeph(const void *p1, const void *p2)
 }
 /* sort and unique glonass ephemeris -----------------------------------------*/
 static void uniqgeph(nav_t *nav)
-{
+{FNC
     geph_t *nav_geph;
     int i,j;
     
@@ -2455,7 +2455,7 @@ static void uniqgeph(nav_t *nav)
 }
 /* compare sbas ephemeris ----------------------------------------------------*/
 static int cmpseph(const void *p1, const void *p2)
-{
+{FNC
     seph_t *q1=(seph_t *)p1,*q2=(seph_t *)p2;
     return q1->tof.time!=q2->tof.time?(int)(q1->tof.time-q2->tof.time):
            (q1->t0.time!=q2->t0.time?(int)(q1->t0.time-q2->t0.time):
@@ -2463,7 +2463,7 @@ static int cmpseph(const void *p1, const void *p2)
 }
 /* sort and unique sbas ephemeris --------------------------------------------*/
 static void uniqseph(nav_t *nav)
-{
+{FNC
     seph_t *nav_seph;
     int i,j;
     
@@ -2497,7 +2497,7 @@ static void uniqseph(nav_t *nav)
 * return : number of epochs
 *-----------------------------------------------------------------------------*/
 extern void uniqnav(nav_t *nav)
-{
+{FNC
     int i,j;
     
     trace(3,"uniqnav: neph=%d ngeph=%d nseph=%d\n",nav->n,nav->ng,nav->ns);
@@ -2514,7 +2514,7 @@ extern void uniqnav(nav_t *nav)
 }
 /* compare observation data -------------------------------------------------*/
 static int cmpobs(const void *p1, const void *p2)
-{
+{FNC
     obsd_t *q1=(obsd_t *)p1,*q2=(obsd_t *)p2;
     double tt=timediff(q1->time,q2->time);
     if (fabs(tt)>DTTOL) return tt<0?-1:1;
@@ -2527,7 +2527,7 @@ static int cmpobs(const void *p1, const void *p2)
 * return : number of epochs
 *-----------------------------------------------------------------------------*/
 extern int sortobs(obs_t *obs)
-{
+{FNC
     int i,j,n;
     
     trace(3,"sortobs: nobs=%d\n",obs->n);
@@ -2562,7 +2562,7 @@ extern int sortobs(obs_t *obs)
 * return : 1:on condition, 0:not on condition
 *-----------------------------------------------------------------------------*/
 extern int screent(gtime_t time, gtime_t ts, gtime_t te, double tint)
-{
+{FNC
     return (tint<=0.0||fmod(time2gpst(time,NULL)+DTTOL,tint)<=DTTOL*2.0)&&
            (ts.time==0||timediff(time,ts)>=-DTTOL)&&
            (te.time==0||timediff(time,te)<  DTTOL);
@@ -2574,7 +2574,7 @@ extern int screent(gtime_t time, gtime_t ts, gtime_t te, double tint)
 * return : status (1:ok,0:no file)
 *-----------------------------------------------------------------------------*/
 extern int readnav(const char *file, nav_t *nav)
-{
+{FNC
     FILE *fp;
     eph_t eph0={0};
     char buff[4096],*p;
@@ -2618,7 +2618,7 @@ extern int readnav(const char *file, nav_t *nav)
     return 1;
 }
 extern int savenav(const char *file, const nav_t *nav)
-{
+{FNC
     FILE *fp;
     int i;
     char id[32];
@@ -2659,7 +2659,7 @@ extern int savenav(const char *file, const nav_t *nav)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void freeobs(obs_t *obs)
-{
+{FNC
     free(obs->data); obs->data=NULL; obs->n=obs->nmax=0;
 }
 /* free navigation data ---------------------------------------------------------
@@ -2673,7 +2673,7 @@ extern void freeobs(obs_t *obs)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void freenav(nav_t *nav, int opt)
-{
+{FNC
     if (opt&0x01) {free(nav->eph ); nav->eph =NULL; nav->n =nav->nmax =0;}
     if (opt&0x02) {free(nav->geph); nav->geph=NULL; nav->ng=nav->ngmax=0;}
     if (opt&0x04) {free(nav->seph); nav->seph=NULL; nav->ns=nav->nsmax=0;}
@@ -2693,7 +2693,7 @@ static gtime_t time_trace={0};  /* time at traceopen */
 static lock_t lock_trace;       /* lock for trace */
 
 static void traceswap(void)
-{
+{FNC
     gtime_t time=utc2gpst(timeget());
     char path[1024];
     
@@ -2718,7 +2718,7 @@ static void traceswap(void)
     unlock(&lock_trace);
 }
 extern void traceopen(const char *file)
-{
+{FNC
     gtime_t time=utc2gpst(timeget());
     char path[1024];
     
@@ -2730,17 +2730,17 @@ extern void traceopen(const char *file)
     initlock(&lock_trace);
 }
 extern void traceclose(void)
-{
+{FNC
     if (fp_trace&&fp_trace!=stderr) fclose(fp_trace);
     fp_trace=NULL;
     file_trace[0]='\0';
 }
 extern void tracelevel(int level)
-{
+{FNC
     level_trace=level;
 }
 extern void trace(int level, const char *format, ...)
-{
+{FNC
     va_list ap;
     
     /* print error message to stderr */
@@ -2754,7 +2754,7 @@ extern void trace(int level, const char *format, ...)
     fflush(fp_trace);
 }
 extern void tracet(int level, const char *format, ...)
-{
+{FNC
     va_list ap;
     
     if (!fp_trace||level>level_trace) return;
@@ -2764,12 +2764,12 @@ extern void tracet(int level, const char *format, ...)
     fflush(fp_trace);
 }
 extern void tracemat(int level, const double *A, int n, int m, int p, int q)
-{
+{FNC
     if (!fp_trace||level>level_trace) return;
     matfprint(A,n,m,p,q,fp_trace); fflush(fp_trace);
 }
 extern void traceobs(int level, const obsd_t *obs, int n)
-{
+{FNC
     char str[64],id[16];
     int i;
     
@@ -2785,7 +2785,7 @@ extern void traceobs(int level, const obsd_t *obs, int n)
     fflush(fp_trace);
 }
 extern void tracenav(int level, const nav_t *nav)
-{
+{FNC
     char s1[64],s2[64],id[16];
     int i;
     
@@ -2805,7 +2805,7 @@ extern void tracenav(int level, const nav_t *nav)
             nav->ion_gal[1],nav->ion_gal[2],nav->ion_gal[3]);
 }
 extern void tracegnav(int level, const nav_t *nav)
-{
+{FNC
     char s1[64],s2[64],id[16];
     int i;
     
@@ -2819,7 +2819,7 @@ extern void tracegnav(int level, const nav_t *nav)
     }
 }
 extern void tracehnav(int level, const nav_t *nav)
-{
+{FNC
     char s1[64],s2[64],id[16];
     int i;
     
@@ -2833,7 +2833,7 @@ extern void tracehnav(int level, const nav_t *nav)
     }
 }
 extern void tracepeph(int level, const nav_t *nav)
-{
+{FNC
     char s[64],id[16];
     int i,j;
     
@@ -2853,7 +2853,7 @@ extern void tracepeph(int level, const nav_t *nav)
     }
 }
 extern void tracepclk(int level, const nav_t *nav)
-{
+{FNC
     char s[64],id[16];
     int i,j;
     
@@ -2870,7 +2870,7 @@ extern void tracepclk(int level, const nav_t *nav)
     }
 }
 extern void traceb(int level, const unsigned char *p, int n)
-{
+{FNC
     int i;
     if (!fp_trace||level>level_trace) return;
     for (i=0;i<n;i++) fprintf(fp_trace,"%02X%s",*p++,i%8==7?" ":"");
@@ -2899,7 +2899,7 @@ extern void traceb  (int level, const unsigned char *p, int n) {}
 * return : execution status (0:ok,0>:error)
 *-----------------------------------------------------------------------------*/
 extern int execcmd(const char *cmd)
-{
+{FNC
 #ifdef WIN32
     PROCESS_INFORMATION info;
     STARTUPINFO si={0};
@@ -2932,7 +2932,7 @@ extern int execcmd(const char *cmd)
 * notes  : the order of expanded files is alphabetical order
 *-----------------------------------------------------------------------------*/
 extern int expath(const char *path, char *paths[], int nmax)
-{
+{FNC
     int i,j,n=0;
     char tmp[1024];
 #ifdef WIN32
@@ -3002,7 +3002,7 @@ extern int expath(const char *path, char *paths[], int nmax)
 * notes  : not recursive. only one level
 *-----------------------------------------------------------------------------*/
 extern void createdir(const char *path)
-{
+{FNC
     char buff[1024],*p;
     
     tracet(3,"createdir: path=%s\n",path);
@@ -3019,7 +3019,7 @@ extern void createdir(const char *path)
 }
 /* replace string ------------------------------------------------------------*/
 static int repstr(char *str, const char *pat, const char *rep)
-{
+{FNC
     int len=strlen(pat);
     char buff[1024],*p,*q,*r;
     
@@ -3064,7 +3064,7 @@ static int repstr(char *str, const char *pat, const char *rep)
 *-----------------------------------------------------------------------------*/
 extern int reppath(const char *path, char *rpath, gtime_t time, const char *rov,
                    const char *base)
-{
+{FNC
     double ep[6],ep0[6]={2000,1,1,0,0,0};
     int week,dow,doy,stat=0;
     char rep[64];
@@ -3124,7 +3124,7 @@ extern int reppath(const char *path, char *rpath, gtime_t time, const char *rov,
 *-----------------------------------------------------------------------------*/
 extern int reppaths(const char *path, char *rpath[], int nmax, gtime_t ts,
                     gtime_t te, const char *rov, const char *base)
-{
+{FNC
     gtime_t time;
     double tow,tint=86400.0;
     int i,n=0,week;
@@ -3155,7 +3155,7 @@ extern int reppaths(const char *path, char *rpath[], int nmax, gtime_t ts,
 * return : carrier wave length (m) (0.0: error)
 *-----------------------------------------------------------------------------*/
 extern double satwavelen(int sat, int frq, const nav_t *nav)
-{
+{FNC
     const double freq_glo[]={FREQ1_GLO,FREQ2_GLO,FREQ3_GLO};
     const double dfrq_glo[]={DFRQ1_GLO,DFRQ2_GLO,0.0};
     int i,sys=satsys(sat,NULL);
@@ -3192,7 +3192,7 @@ extern double satwavelen(int sat, int frq, const nav_t *nav)
 * notes  : distance includes sagnac effect correction
 *-----------------------------------------------------------------------------*/
 extern double geodist(const double *rs, const double *rr, double *e)
-{
+{FNC
     double r;
     int i;
     
@@ -3211,7 +3211,7 @@ extern double geodist(const double *rs, const double *rr, double *e)
 * return : elevation angle (rad)
 *-----------------------------------------------------------------------------*/
 extern double satazel(const double *pos, const double *e, double *azel)
-{
+{FNC
     double az=0.0,el=PI/2.0,enu[3];
     
     if (pos[2]>-RE_WGS84) {
@@ -3235,7 +3235,7 @@ extern double satazel(const double *pos, const double *e, double *azel)
 #define SQRT(x)     ((x)<0.0?0.0:sqrt(x))
 
 extern void dops(int ns, const double *azel, double elmin, double *dop)
-{
+{FNC
     double H[4*MAXSAT],Q[16],cosel,sinel;
     int i,n;
     
@@ -3269,7 +3269,7 @@ extern void dops(int ns, const double *azel, double elmin, double *dop)
 *-----------------------------------------------------------------------------*/
 extern double ionmodel(gtime_t t, const double *ion, const double *pos,
                        const double *azel)
-{
+{FNC
     const double ion_default[]={ /* 2004/1/1 */
         0.1118E-07,-0.7451E-08,-0.5961E-07, 0.1192E-06,
         0.1167E+06,-0.2294E+06,-0.1311E+06, 0.1049E+07
@@ -3315,7 +3315,7 @@ extern double ionmodel(gtime_t t, const double *ion, const double *pos,
 * return : ionospheric mapping function
 *-----------------------------------------------------------------------------*/
 extern double ionmapf(const double *pos, const double *azel)
-{
+{FNC
     if (pos[2]>=HION) return 1.0;
     return 1.0/cos(asin((RE_WGS84+pos[2])/(RE_WGS84+HION)*sin(PI/2.0-azel[1])));
 }
@@ -3332,7 +3332,7 @@ extern double ionmapf(const double *pos, const double *azel)
 *-----------------------------------------------------------------------------*/
 extern double ionppp(const double *pos, const double *azel, double re,
                      double hion, double *posp)
-{
+{FNC
     double cosaz,rp,ap,sinap,tanap;
     
     rp=re/(re+hion)*cos(azel[1]);
@@ -3361,7 +3361,7 @@ extern double ionppp(const double *pos, const double *azel, double re,
 *-----------------------------------------------------------------------------*/
 extern double tropmodel(gtime_t time, const double *pos, const double *azel,
                         double humi)
-{
+{FNC
     const double temp0=15.0; /* temparature at sea level */
     double hgt,pres,temp,e,z,trph,trpw;
     
@@ -3381,19 +3381,19 @@ extern double tropmodel(gtime_t time, const double *pos, const double *azel,
     return trph+trpw;
 }
 static double interpc(const double coef[], double lat)
-{
+{FNC
     int i=(int)(lat/15.0);
     if (i<1) return coef[0]; else if (i>4) return coef[4];
     return coef[i-1]*(1.0-lat/15.0+i)+coef[i]*(lat/15.0-i);
 }
 static double mapf(double el, double a, double b, double c)
-{
+{FNC
     double sinel=sin(el);
     return (1.0+a/(1.0+b/(1.0+c)))/(sinel+(a/(sinel+b/(sinel+c))));
 }
 static double nmf(gtime_t time, const double pos[], const double azel[],
                   double *mapfw)
-{
+{FNC
     /* ref [5] table 3 */
     /* hydro-ave-a,b,c, hydro-amp-a,b,c, wet-a,b,c at latitude 15,30,45,60,75 */
     const double coef[][5]={
@@ -3450,7 +3450,7 @@ static double nmf(gtime_t time, const double pos[], const double azel[],
 *-----------------------------------------------------------------------------*/
 extern double tropmapf(gtime_t time, const double pos[], const double azel[],
                        double *mapfw)
-{
+{FNC
 #ifdef IERS_MODEL
     const double ep[]={2000,1,1,12,0,0};
     double mjd,lat,lon,hgt,zd,gmfh,gmfw;
@@ -3480,7 +3480,7 @@ extern double tropmapf(gtime_t time, const double pos[], const double azel[],
 }
 /* interpolate antenna phase center variation --------------------------------*/
 static double interpvar(double ang, const double *var)
-{
+{FNC
     double a=ang/5.0; /* ang=0-90 */
     int i=(int)a;
     if (i<0) return var[0]; else if (i>=18) return var[18];
@@ -3497,7 +3497,7 @@ static double interpvar(double ang, const double *var)
 *-----------------------------------------------------------------------------*/
 extern void antmodel(const pcv_t *pcv, const double *del, const double *azel,
                      int opt, double *dant)
-{
+{FNC
     double e[3],off[3],cosel=cos(azel[1]);
     int i,j;
     
@@ -3522,7 +3522,7 @@ extern void antmodel(const pcv_t *pcv, const double *del, const double *azel,
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void antmodel_s(const pcv_t *pcv, double nadir, double *dant)
-{
+{FNC
     int i;
     
     trace(4,"antmodel_s: nadir=%6.1f\n",nadir*R2D);
@@ -3534,7 +3534,7 @@ extern void antmodel_s(const pcv_t *pcv, double nadir, double *dant)
 }
 /* sun and moon position in eci (ref [4] 5.1.1, 5.2.1) -----------------------*/
 static void sunmoonpos_eci(gtime_t tut, double *rsun, double *rmoon)
-{
+{FNC
     const double ep2000[]={2000,1,1,12,0,0};
     double t,f[5],eps,Ms,ls,rs,lm,pm,rm,sine,cose,sinp,cosp,sinl,cosl;
     
@@ -3589,7 +3589,7 @@ static void sunmoonpos_eci(gtime_t tut, double *rsun, double *rmoon)
 *-----------------------------------------------------------------------------*/
 extern void sunmoonpos(gtime_t tutc, const double *erpv, double *rsun,
                        double *rmoon, double *gmst)
-{
+{FNC
     gtime_t tut;
     double rs[3],rm[3],U[9],gmst_;
     
@@ -3621,7 +3621,7 @@ extern void sunmoonpos(gtime_t tutc, const double *erpv, double *rsun,
 *-----------------------------------------------------------------------------*/
 extern void windupcorr(gtime_t time, const double *rs, const double *rr,
                        double *phw)
-{
+{FNC
     double ek[3],exs[3],eys[3],ezs[3],ess[3],exr[3],eyr[3],eks[3],ekr[3],E[9];
     double dr[3],ds[3],drs[3],r[3],pos[3],rsun[3],cosp,ph,erpv[5]={0};
     int i;
@@ -3673,7 +3673,7 @@ extern void windupcorr(gtime_t time, const double *rs, const double *rr,
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void csmooth(obs_t *obs, int ns)
-{
+{FNC
     double Ps[2][MAXSAT][NFREQ]={{{0}}},Lp[2][MAXSAT][NFREQ]={{{0}}},dcp;
     int i,j,s,r,n[2][MAXSAT][NFREQ]={{{0}}};
     obsd_t *p;
@@ -3705,7 +3705,7 @@ extern void csmooth(obs_t *obs, int ns)
 *          gzip and crx2rnx commands have to be installed in commands path
 *-----------------------------------------------------------------------------*/
 extern int uncompress(const char *file, char *uncfile)
-{
+{FNC
     int stat=0;
     char *p,cmd[2048]="",tmpfile[1024]="",buff[1024],*fname,*dir="";
     

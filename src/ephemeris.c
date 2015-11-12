@@ -89,7 +89,7 @@ static const char rcsid[]="$Id:$";
 
 /* variance by ura ephemeris (ref [1] 20.3.3.3.1.1) --------------------------*/
 static double var_uraeph(int ura)
-{
+{FNC
     const double ura_value[]={   
         2.4,3.4,4.85,6.85,9.65,13.65,24.0,48.0,96.0,192.0,384.0,768.0,1536.0,
         3072.0,6144.0
@@ -98,7 +98,7 @@ static double var_uraeph(int ura)
 }
 /* variance by ura ssr (ref [4]) ---------------------------------------------*/
 static double var_urassr(int ura)
-{
+{FNC
     double std;
     if (ura<= 0) return SQR(DEFURASSR);
     if (ura>=63) return SQR(5.4665);
@@ -115,7 +115,7 @@ static double var_urassr(int ura)
 * notes  : see ref [1],[7],[8]
 *-----------------------------------------------------------------------------*/
 extern void alm2pos(gtime_t time, const alm_t *alm, double *rs, double *dts)
-{
+{FNC
     double tk,M,E,Ek,sinE,cosE,u,r,i,O,x,y,sinO,cosO,cosi,mu;
     
     trace(4,"alm2pos : time=%s sat=%2d\n",time_str(time,3),alm->sat);
@@ -152,7 +152,7 @@ extern void alm2pos(gtime_t time, const alm_t *alm, double *rs, double *dts)
 *          satellite clock does not include relativity correction and tdg
 *-----------------------------------------------------------------------------*/
 extern double eph2clk(gtime_t time, const eph_t *eph)
-{
+{FNC
     double t;
     int i;
     
@@ -180,7 +180,7 @@ extern double eph2clk(gtime_t time, const eph_t *eph)
 *-----------------------------------------------------------------------------*/
 extern void eph2pos(gtime_t time, const eph_t *eph, double *rs, double *dts,
                     double *var)
-{
+{FNC
     double tk,M,E,Ek,sinE,cosE,u,r,i,O,sin2u,cos2u,x,y,sinO,cosO,cosi,mu,omge;
     double xg,yg,zg,sino,coso;
     int n,sys,prn;
@@ -250,7 +250,7 @@ extern void eph2pos(gtime_t time, const eph_t *eph, double *rs, double *dts,
 }
 /* glonass orbit differential equations --------------------------------------*/
 static void deq(const double *x, double *xdot, const double *acc)
-{
+{FNC
     double a,b,c,r2=dot(x,x,3),r3=r2*sqrt(r2),omg2=SQR(OMGE_GLO);
     
     if (r2<=0.0) {
@@ -268,7 +268,7 @@ static void deq(const double *x, double *xdot, const double *acc)
 }
 /* glonass position and velocity by numerical integration --------------------*/
 static void glorbit(double t, double *x, const double *acc)
-{
+{FNC
     double k1[6],k2[6],k3[6],k4[6],w[6];
     int i;
     
@@ -286,7 +286,7 @@ static void glorbit(double t, double *x, const double *acc)
 * notes  : see ref [2]
 *-----------------------------------------------------------------------------*/
 extern double geph2clk(gtime_t time, const geph_t *geph)
-{
+{FNC
     double t;
     int i;
     
@@ -311,7 +311,7 @@ extern double geph2clk(gtime_t time, const geph_t *geph)
 *-----------------------------------------------------------------------------*/
 extern void geph2pos(gtime_t time, const geph_t *geph, double *rs, double *dts,
                      double *var)
-{
+{FNC
     double t,tt,x[6];
     int i;
     
@@ -341,7 +341,7 @@ extern void geph2pos(gtime_t time, const geph_t *geph, double *rs, double *dts,
 * notes  : see ref [3]
 *-----------------------------------------------------------------------------*/
 extern double seph2clk(gtime_t time, const seph_t *seph)
-{
+{FNC
     double t;
     int i;
     
@@ -366,7 +366,7 @@ extern double seph2clk(gtime_t time, const seph_t *seph)
 *-----------------------------------------------------------------------------*/
 extern void seph2pos(gtime_t time, const seph_t *seph, double *rs, double *dts,
                      double *var)
-{
+{FNC
     double t;
     int i;
     
@@ -383,7 +383,7 @@ extern void seph2pos(gtime_t time, const seph_t *seph, double *rs, double *dts,
 }
 /* select ephememeris --------------------------------------------------------*/
 static eph_t *seleph(gtime_t time, int sat, int iode, const nav_t *nav)
-{
+{FNC
     double t,tmax,tmin;
     int i,j=-1;
     
@@ -413,7 +413,7 @@ static eph_t *seleph(gtime_t time, int sat, int iode, const nav_t *nav)
 }
 /* select glonass ephememeris ------------------------------------------------*/
 static geph_t *selgeph(gtime_t time, int sat, int iode, const nav_t *nav)
-{
+{FNC
     double t,tmax=MAXDTOE_GLO,tmin=tmax+1.0;
     int i,j=-1;
     
@@ -435,7 +435,7 @@ static geph_t *selgeph(gtime_t time, int sat, int iode, const nav_t *nav)
 }
 /* select sbas ephememeris ---------------------------------------------------*/
 static seph_t *selseph(gtime_t time, int sat, const nav_t *nav)
-{
+{FNC
     double t,tmax=MAXDTOE_SBS,tmin=tmax+1.0;
     int i,j=-1;
     
@@ -455,7 +455,7 @@ static seph_t *selseph(gtime_t time, int sat, const nav_t *nav)
 /* satellite clock with broadcast ephemeris ----------------------------------*/
 static int ephclk(gtime_t time, gtime_t teph, int sat, const nav_t *nav,
                   double *dts)
-{
+{FNC
     eph_t  *eph;
     geph_t *geph;
     seph_t *seph;
@@ -484,7 +484,7 @@ static int ephclk(gtime_t time, gtime_t teph, int sat, const nav_t *nav,
 /* satellite position and clock by broadcast ephemeris -----------------------*/
 static int ephpos(gtime_t time, gtime_t teph, int sat, const nav_t *nav,
                   int iode, double *rs, double *dts, double *var, int *svh)
-{
+{FNC
     eph_t  *eph;
     geph_t *geph;
     seph_t *seph;
@@ -531,7 +531,7 @@ static int ephpos(gtime_t time, gtime_t teph, int sat, const nav_t *nav,
 /* satellite position and clock with sbas correction -------------------------*/
 static int satpos_sbas(gtime_t time, gtime_t teph, int sat, const nav_t *nav,
                         double *rs, double *dts, double *var, int *svh)
-{
+{FNC
     const sbssatp_t *sbs;
     int i;
     
@@ -559,7 +559,7 @@ static int satpos_sbas(gtime_t time, gtime_t teph, int sat, const nav_t *nav,
 /* satellite position and clock with ssr correction --------------------------*/
 static int satpos_ssr(gtime_t time, gtime_t teph, int sat, const nav_t *nav,
                       int opt, double *rs, double *dts, double *var, int *svh)
-{
+{FNC
     const ssr_t *ssr;
     eph_t *eph;
     double t1,t2,t3,er[3],ea[3],ec[3],rc[3],deph[3],dclk,dant[3]={0},tk;
@@ -673,7 +673,7 @@ static int satpos_ssr(gtime_t time, gtime_t teph, int sat, const nav_t *nav,
 extern int satpos(gtime_t time, gtime_t teph, int sat, int ephopt,
                   const nav_t *nav, double *rs, double *dts, double *var,
                   int *svh)
-{
+{FNC
     trace(4,"satpos  : time=%s sat=%2d ephopt=%d\n",time_str(time,3),sat,ephopt);
     
     *svh=0;
@@ -717,7 +717,7 @@ extern int satpos(gtime_t time, gtime_t teph, int sat, int ephopt,
 *-----------------------------------------------------------------------------*/
 extern void satposs(gtime_t teph, const obsd_t *obs, int n, const nav_t *nav,
                     int ephopt, double *rs, double *dts, double *var, int *svh)
-{
+{FNC
     gtime_t time[MAXOBS]={{0}};
     double dt,pr;
     int i,j;

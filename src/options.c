@@ -165,14 +165,14 @@ opt_t sysopts[]={
 };
 /* discard space characters at tail ------------------------------------------*/
 static void chop(char *str)
-{
+{FNC
     char *p;
     if ((p=strchr(str,'#'))) *p='\0'; /* comment */
     for (p=str+strlen(str)-1;p>=str&&!isgraph((int)*p);p--) *p='\0';
 }
 /* enum to string ------------------------------------------------------------*/
 static int enum2str(char *s, const char *comment, int val)
-{
+{FNC
     char str[32],*p,*q;
     int n;
     
@@ -189,7 +189,7 @@ static int enum2str(char *s, const char *comment, int val)
 }
 /* string to enum ------------------------------------------------------------*/
 static int str2enum(const char *str, const char *comment, int *val)
-{
+{FNC
     const char *p;
     char s[32];
     
@@ -213,7 +213,7 @@ static int str2enum(const char *str, const char *comment, int *val)
 * return : option record (NULL: not found)
 *-----------------------------------------------------------------------------*/
 extern opt_t *searchopt(const char *name, const opt_t *opts)
-{
+{FNC
     int i;
     
     trace(3,"searchopt: name=%s\n",name);
@@ -230,7 +230,7 @@ extern opt_t *searchopt(const char *name, const opt_t *opts)
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int str2opt(opt_t *opt, const char *str)
-{
+{FNC
     switch (opt->format) {
         case 0: *(int    *)opt->var=atoi(str); break;
         case 1: *(double *)opt->var=atof(str); break;
@@ -247,7 +247,7 @@ extern int str2opt(opt_t *opt, const char *str)
 * return : length of output string
 *-----------------------------------------------------------------------------*/
 extern int opt2str(const opt_t *opt, char *str)
-{
+{FNC
     char *p=str;
     
     trace(3,"opt2str : name=%s\n",opt->name);
@@ -267,7 +267,7 @@ extern int opt2str(const opt_t *opt, char *str)
 * return : length of output string
 *-----------------------------------------------------------------------------*/
 extern int opt2buf(const opt_t *opt, char *buff)
-{
+{FNC
     char *p=buff;
     int n;
     
@@ -289,7 +289,7 @@ extern int opt2buf(const opt_t *opt, char *buff)
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int loadopts(const char *file, opt_t *opts)
-{
+{FNC
     FILE *fp;
     opt_t *opt;
     char buff[2048],*p;
@@ -335,7 +335,7 @@ extern int loadopts(const char *file, opt_t *opts)
 *-----------------------------------------------------------------------------*/
 extern int saveopts(const char *file, const char *mode, const char *comment,
                     const opt_t *opts)
-{
+{FNC
     FILE *fp;
     char buff[2048];
     int i;
@@ -357,7 +357,7 @@ extern int saveopts(const char *file, const char *mode, const char *comment,
 }
 /* system options buffer to options ------------------------------------------*/
 static void buff2sysopts(void)
-{
+{FNC
     double pos[3],*rr;
     char buff[1024],*p,*id;
     int i,j,sat,*ps;
@@ -406,7 +406,7 @@ static void buff2sysopts(void)
 }
 /* options to system options buffer ------------------------------------------*/
 static void sysopts2buff(void)
-{
+{FNC
     double pos[3],*rr;
     char id[32],*p;
     int i,j,sat,*ps;
@@ -452,7 +452,7 @@ static void sysopts2buff(void)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void resetsysopts(void)
-{
+{FNC
     int i,j;
     
     trace(3,"resetsysopts:\n");
@@ -485,7 +485,7 @@ extern void resetsysopts(void)
 * notes  : to load system options, use loadopts() before calling the function
 *-----------------------------------------------------------------------------*/
 extern void getsysopts(prcopt_t *popt, solopt_t *sopt, filopt_t *fopt)
-{
+{FNC
     trace(3,"getsysopts:\n");
     
     buff2sysopts();
@@ -503,7 +503,7 @@ extern void getsysopts(prcopt_t *popt, solopt_t *sopt, filopt_t *fopt)
 *-----------------------------------------------------------------------------*/
 extern void setsysopts(const prcopt_t *prcopt, const solopt_t *solopt,
                        const filopt_t *filopt)
-{
+{FNC
     trace(3,"setsysopts:\n");
     
     resetsysopts();

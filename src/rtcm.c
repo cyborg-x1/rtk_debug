@@ -65,7 +65,7 @@ extern int encode_rtcm3(rtcm_t *rtcm, int type, int sync);
 * return : status (1:ok,0:memory allocation error)
 *-----------------------------------------------------------------------------*/
 extern int init_rtcm(rtcm_t *rtcm)
-{
+{FNC
     gtime_t time0;
     obsd_t data0;
     eph_t  eph0;
@@ -141,7 +141,7 @@ extern int init_rtcm(rtcm_t *rtcm)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void free_rtcm(rtcm_t *rtcm)
-{
+{FNC
     trace(3,"free_rtcm:\n");
     
     /* free memory for observation and ephemeris buffer */
@@ -164,7 +164,7 @@ extern void free_rtcm(rtcm_t *rtcm)
 *          refer [1] for RTCM ver.2
 *-----------------------------------------------------------------------------*/
 extern int input_rtcm2(rtcm_t *rtcm, unsigned char data)
-{
+{FNC
     unsigned char preamb;
     int i;
     
@@ -270,7 +270,7 @@ extern int input_rtcm2(rtcm_t *rtcm, unsigned char data)
 *            
 *-----------------------------------------------------------------------------*/
 extern int input_rtcm3(rtcm_t *rtcm, unsigned char data)
-{
+{FNC
     trace(5,"input_rtcm3: data=%02x\n",data);
     
     /* synchronize frame */
@@ -303,7 +303,7 @@ extern int input_rtcm3(rtcm_t *rtcm, unsigned char data)
 * notes  : same as above
 *-----------------------------------------------------------------------------*/
 extern int input_rtcm2f(rtcm_t *rtcm, FILE *fp)
-{
+{FNC
     int i,data=0,ret;
     
     trace(4,"input_rtcm2f: data=%02x\n",data);
@@ -322,7 +322,7 @@ extern int input_rtcm2f(rtcm_t *rtcm, FILE *fp)
 * notes  : same as above
 *-----------------------------------------------------------------------------*/
 extern int input_rtcm3f(rtcm_t *rtcm, FILE *fp)
-{
+{FNC
     int i,data=0,ret;
     
     trace(4,"input_rtcm3f: data=%02x\n",data);
@@ -341,7 +341,7 @@ extern int input_rtcm3f(rtcm_t *rtcm, FILE *fp)
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int gen_rtcm2(rtcm_t *rtcm, int type, int sync)
-{
+{FNC
     trace(4,"gen_rtcm2: type=%d sync=%d\n",type,sync);
     
     rtcm->nbit=rtcm->len=rtcm->nbyte=0;
@@ -358,7 +358,7 @@ extern int gen_rtcm2(rtcm_t *rtcm, int type, int sync)
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int gen_rtcm3(rtcm_t *rtcm, int type, int sync)
-{
+{FNC
     unsigned int crc;
     int i=0;
     

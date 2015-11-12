@@ -54,14 +54,14 @@ static const double ura_eph[]={
 };
 /* ura value (m) to ura index ------------------------------------------------*/
 static int uraindex(double value)
-{
+{FNC
     int i;
     for (i=0;i<15;i++) if (ura_eph[i]>=value) break;
     return i;
 }
 /* decode NVS xf5-raw: raw measurement data ----------------------------------*/
 static int decode_xf5raw(raw_t *raw)
-{
+{FNC
     gtime_t time;
     double tadj=0.0,toff=0.0,tn;
     int dTowInt;
@@ -181,7 +181,7 @@ static int decode_xf5raw(raw_t *raw)
 }
 /* decode ephemeris ----------------------------------------------------------*/
 static int decode_gpsephem(int sat, raw_t *raw)
-{
+{FNC
     eph_t eph={0};
     unsigned char *puiTmp = (raw->buff)+2;
     unsigned short week;
@@ -237,7 +237,7 @@ static int decode_gpsephem(int sat, raw_t *raw)
 }
 /* adjust daily rollover of time ---------------------------------------------*/
 static gtime_t adjday(gtime_t time, double tod)
-{
+{FNC
     double ep[6],tod_p;
     time2epoch(time,ep);
     tod_p=ep[3]*3600.0+ep[4]*60.0+ep[5];
@@ -248,7 +248,7 @@ static gtime_t adjday(gtime_t time, double tod)
 }
 /* decode gloephem -----------------------------------------------------------*/
 static int decode_gloephem(int sat, raw_t *raw)
-{
+{FNC
     geph_t geph={0};
     unsigned char *p=(raw->buff)+2;
     int prn,tk,tb;
@@ -312,7 +312,7 @@ static int decode_gloephem(int sat, raw_t *raw)
 }
 /* decode NVS epehemerides in clear ------------------------------------------*/
 static int decode_xf7eph(raw_t *raw)
-{
+{FNC
     int prn,sat,sys;
     unsigned char *p=raw->buff;
     
@@ -338,7 +338,7 @@ static int decode_xf7eph(raw_t *raw)
 }
 /* decode NVS rxm-sfrb: subframe buffer --------------------------------------*/
 static int decode_xe5bit(raw_t *raw)
-{
+{FNC
     int prn;
     int iBlkStartIdx, iExpLen, iIdx;
     unsigned int words[10];
@@ -390,7 +390,7 @@ static int decode_xe5bit(raw_t *raw)
 }
 /* decode NVS x4aiono --------------------------------------------------------*/
 static int decode_x4aiono(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+2;
     
     trace(4,"decode_x4aiono: len=%d\n", raw->len);
@@ -408,7 +408,7 @@ static int decode_x4aiono(raw_t *raw)
 }
 /* decode NVS x4btime --------------------------------------------------------*/
 static int decode_x4btime(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+2;
     
     trace(4,"decode_x4btime: len=%d\n", raw->len);
@@ -423,7 +423,7 @@ static int decode_x4btime(raw_t *raw)
 }
 /* decode NVS raw message ----------------------------------------------------*/
 static int decode_nvs(raw_t *raw)
-{
+{FNC
     int type=U1(raw->buff+1);
     
     trace(3,"decode_nvs: type=%02x len=%d\n",type,raw->len);
@@ -456,7 +456,7 @@ static int decode_nvs(raw_t *raw)
 *
 *-----------------------------------------------------------------------------*/
 extern int input_nvs(raw_t *raw, unsigned char data)
-{
+{FNC
     trace(5,"input_nvs: data=%02x\n",data);
     
     /* synchronize frame */
@@ -504,7 +504,7 @@ extern int input_nvs(raw_t *raw, unsigned char data)
 * return : status(-2: end of file, -1...9: same as above)
 *-----------------------------------------------------------------------------*/
 extern int input_nvsf(raw_t *raw, FILE *fp)
-{
+{FNC
     int i,data, odd=0;
     
     trace(4,"input_nvsf:\n");
@@ -561,7 +561,7 @@ extern int input_nvsf(raw_t *raw, FILE *fp)
 * note   : see reference [1][2] for details.
 *-----------------------------------------------------------------------------*/
 extern int gen_nvs(const char *msg, unsigned char *buff)
-{
+{FNC
     unsigned char *q=buff;
     char mbuff[1024],*args[32],*p;
     unsigned int byte;

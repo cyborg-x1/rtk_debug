@@ -52,7 +52,7 @@ static const char rcsid[]="$Id:$";
 
 /* satellite code to satellite system ----------------------------------------*/
 static int code2sys(char code)
-{
+{FNC
     if (code=='G'||code==' ') return SYS_GPS;
     if (code=='R') return SYS_GLO;
     if (code=='E') return SYS_GAL; /* extension to sp3-c */
@@ -64,7 +64,7 @@ static int code2sys(char code)
 /* read sp3 header -----------------------------------------------------------*/
 static int readsp3h(FILE *fp, gtime_t *time, char *type, int *sats,
                     double *bfact, char *tsys)
-{
+{FNC
     int i,j,k=0,ns=0,sys,prn;
     char buff[1024];
     
@@ -99,7 +99,7 @@ static int readsp3h(FILE *fp, gtime_t *time, char *type, int *sats,
 }
 /* add precise ephemeris -----------------------------------------------------*/
 static int addpeph(nav_t *nav, peph_t *peph)
-{
+{FNC
     peph_t *nav_peph;
     
     if (nav->ne>=nav->nemax) {
@@ -117,7 +117,7 @@ static int addpeph(nav_t *nav, peph_t *peph)
 /* read sp3 body -------------------------------------------------------------*/
 static void readsp3b(FILE *fp, char type, int *sats, int ns, double *bfact,
                      char *tsys, int index, int opt, nav_t *nav)
-{
+{FNC
     peph_t peph;
     gtime_t time;
     double val,std,base;
@@ -202,14 +202,14 @@ static void readsp3b(FILE *fp, char type, int *sats, int ns, double *bfact,
 }
 /* compare precise ephemeris -------------------------------------------------*/
 static int cmppeph(const void *p1, const void *p2)
-{
+{FNC
     peph_t *q1=(peph_t *)p1,*q2=(peph_t *)p2;
     double tt=timediff(q1->time,q2->time);
     return tt<-1E-9?-1:(tt>1E-9?1:q1->index-q2->index);
 }
 /* combine precise ephemeris -------------------------------------------------*/
 static void combpeph(nav_t *nav, int opt)
-{
+{FNC
     int i,j,k,m;
     
     trace(3,"combpeph: ne=%d\n",nav->ne);
@@ -251,7 +251,7 @@ static void combpeph(nav_t *nav, int opt)
 *          only files with extensions of .sp3, .SP3, .eph* and .EPH* are read
 *-----------------------------------------------------------------------------*/
 extern void readsp3(const char *file, nav_t *nav, int opt)
-{
+{FNC
     FILE *fp;
     gtime_t time={0};
     double bfact[2]={0};
@@ -301,7 +301,7 @@ extern void readsp3(const char *file, nav_t *nav, int opt)
 * notes  : only support antex format for the antenna parameter file
 *-----------------------------------------------------------------------------*/
 extern int readsap(const char *file, gtime_t time, nav_t *nav)
-{
+{FNC
     pcvs_t pcvs={0};
     pcv_t pcv0={0},*pcv;
     int i;
@@ -319,7 +319,7 @@ extern int readsap(const char *file, gtime_t time, nav_t *nav)
 }
 /* read dcb parameters file --------------------------------------------------*/
 static int readdcbf(const char *file, nav_t *nav)
-{
+{FNC
     FILE *fp;
     double cbias;
     int sat,type=0;
@@ -355,7 +355,7 @@ static int readdcbf(const char *file, nav_t *nav)
 * notes  : currently only p1-c1 bias of code *.dcb file
 *-----------------------------------------------------------------------------*/
 extern int readdcb(const char *file, nav_t *nav)
-{
+{FNC
     int i,j,n;
     char *efiles[MAXEXFILE]={0};
     
@@ -381,7 +381,7 @@ extern int readdcb(const char *file, nav_t *nav)
 }
 /* polynomial interpolation by Neville's algorithm ---------------------------*/
 static double interppol(const double *x, double *y, int n)
-{
+{FNC
     int i,j;
     
     for (j=1;j<n;j++) {
@@ -394,7 +394,7 @@ static double interppol(const double *x, double *y, int n)
 /* satellite position by precise ephemeris -----------------------------------*/
 static int pephpos(gtime_t time, int sat, const nav_t *nav, double *rs,
                    double *dts, double *vare, double *varc)
-{
+{FNC
     double t[NMAX+1],p[3][NMAX+1],c[2],*pos,std=0.0,s[3],sinl,cosl;
     int i,j,k,index;
     
@@ -482,7 +482,7 @@ static int pephpos(gtime_t time, int sat, const nav_t *nav, double *rs,
 /* satellite clock by precise clock ------------------------------------------*/
 static int pephclk(gtime_t time, int sat, const nav_t *nav, double *dts,
                    double *varc)
-{
+{FNC
     double t[2],c[2],std;
     int i,j,k,index;
     
@@ -540,7 +540,7 @@ static int pephclk(gtime_t time, int sat, const nav_t *nav, double *dts,
 *-----------------------------------------------------------------------------*/
 extern void satantoff(gtime_t time, const double *rs, int sat, const nav_t *nav,
                       double *dant)
-{
+{FNC
     const double *lam=nav->lam[sat-1];
     const pcv_t *pcv=nav->pcvs+sat-1;
     double ex[3],ey[3],ez[3],es[3],r[3],rsun[3],gmst,erpv[5]={0};
@@ -596,7 +596,7 @@ extern void satantoff(gtime_t time, const double *rs, int sat, const nav_t *nav,
 *-----------------------------------------------------------------------------*/
 extern int peph2pos(gtime_t time, int sat, const nav_t *nav, int opt,
                     double *rs, double *dts, double *var)
-{
+{FNC
     double rss[3],rst[3],dtss[1],dtst[1],dant[3]={0},vare=0.0,varc=0.0,tt=1E-3;
     int i;
     

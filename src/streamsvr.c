@@ -20,7 +20,7 @@ static const char rcsid[]="$Id$";
 
 /* test observation data message ---------------------------------------------*/
 static int is_obsmsg(int msg)
-{
+{FNC
     return (1001<=msg&&msg<=1004)||(1009<=msg&&msg<=1012)||
            (1071<=msg&&msg<=1077)||(1081<=msg&&msg<=1087)||
            (1091<=msg&&msg<=1097)||(1101<=msg&&msg<=1107)||
@@ -28,17 +28,17 @@ static int is_obsmsg(int msg)
 }
 /* test navigataion data message ---------------------------------------------*/
 static int is_navmsg(int msg)
-{
+{FNC
     return msg==1019||msg==1020||msg==1044||msg==1045||msg==1046;
 }
 /* test station info message -------------------------------------------------*/
 static int is_stamsg(int msg)
-{
+{FNC
     return msg==1005||msg==1006||msg==1007||msg==1008||msg==1033;
 }
 /* test time interval --------------------------------------------------------*/
 static int is_tint(gtime_t time, double tint)
-{
+{FNC
     if (tint<=0.0) return 1;
     return fmod(time2gpst(time,NULL)+DTTOL,tint)<=2.0*DTTOL;
 }
@@ -54,7 +54,7 @@ static int is_tint(gtime_t time, double tint)
 *-----------------------------------------------------------------------------*/
 extern strconv_t *strconvnew(int itype, int otype, const char *msgs, int staid,
                              int stasel, const char *opt)
-{
+{FNC
     strconv_t *conv;
     double tint;
     char buff[1024],*p;
@@ -101,7 +101,7 @@ extern strconv_t *strconvnew(int itype, int otype, const char *msgs, int staid,
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void strconvfree(strconv_t *conv)
-{
+{FNC
     if (!conv) return;
     free_rtcm(&conv->rtcm);
     free_rtcm(&conv->out);
@@ -110,7 +110,7 @@ extern void strconvfree(strconv_t *conv)
 }
 /* copy received data from receiver raw to rtcm ------------------------------*/
 static void raw2rtcm(rtcm_t *out, const raw_t *raw, int ret)
-{
+{FNC
     int i,sat,prn;
     
     out->time=raw->time;
@@ -146,7 +146,7 @@ static void raw2rtcm(rtcm_t *out, const raw_t *raw, int ret)
 }
 /* copy received data from receiver rtcm to rtcm -----------------------------*/
 static void rtcm2rtcm(rtcm_t *out, const rtcm_t *rtcm, int ret, int stasel)
-{
+{FNC
     int i,sat,prn;
     
     out->time=rtcm->time;
@@ -186,7 +186,7 @@ static void rtcm2rtcm(rtcm_t *out, const rtcm_t *rtcm, int ret, int stasel)
 }
 /* write obs data messages ---------------------------------------------------*/
 static void write_obs(gtime_t time, stream_t *str, strconv_t *conv)
-{
+{FNC
     int i,j=0;
     
     for (i=0;i<conv->nmsg;i++) {
@@ -212,7 +212,7 @@ static void write_obs(gtime_t time, stream_t *str, strconv_t *conv)
 }
 /* write nav data messages ---------------------------------------------------*/
 static void write_nav(gtime_t time, stream_t *str, strconv_t *conv)
-{
+{FNC
     int i;
     
     for (i=0;i<conv->nmsg;i++) {
@@ -233,7 +233,7 @@ static void write_nav(gtime_t time, stream_t *str, strconv_t *conv)
 }
 /* next ephemeris satellite --------------------------------------------------*/
 static int nextsat(nav_t *nav, int sat, int msg)
-{
+{FNC
     int sys,p,p0,p1,p2;
     
     switch (msg) {
@@ -262,7 +262,7 @@ static int nextsat(nav_t *nav, int sat, int msg)
 }
 /* write cyclic nav data messages --------------------------------------------*/
 static void write_nav_cycle(stream_t *str, strconv_t *conv)
-{
+{FNC
     unsigned int tick=tickget();
     int i,sat,tint;
     
@@ -295,7 +295,7 @@ static void write_nav_cycle(stream_t *str, strconv_t *conv)
 }
 /* write cyclic station info messages ----------------------------------------*/
 static void write_sta_cycle(stream_t *str, strconv_t *conv)
-{
+{FNC
     unsigned int tick=tickget();
     int i,tint;
     
@@ -322,7 +322,7 @@ static void write_sta_cycle(stream_t *str, strconv_t *conv)
 }
 /* convert stearm ------------------------------------------------------------*/
 static void strconv(stream_t *str, strconv_t *conv, unsigned char *buff, int n)
-{
+{FNC
     int i,ret;
     
     for (i=0;i<n;i++) {
@@ -411,7 +411,7 @@ static void *strsvrthread(void *arg)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void strsvrinit(strsvr_t *svr, int nout)
-{
+{FNC
     int i;
     
     tracet(3,"strsvrinit: nout=%d\n",nout);
@@ -461,7 +461,7 @@ extern void strsvrinit(strsvr_t *svr, int nout)
 *-----------------------------------------------------------------------------*/
 extern int strsvrstart(strsvr_t *svr, int *opts, int *strs, char **paths,
                        strconv_t **conv, const char *cmd, const double *nmeapos)
-{
+{FNC
     int i,rw,stropt[5]={0};
     char file1[MAXSTRPATH],file2[MAXSTRPATH],*p;
     
@@ -522,7 +522,7 @@ extern int strsvrstart(strsvr_t *svr, int *opts, int *strs, char **paths,
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void strsvrstop(strsvr_t *svr, const char *cmd)
-{
+{FNC
     tracet(3,"strsvrstop:\n");
     
     if (cmd) strsendcmd(svr->stream,cmd);
@@ -546,7 +546,7 @@ extern void strsvrstop(strsvr_t *svr, const char *cmd)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void strsvrstat(strsvr_t *svr, int *stat, int *byte, int *bps, char *msg)
-{
+{FNC
     char s[MAXSTRMSG]="",*p=msg;
     int i;
     
@@ -572,7 +572,7 @@ extern void strsvrstat(strsvr_t *svr, int *stat, int *byte, int *bps, char *msg)
 * return : stream size (bytes)
 *-----------------------------------------------------------------------------*/
 extern int strsvrpeek(strsvr_t *svr, unsigned char *buff, int nmax)
-{
+{FNC
     int n;
     
     if (!svr->state) return 0;

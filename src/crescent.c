@@ -53,7 +53,7 @@ static double         R8(unsigned char *p) {double         r; memcpy(&r,p,8); re
 
 /* checksum ------------------------------------------------------------------*/
 static int chksum(const unsigned char *buff, int len)
-{
+{FNC
     unsigned short sum=0;
     int i;
     
@@ -65,7 +65,7 @@ static int chksum(const unsigned char *buff, int len)
 }
 /* decode bin 1 postion/velocity ---------------------------------------------*/
 static int decode_crespos(raw_t *raw)
-{
+{FNC
     int ns,week,mode;
     double tow,pos[3],vel[3],std;
     char tstr[64];
@@ -95,7 +95,7 @@ static int decode_crespos(raw_t *raw)
 }
 /* decode bin 96 raw phase and code ------------------------------------------*/
 static int decode_cresraw(raw_t *raw)
-{
+{FNC
     gtime_t time;
     double tow,tows,toff=0.0,cp,pr,dop,snr;
     int i,j,n,prn,sat,week,word2,lli=0;
@@ -160,7 +160,7 @@ static int decode_cresraw(raw_t *raw)
 }
 /* decode bin 76 dual-freq raw phase and code --------------------------------*/
 static int decode_cresraw2(raw_t *raw)
-{
+{FNC
     gtime_t time;
     double tow,tows,toff=0.0,cp[2]={0},pr1,pr[2]={0},dop[2]={0},snr[2]={0};
     int i,j,n=0,prn,sat,week,lli[2]={0};
@@ -272,7 +272,7 @@ static int decode_cresraw2(raw_t *raw)
 }
 /* decode bin 95 ephemeris ---------------------------------------------------*/
 static int decode_creseph(raw_t *raw)
-{
+{FNC
     eph_t eph={0};
     unsigned int word;
     int i,j,k,prn,sat;
@@ -309,7 +309,7 @@ static int decode_creseph(raw_t *raw)
 }
 /* decode bin 94 ion/utc parameters ------------------------------------------*/
 static int decode_cresionutc(raw_t *raw)
-{
+{FNC
     int i;
     unsigned char *p=raw->buff+8;
     
@@ -329,7 +329,7 @@ static int decode_cresionutc(raw_t *raw)
 }
 /* decode bin 80 waas messages -----------------------------------------------*/
 static int decode_creswaas(raw_t *raw)
-{
+{FNC
     double tow;
     unsigned int word;
     int i,j,k,prn;
@@ -361,7 +361,7 @@ static int decode_creswaas(raw_t *raw)
 }
 /* decode bin 66 glonass L1/L2 code and carrier phase ------------------------*/
 static int decode_cresgloraw(raw_t *raw)
-{
+{FNC
     gtime_t time;
     double tow,tows,toff=0.0,cp[2]={0},pr1,pr[2]={0},dop[2]={0},snr[2]={0};
     int i,j,n=0,prn,sat,week,lli[2]={0};
@@ -473,7 +473,7 @@ static int decode_cresgloraw(raw_t *raw)
 }
 /* decode bin 65 glonass ephemeris -------------------------------------------*/
 static int decode_cresgloeph(raw_t *raw)
-{
+{FNC
     geph_t geph={0};
     unsigned char *p=raw->buff+8,str[12];
     int i,j,k,sat,prn,frq,time,no;
@@ -515,7 +515,7 @@ static int decode_cresgloeph(raw_t *raw)
 }
 /* decode crescent raw message -----------------------------------------------*/
 static int decode_cres(raw_t *raw)
-{
+{FNC
     int type=U2(raw->buff+4);
     
     trace(3,"decode_cres: type=%2d len=%d\n",type,raw->len);
@@ -541,7 +541,7 @@ static int decode_cres(raw_t *raw)
 }
 /* sync code -----------------------------------------------------------------*/
 static int sync_cres(unsigned char *buff, unsigned char data)
-{
+{FNC
     buff[0]=buff[1]; buff[1]=buff[2]; buff[2]=buff[3]; buff[3]=data;
     return buff[0]==CRESSYNC[0]&&buff[1]==CRESSYNC[1]&&
            buff[2]==CRESSYNC[2]&&buff[3]==CRESSYNC[3];
@@ -563,7 +563,7 @@ static int sync_cres(unsigned char *buff, unsigned char data)
 *
 *-----------------------------------------------------------------------------*/
 extern int input_cres(raw_t *raw, unsigned char data)
-{
+{FNC
     trace(5,"input_cres: data=%02x\n",data);
     
     /* synchronize frame */
@@ -594,7 +594,7 @@ extern int input_cres(raw_t *raw, unsigned char data)
 * return : status(-2: end of file, -1...9: same as above)
 *-----------------------------------------------------------------------------*/
 extern int input_cresf(raw_t *raw, FILE *fp)
-{
+{FNC
     int i,data;
     
     trace(4,"input_cresf:\n");

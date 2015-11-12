@@ -38,7 +38,7 @@ static const char rcsid[]="$Id:$";
 
 /* pseudorange measurement error variance ------------------------------------*/
 static double varerr(const prcopt_t *opt, double el, int sys)
-{
+{FNC
     double fact,varr;
     fact=sys==SYS_GLO?EFACT_GLO:(sys==SYS_SBS?EFACT_SBS:EFACT_GPS);
     varr=SQR(opt->err[0])*(SQR(opt->err[1])+SQR(opt->err[2])/sin(el));
@@ -47,7 +47,7 @@ static double varerr(const prcopt_t *opt, double el, int sys)
 }
 /* get tgd parameter (m) -----------------------------------------------------*/
 static double gettgd(int sat, const nav_t *nav)
-{
+{FNC
     int i;
     for (i=0;i<nav->n;i++) {
         if (nav->eph[i].sat!=sat) continue;
@@ -58,7 +58,7 @@ static double gettgd(int sat, const nav_t *nav)
 /* psendorange with code bias correction -------------------------------------*/
 static double prange(const obsd_t *obs, const nav_t *nav, const double *azel,
                      int iter, const prcopt_t *opt, double *var)
-{
+{FNC
     const double *lam=nav->lam[obs->sat-1];
     double PC,P1,P2,P1_P2,P1_C1,P2_C2,gamma;
     int i=0,j=1,sys;
@@ -129,7 +129,7 @@ static double prange(const obsd_t *obs, const nav_t *nav, const double *azel,
 *-----------------------------------------------------------------------------*/
 extern int ionocorr(gtime_t time, const nav_t *nav, int sat, const double *pos,
                     const double *azel, int ionoopt, double *ion, double *var)
-{
+{FNC
     trace(4,"ionocorr: time=%s opt=%d sat=%2d pos=%.3f %.3f azel=%.3f %.3f\n",
           time_str(time,3),ionoopt,sat,pos[0]*R2D,pos[1]*R2D,azel[0]*R2D,
           azel[1]*R2D);
@@ -175,7 +175,7 @@ extern int ionocorr(gtime_t time, const nav_t *nav, int sat, const double *pos,
 *-----------------------------------------------------------------------------*/
 extern int tropcorr(gtime_t time, const nav_t *nav, const double *pos,
                     const double *azel, int tropopt, double *trp, double *var)
-{
+{FNC
     trace(4,"tropcorr: time=%s opt=%d pos=%.3f %.3f azel=%.3f %.3f\n",
           time_str(time,3),tropopt,pos[0]*R2D,pos[1]*R2D,azel[0]*R2D,
           azel[1]*R2D);
@@ -202,7 +202,7 @@ static int rescode(int iter, const obsd_t *obs, int n, const double *rs,
                    const nav_t *nav, const double *x, const prcopt_t *opt,
                    double *v, double *H, double *var, double *azel, int *vsat,
                    double *resp, int *ns)
-{
+{FNC
     double r=0,dion=0,dtrp=0,vmeas=0,vion=0,vtrp=0,rr[3]={0,0,0},pos[3]={0,0,0},dtr=0,e[3]={0,0,0},P=0,lam_L1=0;
     int i=0,j=0,nv=0,sys=0,mask[4]={0,0,0,0};
     
@@ -280,7 +280,7 @@ static int rescode(int iter, const obsd_t *obs, int n, const double *rs,
 static int valsol(const double *azel, const int *vsat, int n,
                   const prcopt_t *opt, const double *v, int nv, int nx,
                   char *msg)
-{
+{FNC
     double azels[MAXOBS*2],dop[4],vv;
     int i,ns;
     INIT_ZERO(azels);
@@ -313,7 +313,7 @@ static int estpos(const obsd_t *obs, int n, const double *rs, const double *dts,
                   const double *vare, const int *svh, const nav_t *nav,
                   const prcopt_t *opt, sol_t *sol, double *azel, int *vsat,
                   double *resp, char *msg)
-{
+{FNC
     double x[NX],dx[NX],Q[NX*NX],*v,*H,*var,sig;
     int i=0,j=0,k=0,info=0,stat=0,nv=0,ns=0;
     INIT_ZERO(x);
@@ -385,7 +385,7 @@ static int raim_fde(const obsd_t *obs, int n, const double *rs,
                     const double *dts, const double *vare, const int *svh,
                     const nav_t *nav, const prcopt_t *opt, sol_t *sol,
                     double *azel, int *vsat, double *resp, char *msg)
-{
+{FNC
     obsd_t *obs_e;
     sol_t sol_e;
 
@@ -460,7 +460,7 @@ static int raim_fde(const obsd_t *obs, int n, const double *rs,
 static int resdop(const obsd_t *obs, int n, const double *rs, const double *dts,
                   const nav_t *nav, const double *rr, const double *x,
                   const double *azel, const int *vsat, double *v, double *H)
-{
+{FNC
     double lam,rate,pos[3],E[9],a[3],e[3],vs[3],cosel;
     int i,j,nv=0;
     INIT_ZERO(e);
@@ -503,7 +503,7 @@ static int resdop(const obsd_t *obs, int n, const double *rs, const double *dts,
 static void estvel(const obsd_t *obs, int n, const double *rs, const double *dts,
                    const nav_t *nav, const prcopt_t *opt, sol_t *sol,
                    const double *azel, const int *vsat)
-{
+{FNC
     double x[4],dx[4],Q[16],*v,*H;
     int i,j,nv;
     
@@ -553,7 +553,7 @@ static void estvel(const obsd_t *obs, int n, const double *rs, const double *dts
 extern int pntpos(const obsd_t *obs, int n, const nav_t *nav,
                   const prcopt_t *opt, sol_t *sol, double *azel, ssat_t *ssat,
                   char *msg)
-{
+{FNC
     prcopt_t opt_=*opt;
     double *rs,*dts,*var,*azel_,*resp;
     int i,stat,vsat[MAXOBS],svh[MAXOBS];

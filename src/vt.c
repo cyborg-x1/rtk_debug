@@ -52,7 +52,7 @@ static const char rcsid[]="$Id:$";
 
 /* accept client socket ------------------------------------------------------*/
 static int acc_sock(int port)
-{
+{FNC
     struct sockaddr_in saddr,addr;
     socklen_t len=sizeof(addr);
     int ssock,sock,on=1;
@@ -91,7 +91,7 @@ static int acc_sock(int port)
 *          if telnet console, it is blocked since client connected
 *-----------------------------------------------------------------------------*/
 extern int vt_open(vt_t *vt, int port, const char *dev)
-{
+{FNC
     const char mode[]={C_IAC,C_WILL,C_SUPPGA,C_IAC,C_WILL,C_ECHO};
     struct termios tio={0};
     int i,sock,fd;
@@ -133,7 +133,7 @@ extern int vt_open(vt_t *vt, int port, const char *dev)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void vt_close(vt_t *vt)
-{
+{FNC
     int i;
     
     /* restore terminal mode */
@@ -147,7 +147,7 @@ extern void vt_close(vt_t *vt)
 }
 /* clear line buffer ---------------------------------------------------------*/
 static int clear_buff(vt_t *vt)
-{
+{FNC
     char buff[MAXBUFF*3],*p=buff;
     int i,len=strlen(vt->buff);
     for (i=0;i<vt->cur;i++) *p++='\b';
@@ -158,7 +158,7 @@ static int clear_buff(vt_t *vt)
 }
 /* refresh line buffer -------------------------------------------------------*/
 static int ref_buff(vt_t *vt)
-{
+{FNC
     char buff[MAXBUFF*3],*p=buff;
     int i;
     for (i=vt->cur;i<vt->n;i++) *p++=vt->buff[i];
@@ -168,7 +168,7 @@ static int ref_buff(vt_t *vt)
 }
 /* move cursor right ---------------------------------------------------------*/
 static int right_cur(vt_t *vt)
-{
+{FNC
     if (vt->cur>=vt->n) return 1;
     if (write(vt->out,vt->buff+vt->cur,1)<1) return 0;
     vt->cur++;
@@ -176,14 +176,14 @@ static int right_cur(vt_t *vt)
 }
 /* move cursor left ----------------------------------------------------------*/
 static int left_cur(vt_t *vt)
-{
+{FNC
     if (vt->cur<=0) return 1;
     vt->cur--;
     return write(vt->out,"\b",1)==1;
 }
 /* delete character before cursor --------------------------------------------*/
 static int del_cur(vt_t *vt)
-{
+{FNC
     int i;
     if (vt->cur<=0) return 1;
     for (i=vt->cur;i<vt->n;i++) vt->buff[i-1]=vt->buff[i];
@@ -192,7 +192,7 @@ static int del_cur(vt_t *vt)
 }
 /* insert character after cursor ---------------------------------------------*/
 static int ins_cur(vt_t *vt, char c)
-{
+{FNC
     int i;
     if (vt->n>=MAXBUFF) return 1;
     for (i=vt->n++;i>vt->cur;i--) vt->buff[i]=vt->buff[i-1];
@@ -202,7 +202,7 @@ static int ins_cur(vt_t *vt, char c)
 }
 /* add history ---------------------------------------------------------------*/
 static int hist_add(vt_t *vt, const char *buff)
-{
+{FNC
     int i,len;
     if ((len=strlen(buff))<=0) return 1;
     free(vt->hist[MAXHIST-1]);
@@ -213,7 +213,7 @@ static int hist_add(vt_t *vt, const char *buff)
 }
 /* call previous history -----------------------------------------------------*/
 static int hist_prev(vt_t *vt)
-{
+{FNC
     char *p;
     if (vt->cur_h>=MAXHIST||!vt->hist[vt->cur_h]) return 1;
     if (!clear_buff(vt)) return 0;
@@ -222,7 +222,7 @@ static int hist_prev(vt_t *vt)
 }
 /* call next history ---------------------------------------------------------*/
 static int hist_next(vt_t *vt)
-{
+{FNC
     char *p;
     if (!clear_buff(vt)) return 0;
     if (vt->cur_h==0||!vt->hist[vt->cur_h-1]) return 1;
@@ -231,7 +231,7 @@ static int hist_next(vt_t *vt)
 }
 /* handle telnet sequence ----------------------------------------------------*/
 static int seq_telnet(vt_t *vt)
-{
+{FNC
     char msg[3]={C_IAC};
     
     if (vt->esc[1]==C_WILL) { /* option negotiation */
@@ -266,7 +266,7 @@ static int seq_telnet(vt_t *vt)
 }
 /* handle escape sequence ----------------------------------------------------*/
 static int seq_esc(vt_t *vt)
-{
+{FNC
     if (vt->nesc<3) return 1;
     vt->nesc=0;
     if (!strncmp(vt->esc+1,"[A",2)) return hist_prev(vt); /* cursor up */
@@ -283,7 +283,7 @@ static int seq_esc(vt_t *vt)
 * notes  : if no input, return ok with *c='\0'
 *-----------------------------------------------------------------------------*/
 extern int vt_getc(vt_t *vt, char *c)
-{
+{FNC
     struct timeval tv={0,1000}; /* timeout (us) */
     fd_set rs;
     int stat;
@@ -328,7 +328,7 @@ extern int vt_getc(vt_t *vt, char *c)
 * return : status (1:ok,0:no input)
 *-----------------------------------------------------------------------------*/
 extern int vt_gets(vt_t *vt, char *buff, int n)
-{
+{FNC
     char c;
     
     vt->n=vt->cur=vt->nesc=vt->brk=0;
@@ -352,7 +352,7 @@ extern int vt_gets(vt_t *vt, char *buff, int n)
 }
 /* put characters to console -------------------------------------------------*/
 static int vt_putchar(vt_t *vt, const char *buff, int n)
-{
+{FNC
     if (!vt->state) return 0;
     if (vt->logfp) fwrite(buff,1,n,vt->logfp);
     return write(vt->out,buff,n)==n;
@@ -364,7 +364,7 @@ static int vt_putchar(vt_t *vt, const char *buff, int n)
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int vt_putc(vt_t *vt, char c)
-{
+{FNC
     if (c=='\n'&&!vt_putchar(vt,"\r",1)) return 0;
     return vt_putchar(vt,&c,1);
 }
@@ -375,7 +375,7 @@ extern int vt_putc(vt_t *vt, char c)
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int vt_puts(vt_t *vt, const char *buff)
-{
+{FNC
     const char *p,*q;
     
     for (p=buff;(q=strchr(p,'\n'));p=q+1) {
@@ -391,7 +391,7 @@ extern int vt_puts(vt_t *vt, const char *buff)
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int vt_printf(vt_t *vt, const char *format, ...)
-{
+{FNC
     va_list ap;
     char buff[MAXBUFF+1];
     va_start(ap,format);
@@ -405,7 +405,7 @@ extern int vt_printf(vt_t *vt, const char *format, ...)
 * return : status (1:break,0:no break)
 *-----------------------------------------------------------------------------*/
 extern int vt_chkbrk(vt_t *vt)
-{
+{FNC
     char c;
     vt->brk=0;
     return !vt_getc(vt,&c)||vt->brk;
@@ -417,7 +417,7 @@ extern int vt_chkbrk(vt_t *vt)
 * return : status (1:ok,0:error)
 *-----------------------------------------------------------------------------*/
 extern int vt_openlog(vt_t *vt, const char *file)
-{
+{FNC
     if (!vt->state||!(vt->logfp=fopen(file,"w"))) return 0;
     return 1;
 }
@@ -427,7 +427,7 @@ extern int vt_openlog(vt_t *vt, const char *file)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void vt_closelog(vt_t *vt)
-{
+{FNC
     if (!vt->state||!vt->logfp) return;
     fclose(vt->logfp);
     vt->logfp=NULL;

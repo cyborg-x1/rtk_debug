@@ -50,7 +50,7 @@ static const char rcsid[]="$Id:$";
 #define I1(p)       (*((char *)(p)))
 
 static unsigned short U2(unsigned char *p)
-{
+{FNC
     unsigned short value;
     unsigned char *q=(unsigned char *)&value+1;
     int i;
@@ -58,7 +58,7 @@ static unsigned short U2(unsigned char *p)
     return value;
 }
 static unsigned int U4(unsigned char *p)
-{
+{FNC
     unsigned int value;
     unsigned char *q=(unsigned char *)&value+3;
     int i;
@@ -66,7 +66,7 @@ static unsigned int U4(unsigned char *p)
     return value;
 }
 static double R8(unsigned char *p)
-{
+{FNC
     double value;
     unsigned char *q=(unsigned char *)&value+7;
     int i;
@@ -75,7 +75,7 @@ static double R8(unsigned char *p)
 }
 /* message length ------------------------------------------------------------*/
 static int msglen(unsigned char id)
-{
+{FNC
     switch (id) {
         case ID_GW10RAW : return LEN_GW10RAW ;
         case ID_GW10GPS : return LEN_GW10GPS ;
@@ -94,7 +94,7 @@ static int msglen(unsigned char id)
 }
 /* compute checksum ----------------------------------------------------------*/
 static int chksum(const unsigned char *buff, int n)
-{
+{FNC
     unsigned char cs=0;
     int i;
     for (i=1;i<n-1;i++) cs+=buff[i];
@@ -102,7 +102,7 @@ static int chksum(const unsigned char *buff, int n)
 }
 /* adjust weekly rollover of gps time ----------------------------------------*/
 static int adjweek(raw_t *raw, double tow)
-{
+{FNC
     double tow_p;
     int week;
     
@@ -115,12 +115,12 @@ static int adjweek(raw_t *raw, double tow)
 }
 /* bcd to number -------------------------------------------------------------*/
 static int bcd2num(unsigned char bcd)
-{
+{FNC
     return (bcd>>4)*10+(bcd&0xF);
 }
 /* decode raw obs data -------------------------------------------------------*/
 static int decode_gw10raw(raw_t *raw)
-{
+{FNC
     double tow,tows,toff,pr,cp;
     int i,j,n,prn,flg,sat,snr;
     unsigned char *p=raw->buff+2;
@@ -171,7 +171,7 @@ static int decode_gw10raw(raw_t *raw)
 }
 /* check partity -------------------------------------------------------------*/
 extern int check_parity(unsigned int word, unsigned char *data)
-{
+{FNC
     const unsigned int hamming[]={
         0xBB1F3480,0x5D8F9A40,0xAEC7CD00,0x5763E680,0x6BB1F340,0x8B7A89C0
     };
@@ -189,7 +189,7 @@ extern int check_parity(unsigned int word, unsigned char *data)
 }
 /* decode gps message --------------------------------------------------------*/
 static int decode_gw10gps(raw_t *raw)
-{
+{FNC
     eph_t eph={0};
     double tow,ion[8]={0},utc[4]={0};
     unsigned int buff=0;
@@ -251,7 +251,7 @@ static int decode_gw10gps(raw_t *raw)
 }
 /* decode waas messages ------------------------------------------------------*/
 static int decode_gw10sbs(raw_t *raw)
-{
+{FNC
     double tow;
     int i,prn;
     unsigned char *p=raw->buff+2;
@@ -278,7 +278,7 @@ static int decode_gw10sbs(raw_t *raw)
 }
 /* decode raw ephemereris ----------------------------------------------------*/
 static int decode_gw10reph(raw_t *raw)
-{
+{FNC
     eph_t eph={0};
     double tow;
     int i,week,prn,sat;
@@ -316,7 +316,7 @@ static int decode_gw10reph(raw_t *raw)
 }
 /* decode solution -----------------------------------------------------------*/
 static int decode_gw10sol(raw_t *raw)
-{
+{FNC
     gtime_t time;
     double ep[6]={0},sec;
     unsigned char *p=raw->buff+6;
@@ -342,7 +342,7 @@ static int decode_gw10sol(raw_t *raw)
 }
 /* decode gw10 raw message ---------------------------------------------------*/
 static int decode_gw10(raw_t *raw)
-{
+{FNC
     int type=U1(raw->buff+1);
     
     trace(3,"decode_gw10: type=0x%02X len=%d\n",type,raw->len);
@@ -374,7 +374,7 @@ static int decode_gw10(raw_t *raw)
 *
 *-----------------------------------------------------------------------------*/
 extern int input_gw10(raw_t *raw, unsigned char data)
-{
+{FNC
     int stat;
     trace(5,"input_gw10: data=%02x\n",data);
     
@@ -412,7 +412,7 @@ extern int input_gw10(raw_t *raw, unsigned char data)
 * return : status(-2: end of file, -1...9: same as above)
 *-----------------------------------------------------------------------------*/
 extern int input_gw10f(raw_t *raw, FILE *fp)
-{
+{FNC
     int i,data,ret;
     
     trace(4,"input_gw10f:\n");

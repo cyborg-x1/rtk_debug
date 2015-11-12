@@ -35,19 +35,19 @@ static const char rcsid[]="$Id:$";
 #define I1(p)       (*((char *)(p)))
 
 static unsigned short U2(unsigned char *p)
-{
+{FNC
     union {unsigned short u2; unsigned char b[2];} buff;
     buff.b[0]=p[1]; buff.b[1]=p[0];
     return buff.u2;
 }
 static unsigned int U4(unsigned char *p)
-{
+{FNC
     union {unsigned int u4; unsigned char b[4];} buff;
     buff.b[0]=p[3]; buff.b[1]=p[2]; buff.b[2]=p[1]; buff.b[3]=p[0];
     return buff.u4;
 }
 static double R8(unsigned char *p)
-{
+{FNC
     union {double r8; unsigned char b[8];} buff;
     buff.b[0]=p[7]; buff.b[1]=p[6]; buff.b[2]=p[5]; buff.b[3]=p[4];
     buff.b[4]=p[3]; buff.b[5]=p[2]; buff.b[6]=p[1]; buff.b[7]=p[0];
@@ -55,7 +55,7 @@ static double R8(unsigned char *p)
 }
 /* crc-32 parity (ref [2] 15) ------------------------------------------------*/
 static unsigned int crc32r(const unsigned char *buff, int len)
-{
+{FNC
     static unsigned int crcs[256]={0};
     unsigned int crc;
     int i,j;
@@ -76,7 +76,7 @@ static unsigned int crc32r(const unsigned char *buff, int len)
 }
 /* decode raw measurement ----------------------------------------------------*/
 static int decode_lexraw(raw_t *raw)
-{
+{FNC
     unsigned int ttt;
     unsigned short cn0,acc;
     unsigned char *p=raw->buff+16,lli;
@@ -159,7 +159,7 @@ static int decode_lexraw(raw_t *raw)
 }
 /* decode lex message --------------------------------------------------------*/
 static int decode_lexmsg(raw_t *raw)
-{
+{FNC
     lexmsg_t msg={0};
     unsigned int preamb;
     int i,j,sat,ch,sig,prn,err,prnmsg,type,alert;
@@ -214,7 +214,7 @@ static int decode_lexmsg(raw_t *raw)
 }
 /* decode lex raw message ---------------------------------------------------*/
 static int decode_lexr(raw_t *raw)
-{
+{FNC
     double tow;
     int stat,week,type=U2(raw->buff+2); /* message id */
     
@@ -246,7 +246,7 @@ static int decode_lexr(raw_t *raw)
 }
 /* sync code -----------------------------------------------------------------*/
 static int sync_lexr(unsigned char *buff, unsigned char data)
-{
+{FNC
     buff[0]=buff[1]; buff[1]=data;
     return buff[0]==LEXRSYNC1&&buff[1]==LEXRSYNC2;
 }
@@ -258,7 +258,7 @@ static int sync_lexr(unsigned char *buff, unsigned char data)
 *                  31: input lex message)
 *-----------------------------------------------------------------------------*/
 extern int input_lexr(raw_t *raw, unsigned char data)
-{
+{FNC
     trace(5,"input_lexr: data=%02x\n",data);
     
     /* synchronize frame */
@@ -306,7 +306,7 @@ extern int input_lexr(raw_t *raw, unsigned char data)
 * return : status(-2: end of file, -1...9: same as above)
 *-----------------------------------------------------------------------------*/
 extern int input_lexrf(raw_t *raw, FILE *fp)
-{
+{FNC
     int i,data,ret;
     
     trace(4,"input_lexrf:\n");
@@ -320,7 +320,7 @@ extern int input_lexrf(raw_t *raw, FILE *fp)
 /* generate lex receiver raw message ------------------------------------------*/
 static int genmsg(unsigned char *buff, unsigned short id, unsigned char *data,
                   unsigned short len)
-{
+{FNC
     unsigned char *p=buff;
     unsigned int crc;
     int i;
@@ -351,7 +351,7 @@ static int genmsg(unsigned char *buff, unsigned short id, unsigned char *data,
 * note   : see ref [1] for details.
 *-----------------------------------------------------------------------------*/
 extern int gen_lexr(const char *msg, unsigned char *buff)
-{
+{FNC
     double pos[3]={0},epoch[6];
     unsigned short id,ep[]={2010,1,1,0,0,0};
     char *args[32],mbuff[1024],*p;

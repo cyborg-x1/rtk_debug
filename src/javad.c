@@ -48,12 +48,12 @@ static short          I2(unsigned char *p) {short          i; memcpy(&i,p,2); re
 static int            I4(unsigned char *p) {int            i; memcpy(&i,p,4); return i;}
 
 static float R4(unsigned char *p)
-{
+{FNC
     if (U4(p)==0x7FC00000) return 0.0f; /* quiet nan */
     return *(float*)p;
 }
 static double R8(unsigned char *p)
-{
+{FNC
     double value;
     unsigned char *q=(unsigned char *)&value;
     int i;
@@ -63,7 +63,7 @@ static double R8(unsigned char *p)
 }
 /* decode message length -----------------------------------------------------*/
 static int decodelen(const unsigned char *buff)
-{
+{FNC
     unsigned int len;
     if (!ISHEX(buff[0])||!ISHEX(buff[1])||!ISHEX(buff[2])) return 0;
     if (sscanf((char *)buff,"%3X",&len)==1) return (int)len;
@@ -71,12 +71,12 @@ static int decodelen(const unsigned char *buff)
 }
 /* test measurement data -----------------------------------------------------*/
 static int is_meas(char sig)
-{
+{FNC
     return sig=='c'||sig=='C'||sig=='1'||sig=='2'||sig=='3'||sig=='5'||sig=='l';
 }
 /* convert signal to frequency and obs type ----------------------------------*/
 static int tofreq(char sig, int sys, int *type)
-{
+{FNC
     const unsigned char types[6][6]={ /* ref [5] table 3-7 */
         /*  c/C       1        2        3        5        l  */
         {CODE_L1C,CODE_L1W,CODE_L2W,CODE_L2X,CODE_L5X,CODE_L1X}, /* GPS */
@@ -118,7 +118,7 @@ static int tofreq(char sig, int sys, int *type)
 }
 /* check code priority and return obs position -------------------------------*/
 static int checkpri(const char *opt, int sys, int code, int freq)
-{
+{FNC
     int nex=NEXOBS; /* number of extended obs data */
     
     if (sys==SYS_GPS) {
@@ -145,7 +145,7 @@ static int checkpri(const char *opt, int sys, int code, int freq)
 }
 /* glonass carrier frequency -------------------------------------------------*/
 static double freq_glo(int freq, int freqn)
-{
+{FNC
     switch (freq) {
         case 0: return FREQ1_GLO+DFRQ1_GLO*freqn;
         case 1: return FREQ2_GLO+DFRQ2_GLO*freqn;
@@ -154,7 +154,7 @@ static double freq_glo(int freq, int freqn)
 }
 /* checksum ------------------------------------------------------------------*/
 static int checksum(unsigned char *buff, int len)
-{
+{FNC
     unsigned char cs=0;
     int i;
     for (i=0;i<len-1;i++) {
@@ -165,7 +165,7 @@ static int checksum(unsigned char *buff, int len)
 }
 /* adjust weekly rollover of gps time ----------------------------------------*/
 static gtime_t adjweek(gtime_t time, double tow)
-{
+{FNC
     double tow_p;
     int week;
     tow_p=time2gpst(time,&week);
@@ -175,7 +175,7 @@ static gtime_t adjweek(gtime_t time, double tow)
 }
 /* adjust daily rollover of time ---------------------------------------------*/
 static gtime_t adjday(gtime_t time, double tod)
-{
+{FNC
     double ep[6],tod_p;
     time2epoch(time,ep);
     tod_p=ep[3]*3600.0+ep[4]*60.0+ep[5];
@@ -186,7 +186,7 @@ static gtime_t adjday(gtime_t time, double tod)
 }
 /* set time tag --------------------------------------------------------------*/
 static int settag(obsd_t *data, gtime_t time)
-{
+{FNC
     char s1[64],s2[64];
     
     if (data->time.time!=0&&fabs(timediff(data->time,time))>5E-4) {
@@ -199,7 +199,7 @@ static int settag(obsd_t *data, gtime_t time)
 }
 /* flush observation data buffer ---------------------------------------------*/
 static int flushobuf(raw_t *raw)
-{
+{FNC
     gtime_t time0={0};
     int i,j,n=0;
     
@@ -228,7 +228,7 @@ static int flushobuf(raw_t *raw)
 }
 /* decode [~~] receiver time -------------------------------------------------*/
 static int decode_RT(raw_t *raw)
-{
+{FNC
     gtime_t time;
     char *msg;
     unsigned char *p=raw->buff+5;
@@ -263,7 +263,7 @@ static int decode_RT(raw_t *raw)
 }
 /* decode [::] epoch time ----------------------------------------------------*/
 static int decode_ET(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+5;
     
     if (!checksum(raw->buff,raw->len)) {
@@ -285,7 +285,7 @@ static int decode_ET(raw_t *raw)
 }
 /* decode [RD] receiver date -------------------------------------------------*/
 static int decode_RD(raw_t *raw)
-{
+{FNC
     double ep[6]={0};
     char *msg;
     unsigned char *p=raw->buff+5;
@@ -320,7 +320,7 @@ static int decode_RD(raw_t *raw)
 }
 /* decode [SI] satellite indices ---------------------------------------------*/
 static int decode_SI(raw_t *raw)
-{
+{FNC
     int i,usi,sat;
     char *msg;
     unsigned char *p=raw->buff+5;
@@ -361,7 +361,7 @@ static int decode_SI(raw_t *raw)
 }
 /* decode [NN] glonass satellite system numbers ------------------------------*/
 static int decode_NN(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+5;
     char *msg;
     int i,n,ns,slot,sat,index[MAXOBS];
@@ -388,42 +388,42 @@ static int decode_NN(raw_t *raw)
 }
 /* decode [GA] gps almanac ---------------------------------------------------*/
 static int decode_GA(raw_t *raw)
-{
+{FNC
     trace(2,"javad GA not supported\n");
     
     return 0;
 }
 /* decode [NA] glonass almanac -----------------------------------------------*/
 static int decode_NA(raw_t *raw)
-{
+{FNC
     trace(2,"javad NA not supported\n");
     
     return 0;
 }
 /* decode [EA] galileo almanac -----------------------------------------------*/
 static int decode_EA(raw_t *raw)
-{
+{FNC
     trace(2,"javad EA not supported\n");
     
     return 0;
 }
 /* decode [WA] waas almanac --------------------------------------------------*/
 static int decode_WA(raw_t *raw)
-{
+{FNC
     trace(2,"javad WA not supported\n");
     
     return 0;
 }
 /* decode [QA] qzss almanac --------------------------------------------------*/
 static int decode_QA(raw_t *raw)
-{
+{FNC
     trace(2,"javad QA not supported\n");
     
     return 0;
 }
 /* decode gps/galileo/qzss ephemeris -----------------------------------------*/
 static int decode_eph(raw_t *raw, int sys)
-{
+{FNC
     eph_t eph={0};
     double toc,sqrtA,tt;
     char *msg;
@@ -536,7 +536,7 @@ static int decode_eph(raw_t *raw, int sys)
 }
 /* decode [GE] gps ephemeris -------------------------------------------------*/
 static int decode_GE(raw_t *raw)
-{
+{FNC
     if (!checksum(raw->buff,raw->len)) {
         trace(2,"javad GE checksum error: len=%d\n",raw->len);
         return -1;
@@ -549,7 +549,7 @@ static int decode_GE(raw_t *raw)
 }
 /* decode [NE] glonass ephemeris ---------------------------------------------*/
 static int decode_NE(raw_t *raw)
-{
+{FNC
     geph_t geph={0};
     double tt;
     char *msg;
@@ -623,7 +623,7 @@ static int decode_NE(raw_t *raw)
 }
 /* decode [EN] galileo ephemeris ---------------------------------------------*/
 static int decode_EN(raw_t *raw)
-{
+{FNC
     if (!checksum(raw->buff,raw->len)) {
         trace(2,"javad EN checksum error: len=%d\n",raw->len);
         return -1;
@@ -636,7 +636,7 @@ static int decode_EN(raw_t *raw)
 }
 /* decode [WE] sbas ephemeris ------------------------------------------------*/
 static int decode_WE(raw_t *raw)
-{
+{FNC
     seph_t seph={0};
     unsigned int tod,tow;
     char *msg;
@@ -683,7 +683,7 @@ static int decode_WE(raw_t *raw)
 }
 /* decode [QE] qzss ephemeris ------------------------------------------------*/
 static int decode_QE(raw_t *raw)
-{
+{FNC
     if (!checksum(raw->buff,raw->len)) {
         trace(2,"javad QE checksum error: len=%d\n",raw->len);
         return -1;
@@ -696,7 +696,7 @@ static int decode_QE(raw_t *raw)
 }
 /* decode [CN] beidou ephemeris ----------------------------------------------*/
 static int decode_CN(raw_t *raw)
-{
+{FNC
     if (!checksum(raw->buff,raw->len)) {
         trace(2,"javad CN checksum error: len=%d\n",raw->len);
         return -1;
@@ -709,7 +709,7 @@ static int decode_CN(raw_t *raw)
 }
 /* decode [UO] gps utc time parameters ---------------------------------------*/
 static int decode_UO(raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+5;
     
     if (!checksum(raw->buff,raw->len)) {
@@ -729,35 +729,35 @@ static int decode_UO(raw_t *raw)
 }
 /* decode [NU] glonass utc and gps time parameters ---------------------------*/
 static int decode_NU(raw_t *raw)
-{
+{FNC
     trace(2,"javad NU not supported\n");
     
     return 0;
 }
 /* decode [EU] galileo utc and gps time parameters ---------------------------*/
 static int decode_EU(raw_t *raw)
-{
+{FNC
     trace(2,"javad EU not supported\n");
     
     return 0;
 }
 /* decode [WU] waas utc time parameters --------------------------------------*/
 static int decode_WU(raw_t *raw)
-{
+{FNC
     trace(2,"javad WU not supported\n");
     
     return 0;
 }
 /* decode [QU] qzss utc and gps time parameters ------------------------------*/
 static int decode_QU(raw_t *raw)
-{
+{FNC
     trace(2,"javad QU not supported\n");
     
     return 0;
 }
 /* decode [IO] ionospheric parameters ----------------------------------------*/
 static int decode_IO(raw_t *raw)
-{
+{FNC
     int i;
     unsigned char *p=raw->buff+5;
     
@@ -777,7 +777,7 @@ static int decode_IO(raw_t *raw)
 }
 /* decode L1 NAV data --------------------------------------------------------*/
 static int decode_L1nav(unsigned char *buff, int len, int sat, raw_t *raw)
-{
+{FNC
     eph_t eph={0};
     double ion[8]={0},utc[4]={0};
     unsigned char *subfrm,*p;
@@ -839,7 +839,7 @@ static int decode_L1nav(unsigned char *buff, int len, int sat, raw_t *raw)
 }
 /* decode raw L2C CNAV data --------------------------------------------------*/
 static int decode_L2nav(unsigned char *buff, int len, int sat, raw_t *raw)
-{
+{FNC
     unsigned char msg[1024]={0};
     int i,j,preamb,prn,msgid,tow,alert;
     
@@ -866,7 +866,7 @@ static int decode_L2nav(unsigned char *buff, int len, int sat, raw_t *raw)
 }
 /* decode raw L5 CNAV data ---------------------------------------------------*/
 static int decode_L5nav(unsigned char *buff, int len, int sat, raw_t *raw)
-{
+{FNC
     unsigned char msg[1024]={0};
     int i,j,preamb,prn,msgid,tow,alert;
     
@@ -893,14 +893,14 @@ static int decode_L5nav(unsigned char *buff, int len, int sat, raw_t *raw)
 }
 /* decode raw L1C CNAV2 data -------------------------------------------------*/
 static int decode_L1Cnav(unsigned char *buff, int len, int sat, raw_t *raw)
-{
+{FNC
     trace(2,"javad *d len=%2d sat=%2d L1C CNAV2 not supported\n",len,sat);
     
     return 0;
 }
 /* decode [*D] raw navigation data -------------------------------------------*/
 static int decode_nD(raw_t *raw, int sys)
-{
+{FNC
     int i,n,siz,sat,prn,stat=0;
     unsigned char *p=raw->buff+5;
     
@@ -929,7 +929,7 @@ static int decode_nD(raw_t *raw, int sys)
 }
 /* decode [*d] raw navigation data -------------------------------------------*/
 static int decode_nd(raw_t *raw, int sys)
-{
+{FNC
     unsigned char *p=raw->buff+5;
     char *msg;
     int sat,prn,time,type,len;
@@ -969,14 +969,14 @@ static int decode_nd(raw_t *raw, int sys)
 }
 /* decode [LD] glonass raw navigation data -----------------------------------*/
 static int decode_LD(raw_t *raw)
-{
+{FNC
     trace(2,"javad LD not supported\n");
     
     return 0;
 }
 /* decode [lD] glonass raw navigation data -----------------------------------*/
 static int decode_lD(raw_t *raw)
-{
+{FNC
     geph_t geph={0};
     unsigned char *p=raw->buff+5;
     char *msg;
@@ -1033,7 +1033,7 @@ static int decode_lD(raw_t *raw)
 }
 /* decode [WD] waas raw navigation data --------------------------------------*/
 static int decode_WD(raw_t *raw)
-{
+{FNC
     int i,prn,tow,tow_p,week;
     char *msg;
     unsigned char *p=raw->buff+5;
@@ -1077,7 +1077,7 @@ static int decode_WD(raw_t *raw)
 }
 /* decode [R*] pseudoranges --------------------------------------------------*/
 static int decode_Rx(raw_t *raw, char code)
-{
+{FNC
     double pr,prm;
     int i,j,freq,type,sat,sys;
     unsigned char *p=raw->buff+5;
@@ -1114,7 +1114,7 @@ static int decode_Rx(raw_t *raw, char code)
 }
 /* decode [r*] short pseudoranges --------------------------------------------*/
 static int decode_rx(raw_t *raw, char code)
-{
+{FNC
     double prm;
     int i,j,pr,freq,type,sat,sys;
     unsigned char *p=raw->buff+5;
@@ -1158,7 +1158,7 @@ static int decode_rx(raw_t *raw, char code)
 }
 /* decode [*R] relative pseudoranges -----------------------------------------*/
 static int decode_xR(raw_t *raw, char code)
-{
+{FNC
     float pr;
     int i,j,freq,type,sat,sys;
     unsigned char *p=raw->buff+5;
@@ -1191,7 +1191,7 @@ static int decode_xR(raw_t *raw, char code)
 }
 /* decode [*r] short relative pseudoranges -----------------------------------*/
 static int decode_xr(raw_t *raw, char code)
-{
+{FNC
     double prm;
     short pr;
     int i,j,freq,type,sat,sys;
@@ -1227,7 +1227,7 @@ static int decode_xr(raw_t *raw, char code)
 }
 /* decode [P*] carrier phases ------------------------------------------------*/
 static int decode_Px(raw_t *raw, char code)
-{
+{FNC
     double cp;
     int i,j,freq,type,sys;
     unsigned char *p=raw->buff+5;
@@ -1259,7 +1259,7 @@ static int decode_Px(raw_t *raw, char code)
 }
 /* decode [p*] short carrier phases ------------------------------------------*/
 static int decode_px(raw_t *raw, char code)
-{
+{FNC
     unsigned int cp;
     int i,j,freq,type,sys;
     unsigned char *p=raw->buff+5;
@@ -1291,7 +1291,7 @@ static int decode_px(raw_t *raw, char code)
 }
 /* decode [*P] short relative carrier phases ---------------------------------*/
 static int decode_xP(raw_t *raw, char code)
-{
+{FNC
     double cp,rcp,fn;
     int i,j,freq,type,sat,sys;
     unsigned char *p=raw->buff+5;
@@ -1328,7 +1328,7 @@ static int decode_xP(raw_t *raw, char code)
 }
 /* decode [*p] short relative carrier phases ---------------------------------*/
 static int decode_xp(raw_t *raw, char code)
-{
+{FNC
     double cp,fn;
     int i,j,rcp,freq,type,sat,sys;
     unsigned char *p=raw->buff+5;
@@ -1365,7 +1365,7 @@ static int decode_xp(raw_t *raw, char code)
 }
 /* decode [D*] doppler -------------------------------------------------------*/
 static int decode_Dx(raw_t *raw, char code)
-{
+{FNC
     double dop;
     int i,j,dp,freq,type,sat,sys;
     unsigned char *p=raw->buff+5;
@@ -1401,7 +1401,7 @@ static int decode_Dx(raw_t *raw, char code)
 }
 /* decode [*d] short relative doppler ----------------------------------------*/
 static int decode_xd(raw_t *raw, char code)
-{
+{FNC
     double dop,f1,fn;
     short rdp;
     int i,j,freq,type,sat,sys;
@@ -1438,7 +1438,7 @@ static int decode_xd(raw_t *raw, char code)
 }
 /* decode [E*] carrier to noise ratio ----------------------------------------*/
 static int decode_Ex(raw_t *raw, char code)
-{
+{FNC
     unsigned char cnr;
     int i,j,freq,type,sys;
     unsigned char *p=raw->buff+5;
@@ -1469,7 +1469,7 @@ static int decode_Ex(raw_t *raw, char code)
 }
 /* decode [*E] carrier to noise ratio x 4 ------------------------------------*/
 static int decode_xE(raw_t *raw, char code)
-{
+{FNC
     unsigned char cnr;
     int i,j,freq,type,sys;
     unsigned char *p=raw->buff+5;
@@ -1500,7 +1500,7 @@ static int decode_xE(raw_t *raw, char code)
 }
 /* decode [F*] signal lock loop flags ----------------------------------------*/
 static int decode_Fx(raw_t *raw, char code)
-{
+{FNC
     unsigned short flags;
     int i,j,freq,type,sat,sys;
     unsigned char *p=raw->buff+5;
@@ -1539,7 +1539,7 @@ static int decode_Fx(raw_t *raw, char code)
 }
 /* decode [TC] CA/L1 continuous tracking time --------------------------------*/
 static int decode_TC(raw_t *raw)
-{
+{FNC
     unsigned short tt,tt_p;
     int i,sat;
     unsigned char *p=raw->buff+5;
@@ -1576,7 +1576,7 @@ static int decode_TC(raw_t *raw)
 }
 /* decode javad raw message --------------------------------------------------*/
 static int decode_javad(raw_t *raw)
-{
+{FNC
     char *p=(char *)raw->buff;
     
     trace(3,"decode_javad: type=%2.2s len=%3d\n",p,raw->len);
@@ -1643,7 +1643,7 @@ static int decode_javad(raw_t *raw)
 }
 /* sync javad message --------------------------------------------------------*/
 static int sync_javad(unsigned char *buff, unsigned char data)
-{
+{FNC
     unsigned char p=buff[0];
     
     buff[0]=buff[1]; buff[1]=buff[2]; buff[2]=buff[3]; buff[3]=buff[4];
@@ -1655,7 +1655,7 @@ static int sync_javad(unsigned char *buff, unsigned char data)
 }
 /* clear buffer --------------------------------------------------------------*/
 static void clearbuff(raw_t *raw)
-{
+{FNC
     int i;
     for (i=0;i<5;i++) raw->buff[i]=0;
     raw->len=raw->nbyte=0;
@@ -1683,7 +1683,7 @@ static void clearbuff(raw_t *raw)
 *
 *-----------------------------------------------------------------------------*/
 extern int input_javad(raw_t *raw, unsigned char data)
-{
+{FNC
     int len,stat;
     
     trace(5,"input_javad: data=%02x\n",data);
@@ -1712,14 +1712,14 @@ extern int input_javad(raw_t *raw, unsigned char data)
 }
 /* start input file ----------------------------------------------------------*/
 static void startfile(raw_t *raw)
-{
+{FNC
     raw->tod=-1;
     raw->obuf.n=0;
     raw->buff[4]='\n';
 }
 /* end input file ------------------------------------------------------------*/
 static int endfile(raw_t *raw)
-{
+{FNC
     /* flush observation data buffer */
     if (!flushobuf(raw)) return -2;
     raw->obuf.n=0;
@@ -1732,7 +1732,7 @@ static int endfile(raw_t *raw)
 * return : status(-2: end of file, -1...9: same as above)
 *-----------------------------------------------------------------------------*/
 extern int input_javadf(raw_t *raw, FILE *fp)
-{
+{FNC
     int i,data,len,stat;
     
     trace(4,"input_javadf:\n");

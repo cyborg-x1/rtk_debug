@@ -198,7 +198,7 @@ static int fswapmargin=30;  /* file swap margin (s) */
 /* read/write serial buffer --------------------------------------------------*/
 #ifdef WIN32
 static int readseribuff(serial_t *serial, unsigned char *buff, int nmax)
-{
+{FNC
     int ns;
     
     tracet(5,"readseribuff: dev=%d\n",serial->dev);
@@ -213,7 +213,7 @@ static int readseribuff(serial_t *serial, unsigned char *buff, int nmax)
     return ns;
 }
 static int writeseribuff(serial_t *serial, unsigned char *buff, int n)
-{
+{FNC
     int ns,wp;
     
     tracet(5,"writeseribuff: dev=%d n=%d\n",serial->dev,n);
@@ -237,7 +237,7 @@ static int writeseribuff(serial_t *serial, unsigned char *buff, int n)
 /* write serial thread -------------------------------------------------------*/
 #ifdef WIN32
 static DWORD WINAPI serialthread(void *arg)
-{
+{FNC
     serial_t *serial=(serial_t *)arg;
     unsigned char buff[128];
     unsigned int tick;
@@ -263,7 +263,7 @@ static DWORD WINAPI serialthread(void *arg)
 
 /* open serial ---------------------------------------------------------------*/
 static serial_t *openserial(const char *path, int mode, char *msg)
-{
+{FNC
     const int br[]={
         300,600,1200,2400,4800,9600,19200,38400,57600,115200,230400
     };
@@ -385,7 +385,7 @@ static serial_t *openserial(const char *path, int mode, char *msg)
 }
 /* close serial --------------------------------------------------------------*/
 static void closeserial(serial_t *serial)
-{
+{FNC
     tracet(3,"closeserial: dev=%d\n",serial->dev);
     
     if (!serial) return;
@@ -401,7 +401,7 @@ static void closeserial(serial_t *serial)
 }
 /* read serial ---------------------------------------------------------------*/
 static int readserial(serial_t *serial, unsigned char *buff, int n, char *msg)
-{
+{FNC
 #ifdef WIN32
     DWORD nr;
 #else
@@ -419,7 +419,7 @@ static int readserial(serial_t *serial, unsigned char *buff, int n, char *msg)
 }
 /* write serial --------------------------------------------------------------*/
 static int writeserial(serial_t *serial, unsigned char *buff, int n, char *msg)
-{
+{FNC
     int ns;
     
     tracet(3,"writeserial: dev=%d n=%d\n",serial->dev,n);
@@ -435,12 +435,12 @@ static int writeserial(serial_t *serial, unsigned char *buff, int n, char *msg)
 }
 /* get state serial ----------------------------------------------------------*/
 static int stateserial(serial_t *serial)
-{
+{FNC
     return !serial?0:(serial->error?-1:2);
 }
 /* open file -----------------------------------------------------------------*/
 static int openfile_(file_t *file, gtime_t time, char *msg)
-{    
+{FNC    
     FILE *fp;
     char *rw,tagpath[MAXSTRPATH+4]="";
     char tagh[TIMETAGH_LEN+1]="";
@@ -516,7 +516,7 @@ static int openfile_(file_t *file, gtime_t time, char *msg)
 }
 /* close file ----------------------------------------------------------------*/
 static void closefile_(file_t *file)
-{
+{FNC
     tracet(3,"closefile_: path=%s\n",file->path);
     
     if (file->fp) fclose(file->fp);
@@ -527,7 +527,7 @@ static void closefile_(file_t *file)
 }
 /* open file (path=filepath[::T[::+<off>][::x<speed>]][::S=swapintv]) --------*/
 static file_t *openfile(const char *path, int mode, char *msg)
-{
+{FNC
     file_t *file;
     gtime_t time,time0={0};
     double speed=0.0,start=0.0,swapintv=0.0;
@@ -576,7 +576,7 @@ static file_t *openfile(const char *path, int mode, char *msg)
 }
 /* close file ----------------------------------------------------------------*/
 static void closefile(file_t *file)
-{
+{FNC
     tracet(3,"closefile: fp=%d\n",file->fp);
     
     if (!file) return;
@@ -585,7 +585,7 @@ static void closefile(file_t *file)
 }
 /* open new swap file --------------------------------------------------------*/
 static void swapfile(file_t *file, gtime_t time, char *msg)
-{
+{FNC
     char openpath[MAXSTRPATH];
     
     tracet(3,"swapfile: fp=%d time=%s\n",file->fp,time_str(time,0));
@@ -609,7 +609,7 @@ static void swapfile(file_t *file, gtime_t time, char *msg)
 }
 /* close old swap file -------------------------------------------------------*/
 static void swapclose(file_t *file)
-{
+{FNC
     tracet(3,"swapclose: fp_tmp=%d\n",file->fp_tmp);
     
     if (file->fp_tmp    ) fclose(file->fp_tmp    );
@@ -618,12 +618,12 @@ static void swapclose(file_t *file)
 }
 /* get state file ------------------------------------------------------------*/
 static int statefile(file_t *file)
-{
+{FNC
     return file?2:0;
 }
 /* read file -----------------------------------------------------------------*/
 static int readfile(file_t *file, unsigned char *buff, int nmax, char *msg)
-{
+{FNC
     struct timeval tv={0};
     fd_set rs;
     int nr=0;
@@ -689,7 +689,7 @@ static int readfile(file_t *file, unsigned char *buff, int nmax, char *msg)
 }
 /* write file ----------------------------------------------------------------*/
 static int writefile(file_t *file, unsigned char *buff, int n, char *msg)
-{
+{FNC
     gtime_t wtime;
     unsigned int ns,tick=tickget();
     int week1,week2;
@@ -748,7 +748,7 @@ static int writefile(file_t *file, unsigned char *buff, int n, char *msg)
 }
 /* sync files by time-tag ----------------------------------------------------*/
 static void syncfile(file_t *file1, file_t *file2)
-{
+{FNC
     if (!file1->fp_tag||!file2->fp_tag) return;
     file1->repmode=0;
     file2->repmode=1;
@@ -757,7 +757,7 @@ static void syncfile(file_t *file1, file_t *file2)
 /* decode tcp/ntrip path (path=[user[:passwd]@]addr[:port][/mntpnt[:str]]) ---*/
 static void decodetcppath(const char *path, char *addr, char *port, char *user,
                           char *passwd, char *mntpnt, char *str)
-{
+{FNC
     char buff[MAXSTRPATH],*p,*q;
     
     tracet(4,"decodetcpepath: path=%s\n",path);
@@ -801,7 +801,7 @@ static int errsock(void) {return errno;}
 
 /* set socket option ---------------------------------------------------------*/
 static int setsock(socket_t sock, char *msg)
-{
+{FNC
     int bs=buffsize,mode=1;
 #ifdef WIN32
     int tv=0;
@@ -830,7 +830,7 @@ static int setsock(socket_t sock, char *msg)
 }
 /* non-block accept ----------------------------------------------------------*/
 static socket_t accept_nb(socket_t sock, struct sockaddr *addr, socklen_t *len)
-{
+{FNC
     struct timeval tv={0};
     fd_set rs;
     
@@ -840,7 +840,7 @@ static socket_t accept_nb(socket_t sock, struct sockaddr *addr, socklen_t *len)
 }
 /* non-block connect ---------------------------------------------------------*/
 static int connect_nb(socket_t sock, struct sockaddr *addr, socklen_t len)
-{
+{FNC
 #ifdef WIN32
     u_long mode=1; 
     int err;
@@ -870,7 +870,7 @@ static int connect_nb(socket_t sock, struct sockaddr *addr, socklen_t len)
 }
 /* non-block receive ---------------------------------------------------------*/
 static int recv_nb(socket_t sock, unsigned char *buff, int n)
-{
+{FNC
     struct timeval tv={0};
     fd_set rs;
     
@@ -880,7 +880,7 @@ static int recv_nb(socket_t sock, unsigned char *buff, int n)
 }
 /* non-block send ------------------------------------------------------------*/
 static int send_nb(socket_t sock, unsigned char *buff, int n)
-{
+{FNC
     struct timeval tv={0};
     fd_set ws;
     
@@ -890,7 +890,7 @@ static int send_nb(socket_t sock, unsigned char *buff, int n)
 }
 /* generate tcp socket -------------------------------------------------------*/
 static int gentcp(tcp_t *tcp, int type, char *msg)
-{
+{FNC
     struct hostent *hp;
 #ifdef SVR_REUSEADDR
     int opt=1;
@@ -948,7 +948,7 @@ static int gentcp(tcp_t *tcp, int type, char *msg)
 }
 /* disconnect tcp ------------------------------------------------------------*/
 static void discontcp(tcp_t *tcp, int tcon)
-{
+{FNC
     tracet(3,"discontcp: sock=%d tcon=%d\n",tcp->sock,tcon);
     
     closesocket(tcp->sock);
@@ -958,7 +958,7 @@ static void discontcp(tcp_t *tcp, int tcon)
 }
 /* open tcp server -----------------------------------------------------------*/
 static tcpsvr_t *opentcpsvr(const char *path, char *msg)
-{
+{FNC
     tcpsvr_t *tcpsvr,tcpsvr0={{0}};
     char port[256]="";
     
@@ -982,7 +982,7 @@ static tcpsvr_t *opentcpsvr(const char *path, char *msg)
 }
 /* close tcp server ----------------------------------------------------------*/
 static void closetcpsvr(tcpsvr_t *tcpsvr)
-{
+{FNC
     int i;
     
     tracet(3,"closetcpsvr:\n");
@@ -995,7 +995,7 @@ static void closetcpsvr(tcpsvr_t *tcpsvr)
 }
 /* update tcp server ---------------------------------------------------------*/
 static void updatetcpsvr(tcpsvr_t *tcpsvr, char *msg)
-{
+{FNC
     char saddr[256]="";
     int i,j,n=0;
     
@@ -1027,7 +1027,7 @@ static void updatetcpsvr(tcpsvr_t *tcpsvr, char *msg)
 }
 /* accept client connection --------------------------------------------------*/
 static int accsock(tcpsvr_t *tcpsvr, char *msg)
-{
+{FNC
     struct sockaddr_in addr;
     socket_t sock;
     socklen_t len=sizeof(addr);
@@ -1059,7 +1059,7 @@ static int accsock(tcpsvr_t *tcpsvr, char *msg)
 }
 /* wait socket accept --------------------------------------------------------*/
 static int waittcpsvr(tcpsvr_t *tcpsvr, char *msg)
-{
+{FNC
     tracet(4,"waittcpsvr: sock=%d state=%d\n",tcpsvr->svr.sock,tcpsvr->svr.state);
     
     if (tcpsvr->svr.state<=0) return 0;
@@ -1071,7 +1071,7 @@ static int waittcpsvr(tcpsvr_t *tcpsvr, char *msg)
 }
 /* read tcp server -----------------------------------------------------------*/
 static int readtcpsvr(tcpsvr_t *tcpsvr, unsigned char *buff, int n, char *msg)
-{
+{FNC
     int nr,err;
     
     tracet(4,"readtcpsvr: state=%d n=%d\n",tcpsvr->svr.state,n);
@@ -1092,7 +1092,7 @@ static int readtcpsvr(tcpsvr_t *tcpsvr, unsigned char *buff, int n, char *msg)
 }
 /* write tcp server ----------------------------------------------------------*/
 static int writetcpsvr(tcpsvr_t *tcpsvr, unsigned char *buff, int n, char *msg)
-{
+{FNC
     int i,ns=0,err;
     
     tracet(3,"writetcpsvr: state=%d n=%d\n",tcpsvr->svr.state,n);
@@ -1117,12 +1117,12 @@ static int writetcpsvr(tcpsvr_t *tcpsvr, unsigned char *buff, int n, char *msg)
 }
 /* get state tcp server ------------------------------------------------------*/
 static int statetcpsvr(tcpsvr_t *tcpsvr)
-{
+{FNC
     return tcpsvr?tcpsvr->svr.state:0;
 }
 /* connect server ------------------------------------------------------------*/
 static int consock(tcpcli_t *tcpcli, char *msg)
-{
+{FNC
     int stat,err;
     
     tracet(3,"consock: sock=%d\n",tcpcli->svr.sock);
@@ -1154,7 +1154,7 @@ static int consock(tcpcli_t *tcpcli, char *msg)
 }
 /* open tcp client -----------------------------------------------------------*/
 static tcpcli_t *opentcpcli(const char *path, char *msg)
-{
+{FNC
     tcpcli_t *tcpcli,tcpcli0={{0},0,0};
     char port[256]="";
     
@@ -1176,7 +1176,7 @@ static tcpcli_t *opentcpcli(const char *path, char *msg)
 }
 /* close tcp client ----------------------------------------------------------*/
 static void closetcpcli(tcpcli_t *tcpcli)
-{
+{FNC
     tracet(3,"closetcpcli: sock=%d\n",tcpcli->svr.sock);
     
     closesocket(tcpcli->svr.sock);
@@ -1184,7 +1184,7 @@ static void closetcpcli(tcpcli_t *tcpcli)
 }
 /* wait socket connect -------------------------------------------------------*/
 static int waittcpcli(tcpcli_t *tcpcli, char *msg)
-{
+{FNC
     tracet(4,"waittcpcli: sock=%d state=%d\n",tcpcli->svr.sock,tcpcli->svr.state);
     
     if (tcpcli->svr.state<0) return 0;
@@ -1208,7 +1208,7 @@ static int waittcpcli(tcpcli_t *tcpcli, char *msg)
 }
 /* read tcp client -----------------------------------------------------------*/
 static int readtcpcli(tcpcli_t *tcpcli, unsigned char *buff, int n, char *msg)
-{
+{FNC
     int nr,err;
     
     tracet(4,"readtcpcli: sock=%d state=%d n=%d\n",tcpcli->svr.sock,tcpcli->svr.state,n);
@@ -1228,7 +1228,7 @@ static int readtcpcli(tcpcli_t *tcpcli, unsigned char *buff, int n, char *msg)
 }
 /* write tcp client ----------------------------------------------------------*/
 static int writetcpcli(tcpcli_t *tcpcli, unsigned char *buff, int n, char *msg)
-{
+{FNC
     int ns,err;
     
     tracet(3,"writetcpcli: sock=%d state=%d n=%d\n",tcpcli->svr.sock,tcpcli->svr.state,n);
@@ -1248,12 +1248,12 @@ static int writetcpcli(tcpcli_t *tcpcli, unsigned char *buff, int n, char *msg)
 }
 /* get state tcp client ------------------------------------------------------*/
 static int statetcpcli(tcpcli_t *tcpcli)
-{
+{FNC
     return tcpcli?tcpcli->svr.state:0;
 }
 /* base64 encoder ------------------------------------------------------------*/
 static int encbase64(char *str, const unsigned char *byte, int n)
-{
+{FNC
     const char table[]=
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     int i,j,k,b;
@@ -1273,7 +1273,7 @@ static int encbase64(char *str, const unsigned char *byte, int n)
 }
 /* send ntrip server request -------------------------------------------------*/
 static int reqntrip_s(ntrip_t *ntrip, char *msg)
-{
+{FNC
     char buff[256+NTRIP_MAXSTR],*p=buff;
     
     tracet(3,"reqntrip_s: state=%d\n",ntrip->state);
@@ -1292,7 +1292,7 @@ static int reqntrip_s(ntrip_t *ntrip, char *msg)
 }
 /* send ntrip client request -------------------------------------------------*/
 static int reqntrip_c(ntrip_t *ntrip, char *msg)
-{
+{FNC
     char buff[1024],user[512],*p=buff;
     
     tracet(3,"reqntrip_c: state=%d\n",ntrip->state);
@@ -1321,7 +1321,7 @@ static int reqntrip_c(ntrip_t *ntrip, char *msg)
 }
 /* test ntrip server response ------------------------------------------------*/
 static int rspntrip_s(ntrip_t *ntrip, char *msg)
-{
+{FNC
     int i,nb;
     char *p,*q;
     
@@ -1361,7 +1361,7 @@ static int rspntrip_s(ntrip_t *ntrip, char *msg)
 }
 /* test ntrip client response ------------------------------------------------*/
 static int rspntrip_c(ntrip_t *ntrip, char *msg)
-{
+{FNC
     int i;
     char *p,*q;
     
@@ -1415,7 +1415,7 @@ static int rspntrip_c(ntrip_t *ntrip, char *msg)
 }
 /* wait ntrip request/response -----------------------------------------------*/
 static int waitntrip(ntrip_t *ntrip, char *msg)
-{
+{FNC
     int n;
     char *p;
     
@@ -1446,7 +1446,7 @@ static int waitntrip(ntrip_t *ntrip, char *msg)
 }
 /* open ntrip ----------------------------------------------------------------*/
 static ntrip_t *openntrip(const char *path, int type, char *msg)
-{
+{FNC
     ntrip_t *ntrip;
     int i;
     char addr[256]="",port[256]="",tpath[MAXSTRPATH];
@@ -1487,7 +1487,7 @@ static ntrip_t *openntrip(const char *path, int type, char *msg)
 }
 /* close ntrip ---------------------------------------------------------------*/
 static void closentrip(ntrip_t *ntrip)
-{
+{FNC
     tracet(3,"closentrip: state=%d\n",ntrip->state);
     
     closetcpcli(ntrip->tcp);
@@ -1495,7 +1495,7 @@ static void closentrip(ntrip_t *ntrip)
 }
 /* read ntrip ----------------------------------------------------------------*/
 static int readntrip(ntrip_t *ntrip, unsigned char *buff, int n, char *msg)
-{
+{FNC
     int nb;
     
     tracet(4,"readntrip: n=%d\n",n);
@@ -1511,7 +1511,7 @@ static int readntrip(ntrip_t *ntrip, unsigned char *buff, int n, char *msg)
 }
 /* write ntrip ---------------------------------------------------------------*/
 static int writentrip(ntrip_t *ntrip, unsigned char *buff, int n, char *msg)
-{
+{FNC
     tracet(3,"writentrip: n=%d\n",n);
     
     if (!waitntrip(ntrip,msg)) return 0;
@@ -1519,13 +1519,13 @@ static int writentrip(ntrip_t *ntrip, unsigned char *buff, int n, char *msg)
 }
 /* get state ntrip -----------------------------------------------------------*/
 static int statentrip(ntrip_t *ntrip)
-{
+{FNC
     return !ntrip?0:(ntrip->state==0?ntrip->tcp->svr.state:ntrip->state);
 }
 /* decode ftp path ----------------------------------------------------------*/
 static void decodeftppath(const char *path, char *addr, char *file, char *user,
                           char *passwd, int *topts)
-{
+{FNC
     char buff[MAXSTRPATH],*p,*q;
     
     tracet(4,"decodeftpath: path=%s\n",path);
@@ -1563,7 +1563,7 @@ static void decodeftppath(const char *path, char *addr, char *file, char *user,
 }
 /* next download time --------------------------------------------------------*/
 static gtime_t nextdltime(const int *topts, int stat)
-{
+{FNC
     gtime_t time;
     double tow;
     int week,tint;
@@ -1683,7 +1683,7 @@ static void *ftpthread(void *arg)
 }
 /* open ftp ------------------------------------------------------------------*/
 static ftp_t *openftp(const char *path, int type, char *msg)
-{
+{FNC
     ftp_t *ftp;
     
     tracet(3,"openftp: path=%s type=%d\n",path,type);
@@ -1708,14 +1708,14 @@ static ftp_t *openftp(const char *path, int type, char *msg)
 }
 /* close ftp -----------------------------------------------------------------*/
 static void closeftp(ftp_t *ftp)
-{
+{FNC
     tracet(3,"closeftp: state=%d\n",ftp->state);
     
     if (ftp->state!=1) free(ftp);
 }
 /* read ftp ------------------------------------------------------------------*/
 static int readftp(ftp_t *ftp, unsigned char *buff, int n, char *msg)
-{
+{FNC
     gtime_t time;
     unsigned char *p,*q;
     
@@ -1767,7 +1767,7 @@ static int readftp(ftp_t *ftp, unsigned char *buff, int n, char *msg)
 }
 /* get state ftp -------------------------------------------------------------*/
 static int stateftp(ftp_t *ftp)
-{
+{FNC
     return !ftp?0:(ftp->state==0?2:(ftp->state<=2?3:-1));
 }
 /* initialize stream environment -----------------------------------------------
@@ -1776,7 +1776,7 @@ static int stateftp(ftp_t *ftp)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void strinitcom(void)
-{
+{FNC
 #ifdef WIN32
     WSADATA data;
 #endif
@@ -1792,7 +1792,7 @@ extern void strinitcom(void)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void strinit(stream_t *stream)
-{
+{FNC
     tracet(3,"strinit:\n");
     
     stream->type=0;
@@ -1841,7 +1841,7 @@ extern void strinit(stream_t *stream)
 *                    tret  = download retry interval (s) (0:no retry)
 *-----------------------------------------------------------------------------*/
 extern int stropen(stream_t *stream, int type, int mode, const char *path)
-{
+{FNC
     tracet(3,"stropen: type=%d mode=%d path=%s\n",type,mode,path);
     
     stream->type=type;
@@ -1872,7 +1872,7 @@ extern int stropen(stream_t *stream, int type, int mode, const char *path)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void strclose(stream_t *stream)
-{
+{FNC
     tracet(3,"strclose: type=%d mode=%d\n",stream->type,stream->mode);
     
     if (stream->port) {
@@ -1906,7 +1906,7 @@ extern void strclose(stream_t *stream)
 * notes  : for replay files with time tags
 *-----------------------------------------------------------------------------*/
 extern void strsync(stream_t *stream1, stream_t *stream2)
-{
+{FNC
     file_t *file1,*file2;
     if (stream1->type!=STR_FILE||stream2->type!=STR_FILE) return;
     file1=(file_t*)stream1->port;
@@ -1930,7 +1930,7 @@ extern void strunlock(stream_t *stream) {unlock(&stream->lock);}
 * notes  : if no data, return immediately with no data
 *-----------------------------------------------------------------------------*/
 extern int strread(stream_t *stream, unsigned char *buff, int n)
-{
+{FNC
     unsigned int tick;
     char *msg=stream->msg;
     int nr;
@@ -1972,7 +1972,7 @@ extern int strread(stream_t *stream, unsigned char *buff, int n)
 * notes  : write data to buffer and return immediately
 *-----------------------------------------------------------------------------*/
 extern int strwrite(stream_t *stream, unsigned char *buff, int n)
-{
+{FNC
     unsigned int tick;
     char *msg=stream->msg;
     int ns;
@@ -2013,7 +2013,7 @@ extern int strwrite(stream_t *stream, unsigned char *buff, int n)
 * return : status (-1:error,0:close,1:wait,2:connect,3:active)
 *-----------------------------------------------------------------------------*/
 extern int strstat(stream_t *stream, char *msg)
-{
+{FNC
     int state;
     
     tracet(4,"strstat:\n");
@@ -2053,7 +2053,7 @@ extern int strstat(stream_t *stream, char *msg)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void strsum(stream_t *stream, int *inb, int *inr, int *outb, int *outr)
-{
+{FNC
     tracet(4,"strsum:\n");
     
     strlock(stream);
@@ -2077,7 +2077,7 @@ extern void strsum(stream_t *stream, int *inb, int *inr, int *outb, int *outr)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void strsetopt(const int *opt)
-{
+{FNC
     tracet(3,"strsetopt: opt=%d %d %d %d %d %d %d %d\n",opt[0],opt[1],opt[2],
            opt[3],opt[4],opt[5],opt[6],opt[7]);
     
@@ -2095,7 +2095,7 @@ extern void strsetopt(const int *opt)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void strsettimeout(stream_t *stream, int toinact, int tirecon)
-{
+{FNC
     tcpcli_t *tcpcli;
     
     tracet(3,"strsettimeout: toinact=%d tirecon=%d\n",toinact,tirecon);
@@ -2117,7 +2117,7 @@ extern void strsettimeout(stream_t *stream, int toinact, int tirecon)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void strsetdir(const char *dir)
-{
+{FNC
     tracet(3,"strsetdir: dir=%s\n",dir);
     
     strcpy(localdir,dir);
@@ -2128,7 +2128,7 @@ extern void strsetdir(const char *dir)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void strsetproxy(const char *addr)
-{
+{FNC
     tracet(3,"strsetproxy: addr=%s\n",addr);
     
     strcpy(proxyaddr,addr);
@@ -2139,7 +2139,7 @@ extern void strsetproxy(const char *addr)
 * return : current time or replay time for playback file
 *-----------------------------------------------------------------------------*/
 extern gtime_t strgettime(stream_t *stream)
-{
+{FNC
     file_t *file;
     if (stream->type==STR_FILE&&(stream->mode&STR_MODE_R)&&
         (file=(file_t *)stream->port)) {
@@ -2154,7 +2154,7 @@ extern gtime_t strgettime(stream_t *stream)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void strsendnmea(stream_t *stream, const double *pos)
-{
+{FNC
     sol_t sol={{0}};
     unsigned char buff[1024];
     int i,n;
@@ -2169,7 +2169,7 @@ extern void strsendnmea(stream_t *stream, const double *pos)
 }
 /* generate general hex message ----------------------------------------------*/
 static int gen_hex(const char *msg, unsigned char *buff)
-{
+{FNC
     unsigned char *q=buff;
     char mbuff[1024]="",*args[256],*p;
     unsigned int byte;
@@ -2193,7 +2193,7 @@ static int gen_hex(const char *msg, unsigned char *buff)
 * return : none
 *-----------------------------------------------------------------------------*/
 extern void strsendcmd(stream_t *str, const char *cmd)
-{
+{FNC
     unsigned char buff[1024];
     const char *p=cmd,*q;
     char msg[1024],cmdend[]="\r\n";

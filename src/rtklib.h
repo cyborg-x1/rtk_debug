@@ -48,11 +48,8 @@ extern "C" {
 {\
    const char *file=__FILE__;\
    const char *function=__FUNCTION__;\
-   printf("%s->%s",file,function);\
+   printf("::::::::::: FUNCTION %s->%s\n",file,function);\
 }\
-
-
-
 
 /* constants -----------------------------------------------------------------*/
 

@@ -27,7 +27,7 @@ static const char rcsid[]="$Id: lambda.c,v 1.1 2008/07/17 21:48:06 ttaka Exp $";
 
 /* LD factorization (Q=L'*diag(D)*L) -----------------------------------------*/
 static int LD(int n, const double *Q, double *L, double *D)
-{
+{FNC
     int i,j,k,info=0;
     double a,*A=mat(n,n);
     
@@ -45,7 +45,7 @@ static int LD(int n, const double *Q, double *L, double *D)
 }
 /* integer gauss transformation ----------------------------------------------*/
 static void gauss(int n, double *L, double *Z, int i, int j)
-{
+{FNC
     int k,mu;
     
     if ((mu=(int)ROUND(L[i+j*n]))!=0) {
@@ -55,7 +55,7 @@ static void gauss(int n, double *L, double *Z, int i, int j)
 }
 /* permutations --------------------------------------------------------------*/
 static void perm(int n, double *L, double *D, int j, double del, double *Z)
-{
+{FNC
     int k;
     double eta,lam,a0,a1;
     
@@ -73,7 +73,7 @@ static void perm(int n, double *L, double *D, int j, double del, double *Z)
 }
 /* lambda reduction (z=Z'*a, Qz=Z'*Q*Z=L'*diag(D)*L) (ref.[1]) ---------------*/
 static void reduction(int n, double *L, double *D, double *Z)
-{
+{FNC
     int i,j,k;
     double del;
     
@@ -91,7 +91,7 @@ static void reduction(int n, double *L, double *D, double *Z)
 /* modified lambda (mlambda) search (ref. [2]) -------------------------------*/
 static int search(int n, int m, const double *L, const double *D,
                   const double *zs, double *zn, double *s)
-{
+{FNC
     int i,j,k,c,nn=0,imax=0;
     double newdist,maxdist=1E99,y;
     double *S=zeros(n,n),*dist=mat(n,1),*zb=mat(n,1),*z=mat(n,1),*step=mat(n,1);
@@ -163,7 +163,7 @@ static int search(int n, int m, const double *L, const double *D,
 *-----------------------------------------------------------------------------*/
 extern int lambda(int n, int m, const double *a, const double *Q, double *F,
                   double *s)
-{
+{FNC
     int info;
     double *L,*D,*Z,*z,*E;
     

@@ -93,7 +93,7 @@ static void setR8(unsigned char *p, double         r) {memcpy(p,&r,8);}
 
 /* checksum ------------------------------------------------------------------*/
 static int checksum(unsigned char *buff, int len)
-{
+{FNC
     unsigned char cka=0,ckb=0;
     int i;
     
@@ -103,7 +103,7 @@ static int checksum(unsigned char *buff, int len)
     return cka==buff[len-2]&&ckb==buff[len-1];
 }
 static void setcs(unsigned char *buff, int len)
-{
+{FNC
     unsigned char cka=0,ckb=0;
     int i;
     
@@ -115,7 +115,7 @@ static void setcs(unsigned char *buff, int len)
 }
 /* ubx gnss indicator (ref [2] 25) -------------------------------------------*/
 static int ubx_sys(int ind)
-{
+{FNC
     switch (ind) {
         case 0: return SYS_GPS;
         case 1: return SYS_SBS;
@@ -128,7 +128,7 @@ static int ubx_sys(int ind)
 }
 /* 8-bit week -> full week ---------------------------------------------------*/
 static void adj_utcweek(gtime_t time, double *utc)
-{
+{FNC
     int week;
     
     if (utc[3]>=256.0) return;
@@ -139,7 +139,7 @@ static void adj_utcweek(gtime_t time, double *utc)
 }
 /* decode ubx-rxm-raw: raw measurement data ----------------------------------*/
 static int decode_rxmraw(raw_t *raw)
-{
+{FNC
     gtime_t time;
     double tow,tt,tadj=0.0,toff=0.0,tn;
     int i,j,prn,sat,n=0,nsat,week;
@@ -210,7 +210,7 @@ static int decode_rxmraw(raw_t *raw)
 }
 /* decode ubx-rxm-rawx: multi-gnss raw measurement data (ref [3]) ------------*/
 static int decode_rxmrawx(raw_t *raw)
-{
+{FNC
     gtime_t time;
     double tow,cp1,pr1;
     int i,j,sys,prn,sat,n=0,nsat,week,tstat,lockt,halfc;
@@ -280,7 +280,7 @@ static int decode_rxmrawx(raw_t *raw)
 }
 /* save subframe -------------------------------------------------------------*/
 static int save_subfrm(int sat, raw_t *raw)
-{
+{FNC
     unsigned char *p=raw->buff+6,*q;
     int i,j,n,id=(U4(p+6)>>2)&0x7;
     
@@ -299,7 +299,7 @@ static int save_subfrm(int sat, raw_t *raw)
 }
 /* decode ephemeris ----------------------------------------------------------*/
 static int decode_ephem(int sat, raw_t *raw)
-{
+{FNC
     eph_t eph={0};
     
     trace(4,"decode_ephem: sat=%2d\n",sat);
@@ -319,7 +319,7 @@ static int decode_ephem(int sat, raw_t *raw)
 }
 /* decode almanac and ion/utc ------------------------------------------------*/
 static int decode_alm1(int sat, raw_t *raw)
-{
+{FNC
     int sys=satsys(sat,NULL);
     
     trace(4,"decode_alm1 : sat=%2d\n",sat);
@@ -338,7 +338,7 @@ static int decode_alm1(int sat, raw_t *raw)
 }
 /* decode almanac ------------------------------------------------------------*/
 static int decode_alm2(int sat, raw_t *raw)
-{
+{FNC
     int sys=satsys(sat,NULL);
     
     trace(4,"decode_alm2 : sat=%2d\n",sat);
@@ -355,7 +355,7 @@ static int decode_alm2(int sat, raw_t *raw)
 }
 /* decode ubx-rxm-sfrb: subframe buffer --------------------------------------*/
 static int decode_rxmsfrb(raw_t *raw)
-{
+{FNC
     unsigned int words[10];
     int i,prn,sat,sys,id;
     unsigned char *p=raw->buff+6;
@@ -391,7 +391,7 @@ static int decode_rxmsfrb(raw_t *raw)
 }
 /* decode ubx-nav-sol: navigation solution -----------------------------------*/
 static int decode_navsol(raw_t *raw)
-{
+{FNC
     int itow,ftow,week;
     unsigned char *p=raw->buff+6;
     
@@ -410,7 +410,7 @@ static int decode_navsol(raw_t *raw)
 }
 /* decode ubx-nav-timegps: gps time solution ---------------------------------*/
 static int decode_navtime(raw_t *raw)
-{
+{FNC
     int itow,ftow,week;
     unsigned char *p=raw->buff+6;
     
@@ -429,7 +429,7 @@ static int decode_navtime(raw_t *raw)
 }
 /* decode ubx-trk-meas: trace measurement data -------------------------------*/
 static int decode_trkmeas(raw_t *raw)
-{
+{FNC
     static double adrs[MAXSAT]={0};
     gtime_t time;
     double ts,tr=-1.0,t,tau,utc_gpst,snr,adr,dop;
@@ -544,7 +544,7 @@ static int decode_trkmeas(raw_t *raw)
 }
 /* decode ubx-trkd5: trace measurement data ----------------------------------*/
 static int decode_trkd5(raw_t *raw)
-{
+{FNC
     static double adrs[MAXSAT]={0};
     gtime_t time;
     double ts,tr=-1.0,t,tau,adr,dop,snr,utc_gpst;
@@ -657,7 +657,7 @@ static int decode_trkd5(raw_t *raw)
 }
 /* decode gps and qzss navigation data ---------------------------------------*/
 static int decode_nav(raw_t *raw, int sat, int off)
-{
+{FNC
     unsigned int words[10];
     int i,id;
     unsigned char *p=raw->buff+6+off;
@@ -683,13 +683,13 @@ static int decode_nav(raw_t *raw, int sat, int off)
 }
 /* decode galileo navigation data --------------------------------------------*/
 static int decode_enav(raw_t *raw, int sat, int off)
-{
+{FNC
     trace(2,"ubx rawsfrbx galileo nav not supported sat=%d\n",sat);
     return 0;
 }
 /* decode beidou navigation data ---------------------------------------------*/
 static int decode_cnav(raw_t *raw, int sat, int off)
-{
+{FNC
     eph_t eph={0};
     unsigned int words[10];
     int i,id,pgn,prn;
@@ -744,7 +744,7 @@ static int decode_cnav(raw_t *raw, int sat, int off)
 }
 /* decode glonass navigation data --------------------------------------------*/
 static int decode_gnav(raw_t *raw, int sat, int off, int frq)
-{
+{FNC
     geph_t geph={0};
     int i,j,k,m,prn;
     unsigned char *p=raw->buff+6+off,buff[64],*fid;
@@ -792,7 +792,7 @@ static int decode_gnav(raw_t *raw, int sat, int off, int frq)
 }
 /* decode sbas navigation data -----------------------------------------------*/
 static int decode_snav(raw_t *raw, int sat, int off)
-{
+{FNC
     int i,j,k,prn,tow,week;
     unsigned char *p=raw->buff+6+off,buff[64];
     
@@ -814,7 +814,7 @@ static int decode_snav(raw_t *raw, int sat, int off)
 }
 /* decode ubx-rxm-sfrbx: raw subframe data (ref [3]) -------------------------*/
 static int decode_rxmsfrbx(raw_t *raw)
-{
+{FNC
     int prn,sat,sys;
     unsigned char *p=raw->buff+6;
     
@@ -845,7 +845,7 @@ static int decode_rxmsfrbx(raw_t *raw)
 }
 /* decode ubx-trk-sfrbx: subframe buffer extension ---------------------------*/
 static int decode_trksfrbx(raw_t *raw)
-{
+{FNC
     int prn,sat,sys;
     unsigned char *p=raw->buff+6;
     
@@ -876,7 +876,7 @@ static int decode_trksfrbx(raw_t *raw)
 }
 /* decode ublox raw message --------------------------------------------------*/
 static int decode_ubx(raw_t *raw)
-{
+{FNC
     int type=(U1(raw->buff+2)<<8)+U1(raw->buff+3);
     
     trace(3,"decode_ubx: type=%04x len=%d\n",type,raw->len);
@@ -905,7 +905,7 @@ static int decode_ubx(raw_t *raw)
 }
 /* sync code -----------------------------------------------------------------*/
 static int sync_ubx(unsigned char *buff, unsigned char data)
-{
+{FNC
     buff[0]=buff[1]; buff[1]=data;
     return buff[0]==UBXSYNC1&&buff[1]==UBXSYNC2;
 }
@@ -937,7 +937,7 @@ static int sync_ubx(unsigned char *buff, unsigned char data)
 *          Users can use these messages by their own risk.
 *-----------------------------------------------------------------------------*/
 extern int input_ubx(raw_t *raw, unsigned char data)
-{
+{FNC
     trace(5,"input_ubx: data=%02x\n",data);
     
     /* synchronize frame */
@@ -968,7 +968,7 @@ extern int input_ubx(raw_t *raw, unsigned char data)
 * return : status(-2: end of file, -1...9: same as above)
 *-----------------------------------------------------------------------------*/
 extern int input_ubxf(raw_t *raw, FILE *fp)
-{
+{FNC
     int i,data;
     
     trace(4,"input_ubxf:\n");
@@ -1038,7 +1038,7 @@ extern int input_ubxf(raw_t *raw, FILE *fp)
 *             CFG-DOSC,CFG-ESRC
 *-----------------------------------------------------------------------------*/
 extern int gen_ubx(const char *msg, unsigned char *buff)
-{
+{FNC
     const char *cmd[]={
         "PRT","USB","MSG","NMEA","RATE","CFG","TP","NAV2","DAT","INF",
         "RST","RXM","ANT","FXN","SBAS","LIC","TM","TM2","TMODE","EKF",

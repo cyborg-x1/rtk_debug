@@ -53,7 +53,7 @@ static const int navsys[]={     /* system codes */
 };
 /* convert rinex obs type ver.3 -> ver.2 -------------------------------------*/
 static void convcode(double ver, int sys, char *type)
-{
+{FNC
     if (ver>=2.12&&(sys==SYS_GPS||sys==SYS_QZS||sys==SYS_SBS)&&
         !strcmp(type+1,"1C")) { /* L1C/A */
         strcpy(type+1,"A");
@@ -92,7 +92,7 @@ static void convcode(double ver, int sys, char *type)
 }
 /* set rinex station and receiver info to options ----------------------------*/
 static void rnx2opt(const rnxctr_t *rnx, rnxopt_t *opt)
-{
+{FNC
     double pos[3],enu[3];
     int i;
     
@@ -134,7 +134,7 @@ static void rnx2opt(const rnxctr_t *rnx, rnxopt_t *opt)
 }
 /* set rtcm antenna and receiver info to options -----------------------------*/
 static void rtcm2opt(const rtcm_t *rtcm, rnxopt_t *opt)
-{
+{FNC
     double pos[3],enu[3];
     int i;
     
@@ -185,7 +185,7 @@ static void rtcm2opt(const rtcm_t *rtcm, rnxopt_t *opt)
 }
 /* generate stream file ------------------------------------------------------*/
 static strfile_t *gen_strfile(int format, const char *opt, gtime_t time)
-{
+{FNC
     strfile_t *str;
     
     trace(3,"init_strfile:\n");
@@ -228,7 +228,7 @@ static strfile_t *gen_strfile(int format, const char *opt, gtime_t time)
 }
 /* free stream file ----------------------------------------------------------*/
 static void free_strfile(strfile_t *str)
-{
+{FNC
     trace(3,"free_strfile:\n");
     
     if (str->format==STRFMT_RTCM2||str->format==STRFMT_RTCM3) {
@@ -244,7 +244,7 @@ static void free_strfile(strfile_t *str)
 }
 /* input stream file ---------------------------------------------------------*/
 static int input_strfile(strfile_t *str)
-{
+{FNC
     int type=0;
     
     trace(4,"input_strfile:\n");
@@ -279,7 +279,7 @@ static int input_strfile(strfile_t *str)
 }
 /* open stream file ----------------------------------------------------------*/
 static int open_strfile(strfile_t *str, const char *file)
-{
+{FNC
     trace(3,"open_strfile: file=%s\n",file);
     
     if (str->format==STRFMT_RTCM2||str->format==STRFMT_RTCM3) {
@@ -317,7 +317,7 @@ static int open_strfile(strfile_t *str, const char *file)
 }
 /* close stream file ---------------------------------------------------------*/
 static void close_strfile(strfile_t *str)
-{
+{FNC
     trace(3,"close_strfile:\n");
     
     if (str->format==STRFMT_RTCM2||str->format==STRFMT_RTCM3) {
@@ -332,7 +332,7 @@ static void close_strfile(strfile_t *str)
 }
 /* sort codes ----------------------------------------------------------------*/
 static void sort_codes(unsigned char *codes, unsigned char *types, int n)
-{
+{FNC
     unsigned char tmp;
     char *obs1,*obs2;
     int i,j;
@@ -348,7 +348,7 @@ static void sort_codes(unsigned char *codes, unsigned char *types, int n)
 /* set observation types in rinex option -------------------------------------*/
 static void setopt_obstype(const unsigned char *codes,
                            const unsigned char *types, int sys, rnxopt_t *opt)
-{
+{FNC
     const char type_str[]="CLDS";
     char type[16],*id;
     int i,j,k,freq;
@@ -396,7 +396,7 @@ static void setopt_obstype(const unsigned char *codes,
 /* scan observation types ----------------------------------------------------*/
 static int scan_obstype(int format, const char *file, rnxopt_t *opt,
                         gtime_t *time)
-{
+{FNC
     strfile_t *str;
     unsigned char codes[6][33]={{0}};
     unsigned char types[6][33]={{0}};
@@ -479,7 +479,7 @@ static int scan_obstype(int format, const char *file, rnxopt_t *opt,
 }
 /* set observation types -----------------------------------------------------*/
 static void set_obstype(int format, rnxopt_t *opt)
-{
+{FNC
     /* supported codes by rtcm2 */
     const unsigned char codes_rtcm2[6][8]={
         {CODE_L1C,CODE_L1P,CODE_L2C,CODE_L2P},
@@ -568,7 +568,7 @@ static void set_obstype(int format, rnxopt_t *opt)
 }
 /* save slip conditions ------------------------------------------------------*/
 static void saveslips(unsigned char slips[][NFREQ+NEXOBS], obsd_t *data, int n)
-{
+{FNC
     int i,j;
     
     for (i=0;i<n;i++) for (j=0;j<NFREQ+NEXOBS;j++) {
@@ -577,7 +577,7 @@ static void saveslips(unsigned char slips[][NFREQ+NEXOBS], obsd_t *data, int n)
 }
 /* restore slip conditions ---------------------------------------------------*/
 static void restslips(unsigned char slips[][NFREQ+NEXOBS], obsd_t *data, int n)
-{
+{FNC
     int i,j;
     
     for (i=0;i<n;i++) for (j=0;j<NFREQ+NEXOBS;j++) {
@@ -588,7 +588,7 @@ static void restslips(unsigned char slips[][NFREQ+NEXOBS], obsd_t *data, int n)
 /* open output files ---------------------------------------------------------*/
 static int openfile(FILE **ofp, char *files[], const char *file,
                     const rnxopt_t *opt, nav_t *nav)
-{
+{FNC
     char path[1024];
     int i;
     
@@ -625,7 +625,7 @@ static int openfile(FILE **ofp, char *files[], const char *file,
 }
 /* close output files --------------------------------------------------------*/
 static void closefile(FILE **ofp, const rnxopt_t *opt, nav_t *nav)
-{
+{FNC
     int i;
     
     trace(3,"closefile:\n");
@@ -650,7 +650,7 @@ static void closefile(FILE **ofp, const rnxopt_t *opt, nav_t *nav)
 /* convert obs message -------------------------------------------------------*/
 static void convobs(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n,
                     unsigned char slips[][NFREQ+NEXOBS])
-{
+{FNC
     gtime_t time;
     
     trace(3,"convobs :\n");
@@ -677,7 +677,7 @@ static void convobs(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n,
 }
 /* convert nav message -------------------------------------------------------*/
 static void convnav(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n)
-{
+{FNC
     gtime_t ts1,te1,ts2,te2;
     int sys,prn;
     
@@ -781,7 +781,7 @@ static void convnav(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n)
 }
 /* convert sbas message ------------------------------------------------------*/
 static void convsbs(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n)
-{
+{FNC
     gtime_t ts1,te1;
     int msg,prn,sat,sys;
     
@@ -825,7 +825,7 @@ static void convsbs(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n)
 }
 /* convert lex message -------------------------------------------------------*/
 static void convlex(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n)
-{
+{FNC
     gtime_t ts1,te1;
     
     trace(3,"convlex :\n");
@@ -839,7 +839,7 @@ static void convlex(FILE **ofp, rnxopt_t *opt, strfile_t *str, int *n)
 }
 /* set approx position -------------------------------------------------------*/
 static void setapppos(strfile_t *str, rnxopt_t *opt)
-{
+{FNC
     prcopt_t prcopt=prcopt_default;
     sol_t sol={{0}};
     char msg[128];
@@ -856,7 +856,7 @@ static void setapppos(strfile_t *str, rnxopt_t *opt)
 }
 /* show status message -------------------------------------------------------*/
 static int showstat(int sess, gtime_t ts, gtime_t te, int *n)
-{
+{FNC
     const char type[]="ONGHQLSE";
     char msg[1024]="",*p=msg,s[64];
     int i;
@@ -883,7 +883,7 @@ static int showstat(int sess, gtime_t ts, gtime_t te, int *n)
 /* rinex converter for single-session ----------------------------------------*/
 static int convrnx_s(int sess, int format, rnxopt_t *opt, const char *file,
                      char **ofile)
-{
+{FNC
     FILE *ofp[NOUTFILE]={NULL};
     strfile_t *str;
     gtime_t ts={0},te={0},tend={0},time={0};
@@ -1025,7 +1025,7 @@ static int convrnx_s(int sess, int format, rnxopt_t *opt, const char *file,
 *          the order of wild-card expanded files must be in-order by time
 *-----------------------------------------------------------------------------*/
 extern int convrnx(int format, rnxopt_t *opt, const char *file, char **ofile)
-{
+{FNC
     gtime_t t0={0};
     rnxopt_t opt_=*opt;
     double tu,ts;
