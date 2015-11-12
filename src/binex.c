@@ -1037,13 +1037,13 @@ static int decode_bnx_7f_05(raw_t *raw, unsigned char *buff, int len)
 {
     obsd_t data;
 
-    INIT_ZERO(data);
 
     double clkoff=0.0,toff[16]={0};
     char *msg;
     unsigned char *p=buff;
     unsigned int flag;
     int i,nsat,nobs,prn,sys,sat,clkrst=0,rsys=0,nsys=0,tsys[16];
+    INIT_ZERO(data);
     INIT_ZERO(tsys);
     
     trace(4,"decode_bnx_7f_05\n");

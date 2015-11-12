@@ -221,7 +221,10 @@ static int is_depend(int sat1, int sat2, int *flgs, int *max_flg)
     int i;
     
     if (flgs[sat1-1]==0&&flgs[sat2-1]==0) {
-        flgs[sat1-1]=flgs[sat2-1]=++(*max_flg);
+    	int *ptr=++(*max_flg);
+
+        flgs[sat1-1]=ptr;
+        flgs[sat2-1]=ptr;
     }
     else if (flgs[sat1-1]==0&&flgs[sat2-1]!=0) {
         flgs[sat1-1]=flgs[sat2-1];
@@ -291,7 +294,9 @@ static int fix_sol(rtk_t *rtk, const int *sat1, const int *sat2,
     for (i=0;i<rtk->na;i++) {
         rtk->xa[i]=rtk->x[i];
         for (j=0;j<rtk->na;j++) {
-            rtk->Pa[i+j*rtk->na]=rtk->Pa[j+i*rtk->na]=rtk->P[i+j*rtk->nx];
+
+            rtk->Pa[i+j*rtk->na]=rtk->P[i+j*rtk->nx];
+            rtk->Pa[j+i*rtk->na]=rtk->P[i+j*rtk->nx];
         }
     }
     /* set flags */

@@ -461,7 +461,8 @@ static void initx(rtk_t *rtk, double xi, double var, int i)
     int j;
     rtk->x[i]=xi;
     for (j=0;j<rtk->nx;j++) {
-        rtk->P[i+j*rtk->nx]=rtk->P[j+i*rtk->nx]=i==j?var:0.0;
+        rtk->P[i+j*rtk->nx]=i==j?var:0.0;
+        rtk->P[j+i*rtk->nx]=i==j?var:0.0;
     }
 }
 /* dual-frequency iono-free measurements -------------------------------------*/

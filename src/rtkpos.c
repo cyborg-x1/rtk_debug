@@ -848,13 +848,14 @@ static int zdres(int base, const obsd_t *obs, int n, const double *rs,
                  const double *rr, const prcopt_t *opt, int index, double *y,
                  double *e, double *azel)
 {
-    double r,rr_[3],pos[3],dant[NFREQ]={0,0,0},disp[3];
+    double r=0.0, rr_[3]={0.0,0.0,0.0}, pos[3]={0.0,0.0,0.0},dant[NFREQ]={0.0,0.0,0.0},disp[3]={0.0,0.0,0.0};
     double zhd,zazel[]={0.0,90.0*D2R};
     int i,nf=NF(opt);
     
     trace(3,"zdres   : n=%d\n",n);
     
-    for (i=0;i<n*nf*2;i++) y[i]=0.0;
+    for (i=0;i<n*nf*2;i++)
+    	y[i]=0.0;
     
     if (norm(rr,3)<=0.0) return 0; /* no receiver position */
     
@@ -1026,14 +1027,15 @@ static int ddres(rtk_t *rtk, const nav_t *nav, double dt, const double *x,
                  double *H, double *R, int *vflg)
 {
     prcopt_t *opt=&rtk->opt;
-    double bl,dr[3],posu[3],posr[3],didxi=0.0,didxj=0.0,*im;
+    double bl=0.0,dr[3]={0.0,0.0,0.0},posu[3]={0.0,0.0,0.0},posr[3]={0.0,0.0,0.0},didxi=0.0,didxj=0.0,*im;
     double *tropr,*tropu,*dtdxr,*dtdxu,*Ri,*Rj,lami,lamj,fi,fj,df,*Hi=NULL;
     int i,j,k,m,f,ff,nv=0,nb[NFREQ*4*2+2]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},b=0,sysi,sysj,nf=NF(opt);
     
     trace(3,"ddres   : dt=%.1f nx=%d ns=%d\n",dt,rtk->nx,ns);
     
     bl=baseline(x,rtk->rb,dr);
-    ecef2pos(x,posu); ecef2pos(rtk->rb,posr);
+    ecef2pos(x,posu);
+    ecef2pos(rtk->rb,posr);
     
     Ri=mat(ns*nf*2+2,1); Rj=mat(ns*nf*2+2,1); im=mat(ns,1);
     tropu=mat(ns,1); tropr=mat(ns,1); dtdxu=mat(ns,3); dtdxr=mat(ns,3);
@@ -1111,6 +1113,7 @@ static int ddres(rtk_t *rtk, const nav_t *nav, double dt, const double *x,
             /* double-differenced phase-bias term */
             if (f<nf) {
                 if (opt->ionoopt!=IONOOPT_IFLC) {
+
                     v[nv]-=lami*x[IB(sat[i],f,opt)]-lamj*x[IB(sat[j],f,opt)];
                     if (H) {
                         Hi[IB(sat[i],f,opt)]= lami;

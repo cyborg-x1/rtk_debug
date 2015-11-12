@@ -370,8 +370,8 @@ static int valcomb(const sol_t *solf, const sol_t *solb)
         if (dr[i]*dr[i]<=16.0*var[i]) continue; /* ok if in 4-sigma */
         
         time2str(solf->time,tstr,2);
-        trace(2,"degrade fix to float: %s dr=%.3f %.3f %.3f std=%.3f %.3f %.3f\n",
-              tstr+11,dr[0],dr[1],dr[2],SQRT(var[0]),SQRT(var[1]),SQRT(var[2]));
+        /*trace(2,"degrade fix to float: %s dr=%.3f %.3f %.3f std=%.3f %.3f %.3f\n",
+              tstr+11,dr[0],dr[1],dr[2],SQRT(var[0]),SQRT(var[1]),SQRT(var[2]));*/
         return 0;
     }
     return 1;
