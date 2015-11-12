@@ -905,8 +905,10 @@ static int zdres(int base, const obsd_t *obs, int n, const double *rs,
 static int validobs(int i, int j, int f, int nf, double *y)
 {
     /* if no phase observable, psudorange is also unusable */
-    return y[f+i*nf*2]!=0.0&&y[f+j*nf*2]!=0.0&&
-           (f<nf||(y[f-nf+i*nf*2]!=0.0&&y[f-nf+j*nf*2]!=0.0));
+    return  y[f+i*nf*2]!=0.0
+    	 && y[f+j*nf*2]!=0.0
+		 && (f<nf||(y[f-nf+i*nf*2]!=0.0
+		 && y[f-nf+j*nf*2]!=0.0));
 }
 /* double-differenced measurement error covariance ---------------------------*/
 static void ddcov(const int *nb, int n, const double *Ri, const double *Rj,
